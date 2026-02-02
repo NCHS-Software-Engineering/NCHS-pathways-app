@@ -11,9 +11,9 @@
 /coverage
 
 # next.js
+/pathways-app/.next/
 /.next/
 /out/
-
 # production
 /build
 
