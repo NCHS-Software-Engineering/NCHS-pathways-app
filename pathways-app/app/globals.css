@@ -173,3 +173,75 @@ h2 {
   font-size: 12px;
   margin-left: 6px;
 }
+.pathway {
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: underline;
+  margin-bottom: 20px;
+}
+
+.progress-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  width: 420px;
+  height: 36px;
+  background: #dbeafe;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 70%;
+  background: #4ade80;
+}
+
+.section-title {
+  font-weight: 600;
+  text-decoration: underline;
+  margin-bottom: 8px;
+}
+
+.note {
+  max-width: 700px;
+  color: #374151;
+  margin-bottom: 14px;
+}
+
+.group {
+  margin-bottom: 16px;
+}
+
+.group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
+.item input {
+  margin-right: 8px;
+}
+
+.item a {
+  margin-left: 4px;
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 20px;
+  color: #374151;
+  font-size: 14px;
+}
