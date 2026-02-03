@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import SideBar from "../components/sidebar.jsx";
 export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [pathway, setPathway] = useState("");
@@ -21,14 +22,7 @@ export default function DashboardPage() {
 
       <div className="container">
         {/* Sidebar */}
-        <aside>
-          <nav>
-            <Link className="active" href="/dashboard">Dashboard</Link>
-            <Link href="/pathways">Pathways</Link>
-            <Link href="/about">About</Link>
-            <Link href="/settings">Settings</Link>
-          </nav>
-        </aside>
+        <SideBar></SideBar>
 
         <main className="flex-1 p-8 space-y-8">
           <div>
