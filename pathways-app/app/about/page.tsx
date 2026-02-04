@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SideBar from "../components/sidebar.jsx";
 
 export default function AboutPage() {
     return (
@@ -9,17 +10,8 @@ export default function AboutPage() {
             </header>
 
             <div className="container">
-                <aside>
-                    <nav>
-                        <Link href="/dashboard">Dashboard</Link>
-                        <Link href="/pathways">Pathways</Link>
-                        <Link href="/progress">My Progress</Link>
-                        <Link className="active" href="/about">
-                            About
-                        </Link>
-                        <Link href="/settings">Settings</Link>
-                    </nav>
-                </aside>
+                <SideBar></SideBar>
+                
 
                 <main>
                     <h2>About Pathways App</h2>
