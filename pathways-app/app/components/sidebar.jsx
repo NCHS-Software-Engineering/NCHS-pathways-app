@@ -14,7 +14,7 @@ export default function SideBar() {
     <aside>
       <nav>
         <Link className={linkClasses("/dashboard")} href="/dashboard">Dashboard</Link>
-        <Link className={linkClasses("/pathways")} href="/pathways">Pathways</Link>
+        <Link className={linkClasses("/endorsements")} href="/endorsements">Endorsements</Link>
         <Link className={linkClasses("/about")} href="/about">About</Link>
         <Link className={linkClasses("/settings")} href="/settings">Settings</Link>
       </nav>
