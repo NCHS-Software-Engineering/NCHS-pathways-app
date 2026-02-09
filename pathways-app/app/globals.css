@@ -181,7 +181,15 @@ h2 {
   text-decoration: underline;
   margin-bottom: 20px;
 }
-
+.tag {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-right: 6px;
+}
 .progress-label {
   font-weight: 600;
   margin-bottom: 6px;
