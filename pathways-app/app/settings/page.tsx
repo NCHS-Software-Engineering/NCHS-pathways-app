@@ -12,7 +12,6 @@ export default function SettingsPage() {
     }, []);
 
     function toggleDark() {
-        document.body.classList.toggle('dark')
 
     }
 

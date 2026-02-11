@@ -1,5 +1,6 @@
-
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
@@ -175,12 +176,14 @@ h2 {
   font-size: 12px;
   margin-left: 6px;
 }
+
 .pathway {
   font-size: 22px;
   font-weight: 700;
   text-decoration: underline;
   margin-bottom: 20px;
 }
+
 .tag {
   display: inline-block;
   background: #e0e7ff;
@@ -190,6 +193,7 @@ h2 {
   font-size: 12px;
   margin-right: 6px;
 }
+
 .progress-label {
   font-weight: 600;
   margin-bottom: 6px;
@@ -255,6 +259,7 @@ footer {
   color: #374151;
   font-size: 14px;
 }
+
 .pathway {
   display: block;
   width: 100%;
@@ -269,7 +274,7 @@ footer {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
