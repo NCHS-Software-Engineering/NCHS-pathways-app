@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import SideBar from "@/app/components/sidebar";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
@@ -71,12 +72,42 @@ const PathwayCard = ({ title, category, image }) => {
 };
 
 export default function EndorsementsPage() {
+  const { data: session } = useSession();
   return (
     <>
       
-      <header>
-        <h1>Pathways Portal</h1>
-        <Link href="/signin">Sign In</Link>
+      <header className="flex justify-between items-center p-4 border-b">
+        <h1 className="text-xl font-bold">Pathways Portal</h1>
+        {!session ? (
+          <button
+            onClick={() => signIn("google")}
+            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-5 h-5"
+            />
+            Sign in with Google
+          </button>
+        ) : (
+          <div className="flex items-center gap-3">
+            <img
+              src={session.user?.image || ""}
+              className="w-8 h-8 rounded-full"
+            />
+
+            <span className="font-medium">
+              {session.user?.name}
+            </span>
+
+            <button
+              onClick={() => signOut()}
+              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </header>
       <div className = "container">
         <SideBar />
