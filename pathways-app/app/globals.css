@@ -2,7 +2,7 @@
 @import "tailwindcss";
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
 }
 
 body {
@@ -42,8 +42,8 @@ header a {
 
 aside {
   width: 220px;
-  background: #f9fafb;
-  border-right: 1px solid #e5e7eb;
+  background: var(--page-background-primary);
+  border-right: 1px solid var(--page-background-secondary);
   padding: 16px;
 }
 
@@ -57,8 +57,8 @@ nav a {
 }
 
 nav a.active {
-  background: #93c5fd;
-  color: #1e3a8a;
+  background: var(--secondary-accent);
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -303,4 +303,43 @@ footer {
   height: 100%;
   background: #22c55e;
   border-radius: 999px;
+}
+
+:root {
+  --page-background-primary: #f5f7fa;
+  --page-background-secondary: #e5e7eb;
+
+  --text-primary: #1f2933;
+  --text-secondary: #6b7280;
+
+  --brand-color: #2c3e73;
+  --secondary-accent: #4f7df3;
+  --success-green: #00A86B;
+
+  --font-primary: var(--font-inter);
+}
+
+.pageTitle {
+  size: 32px;
+  font-weight: 700;
+}
+
+.sectionTitle {
+  size: 22px;
+  font-weight: 600;
+}
+
+.cardTitle {
+  size: 18px;
+  font-weight: 600;
+}
+
+.bodyText {
+  size: 16px;
+  font-weight: 500;
+}
+
+.chipText {
+  size: 13px;
+  font-weight: 500;
 }
