@@ -1,0 +1,41 @@
+{
+    "id": "nursing-assistant",
+    "title": "Nursing Assistant",
+    "category": "Healthcare & Human Services",
+
+    "requirements": {
+        "pathwayType": "TCD",
+        "courseCredits": {
+        "totalCreditsRequired": 3.0,
+
+        "requiredCourses": [
+            {
+            "name": "Nursing Assistant Training Program ",
+            "credits": 3.0,
+            "earlyCollegeCredit": true 
+            }
+            
+        ],
+
+        "electiveCreditsRequired": 0,
+
+        "electiveCourseOptions": [
+            
+        ]
+        },
+
+        "professionalLearning": {
+        "careerExplorationActivities": 2,
+        "teamChallenges": 2,
+        "workExperienceHours": 60,
+        "notes": "These hours are embedded within the required career-focused coursework"
+        },
+
+        "coCurricular": {
+        "required": false,
+        "examples": [
+            "club 1", "club 2"
+        ]
+        }
+    }
+}
