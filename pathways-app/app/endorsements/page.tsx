@@ -101,39 +101,15 @@ export default function EndorsementsPage() {
             />
 
             <PathwayCard
-              title="Architecture & Construction"
-              category="Construction"
-              image={architectureImage}
-            />
-
-            <PathwayCard
-              title = "Audio/Video Technology"
-              category="Arts, Entertainment, and Design"
-              image={audioVideoImage}
-            />
-
-            <PathwayCard
               title = "Health Sciences"
               category="Healthcare & Human Services"
               image={healthSciencesImage}
             />
 
             <PathwayCard
-              title = "Hospitality & Tourism"
-              category="Hospitality, Events, & Tourism"
-              image={hospitalityImage}
-            />
-
-            <PathwayCard
               title = "Cosmetology"
               category="Human Services"
               image={cosmetologyImage}
-            />
-
-            <PathwayCard
-              title = "Human Services"
-              category="Healthcare & Human Services"
-              image={humanServicesImage}
             />
 
             <PathwayCard
@@ -146,12 +122,6 @@ export default function EndorsementsPage() {
               title = "Emergency Medical Technician (EMT)"
               category="Public Services & Safety"
               image={emtImage}
-            />
-
-            <PathwayCard
-              title = "Science, Technology, Engineering, and Mathematics (STEM)"
-              category="Science, Technology, Engineering, and Mathematics"
-              image={stemImage}
             />
 
             <PathwayCard
@@ -173,18 +143,6 @@ export default function EndorsementsPage() {
             />  
 
             <PathwayCard
-              title = "Journalism & Broadcasting"
-              category="Arts, Entertainment, and Design"
-              image={journalismImage}
-            />
-
-            <PathwayCard
-              title = "Transportation, Distribution, and Logistics"
-              category="Supply Chain & Transportation"
-              image={transportationImage}
-            />
-
-            <PathwayCard
               title = "Marketing"
               category="Marketing & Sales"
               image={marketingImage}
@@ -201,12 +159,6 @@ export default function EndorsementsPage() {
               category="Healthcare & Human Services"
               image={nursingImage}
             />
-            
-            <PathwayCard
-              title = "Preforming Arts"
-              category="Arts, Entertainment, and Design"
-              image={performingArtsImage}
-            />
 
             <PathwayCard
               title = "Plant Systems"
@@ -219,12 +171,6 @@ export default function EndorsementsPage() {
               category="Digital Technology"
               image={programmingImage}
             />  
-
-            <PathwayCard
-              title = "Visual Arts"
-              category="Arts, Entertainment, and Design"
-              image={visualArtsImage}
-            />
 
 
           </div>
