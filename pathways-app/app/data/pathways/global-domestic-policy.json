@@ -1,0 +1,75 @@
+{
+    "id": "global-domestic-policy",
+    "title": "Global & Domestic Policy",
+    "category": "Public Service and Safety",
+
+    "requirements": {
+        "pathwayType": "Regular",
+        "courseCredits": {
+        "totalCreditsRequired": 2.5,
+
+        "requiredCourses": [
+            {
+            "name": "AP Human Geography",
+            "credits":1.0,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "AP US Government & Politics",
+            "credits":0.5,
+            "earlyCollegeCredit": true 
+            },
+           {
+                "group": "capstoneRequirement",
+                "groupLabel": "Complete ONE Capstone Option",
+                "minSelections": 1,
+                "options": [
+                {
+                    "name": "Humanities Capstone",
+                    "credits": 0.5,
+                    "earlyCollegeCredit": false
+                },
+                {
+                    "name": "STEM Capstone",
+                    "credits": 0.5,
+                    "earlyCollegeCredit": false
+                },
+                {
+                    "name": "Blended Career Internship",
+                    "credits": 0.5,
+                    "earlyCollegeCredit": true
+                }
+                ]
+            }
+        ],
+
+        "electiveCreditsRequired": 0.5,
+
+        "electiveCourseOptions": [
+            {
+                "name": "Economics",
+                "credits": 0.5,
+                "earlyCollegeCredit": false
+            },
+            {
+                "name": "AP Macroeconomics",
+                "credits": 0.5,
+                "earlyCollegeCredit": true
+            }
+        ]
+        },
+
+        "professionalLearning": {
+        "careerExplorationActivities": 2,
+        "teamChallenges": 2,
+        "workExperienceHours": 60,
+        "notes": "These hours can be met through the Humanities Capstone course OR the STEM Capstone course OR the Blended Career Internship course."
+        },
+
+        "coCurricular": {
+        "required": false,
+        "examples": [
+        ]
+        }
+    }
+}

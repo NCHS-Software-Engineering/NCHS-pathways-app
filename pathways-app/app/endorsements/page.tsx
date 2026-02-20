@@ -1,38 +1,33 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { StaticImageData } from 'next/image';
 import SideBar from "@/app/components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
-import architectureImage from "./images/architecture-construction.jpg";
-import audioVideoImage from "./images/av-technology.jpg";
 import healthSciencesImage from "./images/health-sciences.jpg";
-import hospitalityImage from "./images/hospitality-tourism.jpg";
 import cosmetologyImage from "./images/cosmetology.jpg";
-import humanServicesImage from "./images/human-services.jpg";
 import educationImage from "./images/education-training.jpg";
 import emtImage from "./images/emt.jpg";
-import stemImage from "./images/stem.jpg";
 import entrepreneurshipImage from "./images/entrepreneurship.jpg";
 import financeImage from "./images/finance-accounting.jpg";
-
-
 import policyImage from "./images/global-domestic-policy.jpg";
-import journalismImage from "./images/journalism-broadcasting.jpg";
-import transportationImage from "./images/transportation-logistics.jpg";
 import marketingImage from "./images/marketing.jpg";
 import networkImage from "./images/network-systems.jpg";
 import nursingImage from "./images/nursing-assistant.jpg";
-import performingArtsImage from "./images/preforming-arts.jpg";
 import plantSystemsImage from "./images/plant-systems.jpg";
 import programmingImage from "./images/programming-software.jpg";
-import visualArtsImage from "./images/visual-arts.jpg";
 
+interface PathwayCardProps {
+  title: string;
+  category: string;
+  image: StaticImageData;
+}
 
 // Card Component for Pathways
-const PathwayCard = ({ title, category, image }) => {
+const PathwayCard: React.FC<PathwayCardProps> = ({ title, category, image }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
@@ -113,7 +108,7 @@ export default function EndorsementsPage() {
         <SideBar />
         <main style={{ padding: "32px" }}>
           
-          <h2>Pathways</h2>
+          <h2 className="pageTitle">Pathways</h2>
 
           <p className="subtitle">
             Explore different career pathways to help you earn endorsements for
@@ -121,26 +116,14 @@ export default function EndorsementsPage() {
             requirements to gain valuable skills and knowledge in a chosen field.
           </p>
 
-          <h3>Explore Your Career Pathways</h3>
+          <h3 className="sectionTitle">Explore Your Career Pathways</h3>
           
           {/* Example Cards (No Backend Yet) */}
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <div className="chipText" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             <PathwayCard
               title="Animal Systems"
               category="Agriculture"
               image={animalImage}
-            />
-
-            <PathwayCard
-              title="Architecture & Construction"
-              category="Construction"
-              image={architectureImage}
-            />
-
-            <PathwayCard
-              title = "Audio/Video Technology"
-              category="Arts, Entertainment, and Design"
-              image={audioVideoImage}
             />
 
             <PathwayCard
@@ -150,21 +133,9 @@ export default function EndorsementsPage() {
             />
 
             <PathwayCard
-              title = "Hospitality & Tourism"
-              category="Hospitality, Events, & Tourism"
-              image={hospitalityImage}
-            />
-
-            <PathwayCard
               title = "Cosmetology"
               category="Human Services"
               image={cosmetologyImage}
-            />
-
-            <PathwayCard
-              title = "Human Services"
-              category="Healthcare & Human Services"
-              image={humanServicesImage}
             />
 
             <PathwayCard
@@ -177,12 +148,6 @@ export default function EndorsementsPage() {
               title = "Emergency Medical Technician (EMT)"
               category="Public Services & Safety"
               image={emtImage}
-            />
-
-            <PathwayCard
-              title = "Science, Technology, Engineering, and Mathematics (STEM)"
-              category="Science, Technology, Engineering, and Mathematics"
-              image={stemImage}
             />
 
             <PathwayCard
@@ -204,18 +169,6 @@ export default function EndorsementsPage() {
             />  
 
             <PathwayCard
-              title = "Journalism & Broadcasting"
-              category="Arts, Entertainment, and Design"
-              image={journalismImage}
-            />
-
-            <PathwayCard
-              title = "Transportation, Distribution, and Logistics"
-              category="Supply Chain & Transportation"
-              image={transportationImage}
-            />
-
-            <PathwayCard
               title = "Marketing"
               category="Marketing & Sales"
               image={marketingImage}
@@ -232,12 +185,6 @@ export default function EndorsementsPage() {
               category="Healthcare & Human Services"
               image={nursingImage}
             />
-            
-            <PathwayCard
-              title = "Preforming Arts"
-              category="Arts, Entertainment, and Design"
-              image={performingArtsImage}
-            />
 
             <PathwayCard
               title = "Plant Systems"
@@ -250,12 +197,6 @@ export default function EndorsementsPage() {
               category="Digital Technology"
               image={programmingImage}
             />  
-
-            <PathwayCard
-              title = "Visual Arts"
-              category="Arts, Entertainment, and Design"
-              image={visualArtsImage}
-            />
 
 
           </div>
