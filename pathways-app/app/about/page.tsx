@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import SideBar from "../components/sidebar";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function AboutPage() {
+    const { data: session } = useSession();
     return (
         <div className="min-h-screen bg-(gray-50)">
             {/* Header */}

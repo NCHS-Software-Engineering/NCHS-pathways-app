@@ -8,6 +8,8 @@ export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [pathway, setPathway] = useState("");
 
+  const { data: session } = useSession();
+
   function openPathway(name) {
     setPathway(name);
     setShowModal(true);
@@ -16,14 +18,44 @@ export default function DashboardPage() {
   return (
     <>
       {/* Header */}
-      <header>
-        <h1>Pathways Portal</h1>
-        <Link href="/signin">Sign In</Link>
+      <header className="flex justify-between items-center p-4 border-b">
+        <h1 className="text-xl font-bold">Pathways Portal</h1>
+
+        {!session ? (
+          <button
+            onClick={() => signIn("google")}
+            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-5 h-5"
+            />
+            Sign in with Google
+          </button>
+        ) : (
+          <div className="flex items-center gap-3">
+            <img
+              src={session.user?.image || "/default-avatar.png"}
+              className="w-8 h-8 rounded-full"
+            />
+
+            <span className="font-medium">
+              {session.user?.name}
+            </span>
+
+            <button
+              onClick={() => signOut()}
+              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
       </header>
 
-      <div className="container">
+      <div className="container flex">
         {/* Sidebar */}
-        <SideBar></SideBar>
+        <SideBar />
 
         <main className="flex-1 p-8 space-y-8">
           <div>
@@ -33,7 +65,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* ===== GRID ===== */}
+          {/* GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* ===== TO-DO ===== */}
             <div className="bg-(--page-background-primary) rounded-xl border p-6 space-y-6">
@@ -69,12 +101,8 @@ export default function DashboardPage() {
             <div className="bg-(--page-background-primary) rounded-xl border p-6 space-y-6">
               <h3 className="cardTitle text-lg">My Pathways</h3>
 
-              {/* Pathway Card */}
               <div
-                onClick={() => {
-                  setPathway("STEM Endorsement");
-                  setShowModal(true);
-                }}
+                onClick={() => openPathway("STEM Endorsement")}
                 className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
               >
                 <div className="flex justify-between items-center mb-3">
@@ -95,12 +123,8 @@ export default function DashboardPage() {
                 </ul>
               </div>
 
-              {/* Pathway Card */}
               <div
-                onClick={() => {
-                  setPathway("Business & Industry");
-                  setShowModal(true);
-                }}
+                onClick={() => openPathway("Business & Industry")}
                 className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
               >
                 <div className="flex justify-between items-center mb-3">
@@ -125,7 +149,7 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      {/* ===== MODAL ===== */}
+      {/* MODAL */}
       {showModal && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center"
@@ -162,9 +186,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
-      {/* ===== PROGRESS MODAL ===== */ }
-  
     </>
   );
 }
