@@ -36,7 +36,7 @@ export default function DashboardPage() {
         ) : (
           <div className="flex items-center gap-3">
             <img
-              src={session.user?.image || ""}
+              src={session.user?.image || "/default-avatar.png"}
               className="w-8 h-8 rounded-full"
             />
 
