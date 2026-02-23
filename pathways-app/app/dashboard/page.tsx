@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
