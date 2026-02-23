@@ -3,13 +3,13 @@ import SideBar from "../components/sidebar";
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-(gray-50)">
+        <div className="min-h-screen bg-(gray-50) extraContainer">
             {/* Header */}
-            <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
-                <h1 className="pageTitle">Pathways Portal</h1>
+            <header className="headerStyle">
+                <h1 className="pageTitle pathwaysText">Pathways Portal</h1>
                 <Link
                     href="/signin"
-                    className="bg-(--secondary-accent) text-white px-4 py-1.5 rounded-md chipText text-sm"
+                    className="signIn"
                 >
                     Sign In
                 </Link>

@@ -74,11 +74,11 @@ export default function EndorsementsPage() {
   return (
     <>
       
-      <header>
-        <h1>Pathways Portal</h1>
-        <Link href="/signin">Sign In</Link>
+      <header className="headerStyle">
+        <h1 className="(--pageTitle)">Pathways Portal</h1>
+        <Link className="signIn" href="/signin">Sign In</Link>
       </header>
-      <div className = "container">
+      <div className = "container extraContainer">
         <SideBar />
         <main style={{ padding: "32px" }}>
           

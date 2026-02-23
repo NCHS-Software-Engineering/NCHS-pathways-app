@@ -16,12 +16,12 @@ export default function DashboardPage() {
   return (
     <>
       {/* Header */}
-      <header>
-        <h1>Pathways Portal</h1>
-        <Link href="/signin">Sign In</Link>
+      <header className="headerStyle">
+        <h1 className="pathwaysText">Pathways Portal</h1>
+        <Link className="signIn" href="/signin">Sign In</Link>
       </header>
 
-      <div className="container">
+      <div className="extraContainer container">
         {/* Sidebar */}
         <SideBar></SideBar>
 
@@ -163,8 +163,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ===== PROGRESS MODAL ===== */ }
-  
+      {/* ===== PROGRESS MODAL ===== */}
+
     </>
   );
 }

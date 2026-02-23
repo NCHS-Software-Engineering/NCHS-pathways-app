@@ -343,3 +343,38 @@ footer {
   size: 13px;
   font-weight: 500;
 }
+
+@layer components {
+  .sideBar {
+    @apply font-normal 
+           hover:font-bold 
+           dark:bg-gray-600 
+           hover:bg-gray-200 
+           dark:text-white 
+           dark:hover:bg-gray-700 
+           rounded-md 
+           px-3 
+           py-2 
+           transition-colors duration-300;
+  }
+
+  .pathwaysText {
+    @apply text-2xl font-bold transition-colors duration-300 dark:text-white;
+  }
+
+  .headerStyle {
+    @apply transition-colors duration-300 dark:!bg-gray-700;
+  }
+
+  .signIn {
+    @apply dark:bg-blue-600 transition-colors duration-300 dark:text-white;
+  }
+
+  .extraContainer {
+    @apply transition-colors duration-300 dark:!bg-gray-200;
+  }
+
+  .sideBarBackground {
+    @apply transition-colors duration-300 dark:!bg-gray-700;
+  }
+}
