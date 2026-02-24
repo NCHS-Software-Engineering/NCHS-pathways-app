@@ -16,12 +16,20 @@ export default function DashboardPage() {
   return (
     <>
       {/* Header */}
-      <header className="headerStyle">
-        <h1 className="pathwaysText">Pathways Portal</h1>
-        <Link className="signIn" href="/signin">Sign In</Link>
+      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-secondary) text-(--text-primary)">
+        <h1 className="text-lg font-semibold">
+          Pathways Portal
+        </h1>
+
+        <Link
+          href="/signin"
+          className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+        >
+          Sign In
+        </Link>
       </header>
 
-      <div className="extraContainer container">
+      <div className="container">
         {/* Sidebar */}
         <SideBar></SideBar>
 
@@ -149,8 +157,8 @@ export default function DashboardPage() {
             <p><strong>Courses:</strong> Completed</p>
             <p><strong>Test Scores:</strong> Pending</p>
 
-            <div className="w-full bg-(--page-background-secondary) h-2 rounded-full">
-              <div className="bg-(--success-green) h-2 rounded-full w-3/4" />
+            <div className="w-full bg-(--bg-page) h-2 rounded-full">
+              <div className="bg-(--success) h-2 rounded-full w-3/4" />
             </div>
 
             <Link

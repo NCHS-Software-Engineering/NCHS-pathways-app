@@ -2,27 +2,12 @@ import Link from "next/link";
 import SideBar from "../components/sidebar";
 
 export default function AboutPage() {
-<<<<<<< HEAD
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
       
       {/* Header */}
       <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
         <h1 className="text-lg font-semibold">Pathways Portal</h1>
-=======
-    return (
-        <div className="min-h-screen bg-(gray-50) extraContainer">
-            {/* Header */}
-            <header className="headerStyle">
-                <h1 className="pageTitle pathwaysText">Pathways Portal</h1>
-                <Link
-                    href="/signin"
-                    className="signIn"
-                >
-                    Sign In
-                </Link>
-            </header>
->>>>>>> 2d5ac796cc7aa7873157b720aa0e39f26be0633b
 
         <Link
           href="/signin"

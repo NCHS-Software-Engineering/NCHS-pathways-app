@@ -55,11 +55,19 @@ export default function EndorsementsPage() {
   return (
     <>
       
-      <header className="headerStyle">
-        <h1 className="(--pageTitle)">Pathways Portal</h1>
-        <Link className="signIn" href="/signin">Sign In</Link>
+      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-secondary) text-(--text-primary)">
+        <h1 className="text-lg font-semibold">
+          Pathways Portal
+        </h1>
+
+        <Link
+          href="/signin"
+          className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+        >
+          Sign In
+        </Link>
       </header>
-      <div className = "container extraContainer">
+      <div className = "container ">
         <SideBar />
         <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Pathways</h2>

@@ -7,37 +7,36 @@ export default function SideBar() {
   const pathname = usePathname();
 
   const linkClasses = (path) => {
-
     const isActive = pathname === path;
 
     return `
-      block px-4 py-2 rounded-lg transition-all duration-200
-      ${isActive 
-        ? "bg-(--accent-primary) text-white font-semibold"
-        : "text-(--text-primary) hover:bg-(--border-primary)"
+      block px-4 py-2 rounded-lg transition-colors duration-200
+      ${
+        isActive
+          ? "bg-(--brand) text-white font-bold"
+          : "text-(--text-primary) hover:bg-(--border-primary) font-bold"
       }
     `;
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-(--bg-card) border-r border-(--border-primary) p-6">
+    <aside className="w-64 min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] border-r border-[var(--border-primary)] p-6">
       <nav className="flex flex-col gap-3">
-        <Link className={linkClasses("/dashboard")} href="/dashboard">
+        <Link href="/dashboard" className={linkClasses("/dashboard")}>
           Dashboard
         </Link>
 
-        <Link className={linkClasses("/endorsements")} href="/endorsements">
+        <Link href="/endorsements" className={linkClasses("/endorsements")}>
           Endorsements
         </Link>
 
-        <Link className={linkClasses("/about")} href="/about">
+        <Link href="/about" className={linkClasses("/about")}>
           About
         </Link>
 
-        <Link className={linkClasses("/settings")} href="/settings">
+        <Link href="/settings" className={linkClasses("/settings")}>
           Settings
         </Link>
-
       </nav>
     </aside>
   );
