@@ -32,39 +32,20 @@ import visualArtsImage from "./images/visual-arts.jpg";
 
 // Card Component for Pathways
 const PathwayCard = ({ title, category, image }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-
   return (
-    <div
-      className="card"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
-        boxShadow: isHovered
-          ? "0 12px 24px rgba(0, 0, 0, 0.15)"
-          : "0 4px 12px rgba(0, 0, 0, 0.05)",
-        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-        cursor: "pointer",
-      }}
-    >
+    <div className="group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+      
       <div
-        style={{
-          height: "140px",
-          borderRadius: "10px",
-          backgroundImage: `url(${image.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          marginBottom: "12px",
-          transform: isHovered ? "scale(1.05)" : "scale(1)",
-          transition: "transform 0.2s ease",
-        }}
+        className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
+        style={{ backgroundImage: `url(${image.src})` }}
       />
 
-      <h3>{title}</h3>
+      <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
+        {title}
+      </h3>
 
-      <div className="tag">
-        <p>{category}</p>
+      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--border-primary) text-(--text-primary)">
+        {category}
       </div>
     </div>
   );
@@ -74,26 +55,27 @@ export default function EndorsementsPage() {
   return (
     <>
       
-      <header>
-        <h1>Pathways Portal</h1>
-        <Link href="/signin">Sign In</Link>
+      <header className="headerStyle">
+        <h1 className="(--pageTitle)">Pathways Portal</h1>
+        <Link className="signIn" href="/signin">Sign In</Link>
       </header>
-      <div className = "container">
+      <div className = "container extraContainer">
         <SideBar />
-        <main style={{ padding: "32px" }}>
-          
-          <h2 className="pageTitle">Pathways</h2>
+        <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
+          <h2 className="text-3xl font-semibold mb-4">Pathways</h2>
 
-          <p className="subtitle">
+          <p className="text-(--text-primary)/80 max-w-2xl mb-8">
             Explore different career pathways to help you earn endorsements for
-            your diploma. Each pathway will guide you towards completing specific
-            requirements to gain valuable skills and knowledge in a chosen field.
+            your diploma. Each pathway guides you toward completing specific
+            requirements to gain valuable skills in your chosen field.
           </p>
 
-          <h3 className="sectionTitle">Explore Your Career Pathways</h3>
-          
-          {/* Example Cards (No Backend Yet) */}
-          <div className="chipText" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <h3 className="text-xl font-semibold mb-6">
+            Explore Your Career Pathways
+          </h3>
+
+          <div className="flex flex-wrap gap-6">
+ 
             <PathwayCard
               title="Animal Systems"
               category="Agriculture"

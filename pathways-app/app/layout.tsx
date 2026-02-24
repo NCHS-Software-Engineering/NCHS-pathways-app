@@ -11,12 +11,14 @@ const inter = Inter({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable}`}>
+      <body className="bg-(--bg-page) text-(--text-primary) transition-colors duration-300">
+        {children}
+      </body>
     </html>
   );
 }
