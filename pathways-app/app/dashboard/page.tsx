@@ -149,7 +149,8 @@ export default function DashboardPage() {
             <p><strong>Test Scores:</strong> Pending</p>
 
             <div className="w-full bg-gray-200 h-2 rounded-full">
-              <div className="bg-green-500 h-2 rounded-full w-3/4" />
+              {/* ===== PROGRESS SECTION ===== */}
+              <div className="bg-green-600 h-2 rounded-full w-3/4"></div>
             </div>
 
             <Link
@@ -158,12 +159,71 @@ export default function DashboardPage() {
             >
               Upload Missing Scores
             </Link>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">Computer Programming 1</p>
+                <p className="text-gray-500 text-xs">
+                  Programming fundamentals and problem solving.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">Computer Programming 2</p>
+                <p className="text-gray-500 text-xs">
+                  OOP and application development.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">AP Computer Science</p>
+                <p className="text-gray-500 text-xs">
+                  Java, algorithms, AP exam prep.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">Software Engineering</p>
+                <p className="text-gray-500 text-xs">
+                  Collaborative software development.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">ITS 1</p>
+                <p className="text-gray-500 text-xs">
+                  Hardware and networking basics.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-medium">ITS 2</p>
+                <p className="text-gray-500 text-xs">
+                  Advanced networking and security.
+                </p>
+              </div>
+              <input type="checkbox" className="mt-1 scale-90" />
+            </div>
           </div>
         </div>
       )}
 
-      {/* ===== PROGRESS MODAL ===== */ }
-  
+      {/* ===== PROGRESS MODAL ===== */}
+
     </>
   );
 }
