@@ -1,0 +1,59 @@
+{
+    "id": "Network Systems/Information Support & Services",
+    "title": "network-systems-info-services",
+    "category": "Digital Technology",
+
+    "requirements": {
+        "pathwayType": "Regular",
+        "courseCredits": {
+        "totalCreditsRequired": 2.5,
+
+        "requiredCourses": [
+            {
+            "name": "Blended PLTW Cybersecurity",
+            "credits": 1.0,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "Blended Career Internship ",
+            "credits": 0.5,
+            "earlyCollegeCredit": true 
+            }
+        ],
+
+        "electiveCreditsRequired": 1.0,
+
+        "electiveCourseOptions": [
+            {
+            "name": "Information Technology Systems 1",
+            "credits": 0.5,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "Information Technology Systems 2",
+            "credits": 0.5,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "AP Computer Science A",
+            "credits": 1.0,
+            "earlyCollegeCredit": true 
+            }
+        ]
+        },
+
+        "professionalLearning": {
+        "careerExplorationActivities": 2,
+        "teamChallenges": 2,
+        "workExperienceHours": 60,
+        "notes": "These hours can be met through the Blended Career Internship course"
+        },
+
+        "coCurricular": {
+        "required": false,
+        "examples": [
+             
+        ]
+        }
+    }
+}

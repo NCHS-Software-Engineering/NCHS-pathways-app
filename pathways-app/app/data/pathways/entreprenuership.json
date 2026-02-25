@@ -1,0 +1,63 @@
+{
+    "id": "entreprenuership",
+    "title": "Entreprenuership",
+    "category": "Management & Entreprenuership",
+
+    "requirements": {
+        "pathwayType": "Regular",
+        "courseCredits": {
+        "totalCreditsRequired": 2.5,
+
+        "requiredCourses": [
+            {
+            "name": "Business INCubatoredu",
+            "credits": 1.0,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "Blended Business ACCELeratoredu",
+            "credits": 1.0,
+            "earlyCollegeCredit": false 
+            }
+        ],
+
+        "electiveCreditsRequired": 0.5,
+
+        "electiveCourseOptions": [
+            {
+                "name": "Accounting 1",
+                "credits": 1.0,
+                "earlyCollegeCredit": true
+            },
+            {
+                "name": "Marketing",
+                "credits": 0.5,
+                "earlyCollegeCredit": true
+            },
+            {
+                "name": "AP Macroeconomics",
+                "credits": 0.5,
+                "earlyCollegeCredit": true
+            },
+            {
+                "name": "AP Microeconomics",
+                "credits": 0.5,
+                "earlyCollegeCredit": true
+            }
+        ]
+        },
+
+        "professionalLearning": {
+        "careerExplorationActivities": 2,
+        "teamChallenges": 2,
+        "workExperienceHours": 60,
+        "notes": "These hours can be met through the Blended Business ACCELeratoredu course"
+        },
+
+        "coCurricular": {
+        "required": false,
+        "examples": [
+        ]
+        }
+    }
+}

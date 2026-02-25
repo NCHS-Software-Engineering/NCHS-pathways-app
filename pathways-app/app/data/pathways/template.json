@@ -1,0 +1,49 @@
+{
+    "id": "template",
+    "title": "template",
+    "category": "template",
+
+    "requirements": {
+
+        "courseCredits": {
+        "totalCreditsRequired": 2.0,
+
+        "requiredCourses": [
+            {
+            "name": "Name 1",
+            "credits": 1.0,
+            "earlyCollegeCredit": true 
+            },
+            {
+            "name": "Name 2",
+            "credits": 0.5,
+            "earlyCollegeCredit": false 
+            }
+        ],
+
+        "electiveCreditsRequired": 0.5,
+
+        "electiveCourseOptions": [
+            {
+            "name": "Name 3",
+            "credits": 0.5,
+            "earlyCollegeCredit": true 
+            }
+        ]
+        },
+
+        "professionalLearning": {
+        "careerExplorationActivities": 2,
+        "teamChallenges": 2,
+        "workExperienceHours": 60,
+        "notes": "notes"
+        },
+
+        "coCurricular": {
+        "required": false,
+        "examples": [
+            "club 1", "club 2"
+        ]
+        }
+    }
+}

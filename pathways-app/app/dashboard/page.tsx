@@ -8,6 +8,8 @@ export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [pathway, setPathway] = useState("");
 
+  const { data: session } = useSession();
+
   function openPathway(name) {
     setPathway(name);
     setShowModal(true);
@@ -29,9 +31,9 @@ export default function DashboardPage() {
         </Link>
       </header>
 
-      <div className="container">
+      <div className="container flex">
         {/* Sidebar */}
-        <SideBar></SideBar>
+        <SideBar />
 
         <main className="flex-1 p-8 space-y-8">
           <div>
@@ -41,7 +43,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* ===== GRID ===== */}
+          {/* GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* ===== TO-DO ===== */}
             <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
@@ -77,12 +79,8 @@ export default function DashboardPage() {
             <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
               <h3 className="cardTitle text-lg">My Pathways</h3>
 
-              {/* Pathway Card */}
               <div
-                onClick={() => {
-                  setPathway("STEM Endorsement");
-                  setShowModal(true);
-                }}
+                onClick={() => openPathway("STEM Endorsement")}
                 className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
               >
                 <div className="flex justify-between items-center mb-3">
@@ -103,12 +101,8 @@ export default function DashboardPage() {
                 </ul>
               </div>
 
-              {/* Pathway Card */}
               <div
-                onClick={() => {
-                  setPathway("Business & Industry");
-                  setShowModal(true);
-                }}
+                onClick={() => openPathway("Business & Industry")}
                 className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
               >
                 <div className="flex justify-between items-center mb-3">
@@ -133,7 +127,7 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      {/* ===== MODAL ===== */}
+      {/* MODAL */}
       {showModal && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center"
