@@ -35,7 +35,7 @@ export default function SettingsPage() {
         {!session ? (
           <button
             onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-gray-100 transition"
           >
             <img
               src="https://developers.google.com/identity/images/g-logo.png"

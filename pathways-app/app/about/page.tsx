@@ -5,19 +5,41 @@ import SideBar from "../components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function AboutPage() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
       
-      {/* Header */}
       <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
         <h1 className="text-lg font-semibold">Pathways Portal</h1>
 
-        <Link
-          href="/signin"
-          className="bg-(--accent-primary) text-white px-4 py-1.5 rounded-md text-sm hover:opacity-90 transition"
-        >
-          Sign In
-        </Link>
+        {!session ? (
+          <button
+            onClick={() => signIn("google")}
+            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-(--border-primary) transition"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-5 h-5"
+            />
+            Sign in with Google
+          </button>
+        ) : (
+          <div className="flex items-center gap-3">
+            <img
+              src={session.user?.image || "/default-avatar.png"}
+              className="w-8 h-8 rounded-full"
+            />
+            <span className="font-medium">{session.user?.name}</span>
+
+            <button
+              onClick={() => signOut()}
+              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
       </header>
 
       <div className="flex">
@@ -26,7 +48,7 @@ export default function AboutPage() {
         <main className="flex-1 p-10 space-y-12">
 
           {/* PURPOSE SECTION */}
-          <section className="bg-(--brand) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
             <h2 className="text-2xl font-semibold">Purpose</h2>
 
             <div>
@@ -34,7 +56,7 @@ export default function AboutPage() {
                 What is the purpose of the Pathways App?
               </h3>
 
-              <div className="bg-(--bg-page) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
                 The purpose of the Pathways App is to help students clearly understand,
                 track, and achieve pathway endorsement requirements for graduation.
                 Many students are unaware of what pathway endorsements are, which ones
@@ -48,7 +70,7 @@ export default function AboutPage() {
                 How does it do this?
               </h3>
 
-              <div className="bg-(--bg-page) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
                 The Pathways App simplifies this process by organizing graduation
                 requirements into easy-to-follow pathways, showing students how
                 their courses, academic progress, and professional learning
@@ -58,7 +80,7 @@ export default function AboutPage() {
           </section>
 
           {/* ABOUT SECTION */}
-          <section className="bg-(--brand) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
             <h2 className="text-2xl font-semibold">
               About The Pathways App
             </h2>
@@ -68,7 +90,7 @@ export default function AboutPage() {
                 Mission Statement
               </h3>
 
-              <div className="bg-(--bg-page) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
                 Our mission is to create a pathways app that helps students educate
                 themselves on the requirements needed to earn specific diploma
                 endorsements. We aim to simplify graduation planning by giving
@@ -81,7 +103,7 @@ export default function AboutPage() {
                 The Pathways Team
               </h3>
 
-              <div className="bg-(--bg-page) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
                 We are a team of students — Cam, C.D., Dylan, and Trau —
                 working together to improve how students understand and navigate
                 graduation requirements.
@@ -90,7 +112,7 @@ export default function AboutPage() {
           </section>
 
           {/* WHAT ARE PATHWAYS SECTION */}
-          <section className="bg-(--bg-card) border border-(--border-primary) rounded-3xl p-8 space-y-6">
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-6">
             <h3 className="text-xl font-semibold">
               What are pathways?
             </h3>
@@ -105,7 +127,7 @@ export default function AboutPage() {
               How do I get them?
             </h4>
 
-            <div className="bg-(--bg-page) rounded-xl p-5 text-sm border border-(--border-primary)">
+            <div className="bg-(--bg-soft) rounded-xl p-5 text-sm border border-(--border-primary)">
               <ul className="list-disc pl-5 space-y-2">
                 <li>Classes related to the pathway</li>
                 <li>Professional learning experience</li>
