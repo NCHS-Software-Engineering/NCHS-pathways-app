@@ -23,7 +23,7 @@ export default function AboutPage() {
         <main className="flex-1 p-10 space-y-12">
 
           {/* PURPOSE SECTION */}
-          <section className="bg-(--bg-card) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+          <section className="bg-(--brand) border border-(--border-primary) rounded-3xl p-8 space-y-8">
             <h2 className="text-2xl font-semibold">Purpose</h2>
 
             <div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
           </section>
 
           {/* ABOUT SECTION */}
-          <section className="bg-(--bg-card) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+          <section className="bg-(--brand) border border-(--border-primary) rounded-3xl p-8 space-y-8">
             <h2 className="text-2xl font-semibold">
               About The Pathways App
             </h2>
