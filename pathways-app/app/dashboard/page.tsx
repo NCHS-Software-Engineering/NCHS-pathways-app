@@ -18,39 +18,17 @@ export default function DashboardPage() {
   return (
     <>
       {/* Header */}
-      <header className="flex justify-between items-center p-4 border-b">
-        <h1 className="text-xl font-bold">Pathways Portal</h1>
+      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-secondary) text-(--text-primary)">
+        <h1 className="text-lg font-semibold">
+          Pathways Portal
+        </h1>
 
-        {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
-          >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              className="w-5 h-5"
-            />
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full"
-            />
-
-            <span className="font-medium">
-              {session.user?.name}
-            </span>
-
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
+        <Link
+          href="/signin"
+          className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+        >
+          Sign In
+        </Link>
       </header>
 
       <div className="container flex">
@@ -60,7 +38,7 @@ export default function DashboardPage() {
         <main className="flex-1 p-8 space-y-8">
           <div>
             <h2 className="pageTitle text-2xl font-bold">My Dashboard</h2>
-            <p className="(--text-secondary) mt-1">
+            <p className="text-(--text-secondary) mt-1">
               Track your progress toward diploma endorsements.
             </p>
           </div>
@@ -68,7 +46,7 @@ export default function DashboardPage() {
           {/* GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* ===== TO-DO ===== */}
-            <div className="bg-(--page-background-primary) rounded-xl border p-6 space-y-6">
+            <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
               <h3 className="cardTitle text-lg">To-Do List</h3>
 
               <div className="space-y-3">
@@ -79,7 +57,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <Link
                     href="/upload-scores"
-                    className="bodyText px-4 py-2 rounded-md bg-(--secondary-accent) text-white text-sm"
+                    className="bodyText px-4 py-2 rounded-md bg-(--brand) text-white text-sm"
                   >
                     Upload Scores
                   </Link>
@@ -91,14 +69,14 @@ export default function DashboardPage() {
 
               <div className="pt-4 border-t space-y-2">
                 <p className="bodyText">Course Requirements</p>
-                <div className="flex items-center text-(--success-green) bodyText">
+                <div className="flex items-center text-(--success) bodyText">
                   ✓ Completed
                 </div>
               </div>
             </div>
 
             {/* ===== PATHWAYS ===== */}
-            <div className="bg-(--page-background-primary) rounded-xl border p-6 space-y-6">
+            <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
               <h3 className="cardTitle text-lg">My Pathways</h3>
 
               <div
@@ -107,14 +85,14 @@ export default function DashboardPage() {
               >
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="bodyText">STEM Endorsement</h4>
-                  <span className="text-(--success-green) bodyText">75%</span>
+                  <span className="text-(--success) bodyText">75%</span>
                 </div>
 
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-(--success-green) bodyText">
+                  <li className="flex items-center gap-2 text-(--success) bodyText">
                     ✓ Required Courses
                   </li>
-                  <li className="flex items-center gap-2 text-(--success-green) bodyText">
+                  <li className="flex items-center gap-2 text-(--success) bodyText">
                     ✓ Credits Earned
                   </li>
                   <li className="flex items-center gap-2 text-yellow-600 bodyText">
@@ -133,7 +111,7 @@ export default function DashboardPage() {
                 </div>
 
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-(--success-green) bodyText">
+                  <li className="flex items-center gap-2 text-(--success) bodyText">
                     ✓ Required Courses
                   </li>
                   <li className="flex items-center gap-2 text-yellow-600 bodyText">
@@ -157,7 +135,7 @@ export default function DashboardPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-(--page-background-primary) rounded-xl p-6 w-full max-w-lg space-y-4"
+            className="bg-(--bg-card) rounded-xl p-6 w-full max-w-lg space-y-4"
           >
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">{pathway} Progress</h2>
@@ -173,19 +151,22 @@ export default function DashboardPage() {
             <p><strong>Courses:</strong> Completed</p>
             <p><strong>Test Scores:</strong> Pending</p>
 
-            <div className="w-full bg-(--page-background-secondary) h-2 rounded-full">
-              <div className="bg-(--success-green) h-2 rounded-full w-3/4" />
+            <div className="w-full bg-(--bg-page) h-2 rounded-full">
+              <div className="bg-(--success) h-2 rounded-full w-3/4" />
             </div>
 
             <Link
               href="/upload-scores"
-              className="inline-block mt-4 px-4 py-2 rounded-md bg-(--secondary-accent) text-white text-sm"
+              className="inline-block mt-4 px-4 py-2 rounded-md bg-(--brand) text-white text-sm"
             >
               Upload Missing Scores
             </Link>
           </div>
         </div>
       )}
+
+      {/* ===== PROGRESS MODAL ===== */}
+
     </>
   );
 }

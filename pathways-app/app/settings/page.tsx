@@ -1,75 +1,63 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar";
-import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function SettingsPage() {
-    const { data: session } = useSession();
-    return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
-                <h1 className="font-semibold text-lg">Pathways Portal</h1>
-                {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
-          >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              className="w-5 h-5"
-            />
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || ""}
-              className="w-8 h-8 rounded-full"
-            />
+  const [dark, setDark] = useState(false);
 
-            <span className="font-medium">
-              {session.user?.name}
-            </span>
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains("dark");
+    setDark(isDark);
+  }, []);
 
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Sign out
-            </button>
-          </div>
-        )}
-            </header>
+  function toggleDark() {
+    const html = document.documentElement;
 
-            {/* Page layout */}
-            <div className="flex">
-                {/* Sidebar */}
-                <SideBar />
+    html.classList.toggle("dark");
 
-                {/* Main content */}
-                <main className="flex-1 p-10">
-                    <div className="max-w bg-blue-100 rounded-3xl p-8 space-y-8">
-                        {/* Title */}
-                        <div>
-                            <h2 className="text-2xl font-semibold mb-2">
-                                Settings
-                            </h2>
-                        </div>
+    const isDark = html.classList.contains("dark");
 
-                        {/* Placeholder content */}
-                        <div>
-                            <h3 className="text-blue-800 font-semibold mb-3">
-                                User Settings
-                            </h3>
-                            <div className="bg-white rounded-xl p-5 text-sm leading-relaxed">
-                                This is the settings page. Configure your preferences here.
-                            </div>
-                        </div>
-                    </div>
-                </main>
+    setDark(isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }
+
+  return (
+    <>
+      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
+        <h1 className="text-lg font-semibold">Pathways Portal</h1>
+        <Link href="/signin">Sign In</Link>
+      </header>
+
+      <div className="flex">
+        <SideBar />
+
+        <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
+          <h2 className="text-2xl font-semibold mb-6">Settings</h2>
+
+          <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Dark Mode</span>
+
+              <button
+                onClick={toggleDark}
+                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                  dark
+                    ? "bg-(--brand)"
+                    : "bg-(--border-primary)"
+                }`}
+              >
+                <div
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                    dark ? "translate-x-7" : ""
+                  }`}
+                />
+              </button>
             </div>
-        </div>
-    );
+          </div>
+        </main>
+      </div>
+    </>
+  );
 }
