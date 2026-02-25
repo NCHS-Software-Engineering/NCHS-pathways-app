@@ -21,6 +21,7 @@ export default function AboutPage() {
             <img
               src="https://developers.google.com/identity/images/g-logo.png"
               className="w-5 h-5"
+              alt="Google logo"
             />
             Sign in with Google
           </button>
@@ -29,8 +30,12 @@ export default function AboutPage() {
             <img
               src={session.user?.image || "/default-avatar.png"}
               className="w-8 h-8 rounded-full"
+              alt="User avatar"
             />
-            <span className="font-medium">{session.user?.name}</span>
+
+            <span className="font-medium">
+              {session.user?.name}
+            </span>
 
             <button
               onClick={() => signOut()}
