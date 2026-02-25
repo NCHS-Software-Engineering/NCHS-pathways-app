@@ -8,15 +8,15 @@ export default function AboutPage() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-(gray-50)">
-      {/* Header */}
-      <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
-        <h1 className="pageTitle">Pathways Portal</h1>
+    <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
+      
+      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
+        <h1 className="text-lg font-semibold">Pathways Portal</h1>
 
         {!session ? (
           <button
             onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow hover:bg-gray-100 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-(--border-primary) transition"
           >
             <img
               src="https://developers.google.com/identity/images/g-logo.png"
@@ -47,89 +47,100 @@ export default function AboutPage() {
         )}
       </header>
 
-      {/* Page layout */}
       <div className="flex">
-        {/* Sidebar */}
         <SideBar />
 
-        {/* Main content */}
-        <main className="flex-1 p-10">
-          <div className="max-w bg-blue-100 rounded-3xl p-8 space-y-8">
-            <div>
-              <h2 className="pageTitle">Purpose</h2>
-            </div>
+        <main className="flex-1 p-10 space-y-12">
+
+          {/* PURPOSE SECTION */}
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+            <h2 className="text-2xl font-semibold">Purpose</h2>
 
             <div>
-              <h3 className="text-blue-800 mb-3 bodyText">
+              <h3 className="text-lg font-semibold mb-3">
                 What is the purpose of the Pathways App?
               </h3>
-              <div className="bg-(--page-background-primary) rounded-xl p-5 text-sm leading-relaxed bodyText">
-                The purpose of the Pathways App is to help students clearly understand, track, and achieve pathway endorsement requirements for graduation. Many students are unaware of what pathway endorsements are, which ones are offered at their school, or what classes and experiences they need to complete to earn them.
+
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+                The purpose of the Pathways App is to help students clearly understand,
+                track, and achieve pathway endorsement requirements for graduation.
+                Many students are unaware of what pathway endorsements are, which ones
+                are offered at their school, or what classes and experiences they
+                need to complete to earn them.
               </div>
             </div>
 
             <div>
-              <h3 className="text-blue-800 mb-3 bodyText">
+              <h3 className="text-lg font-semibold mb-3">
                 How does it do this?
               </h3>
-              <div className="bg-(--page-background-primary) rounded-xl p-5 text-sm leading-relaxed bodyText">
-                The Pathways App simplifies this process by organizing graduation requirements into easy-to-follow pathways, showing students how their courses, academic progress, and professional learning experiences connect to specific endorsements. By giving students transparent and accessible information, the app empowers them to take ownership of their graduation planning rather than relying solely on counselors for tracking.
+
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+                The Pathways App simplifies this process by organizing graduation
+                requirements into easy-to-follow pathways, showing students how
+                their courses, academic progress, and professional learning
+                experiences connect to specific endorsements.
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="h-10"></div>
+          {/* ABOUT SECTION */}
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
+            <h2 className="text-2xl font-semibold">
+              About The Pathways App
+            </h2>
 
-          <div className="max-w bg-blue-100 rounded-3xl p-8 space-y-8">
             <div>
-              <h2 className="pageTitle">About The Pathways App</h2>
-            </div>
-
-            <div>
-              <h3 className="text-blue-800 mb-3 bodyText">
+              <h3 className="text-lg font-semibold mb-3">
                 Mission Statement
               </h3>
-              <div className="bg-(--page-background-primary) rounded-xl p-5 text-sm leading-relaxed bodyText">
-                Our mission is to create a pathways app that helps students educate themselves on the requirements needed to earn specific diploma endorsements. We aim to simplify graduation planning by giving students clear, accurate, and accessible information about courses, credits, and endorsements, empowering them to make informed decisions about their academic futures.
+
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+                Our mission is to create a pathways app that helps students educate
+                themselves on the requirements needed to earn specific diploma
+                endorsements. We aim to simplify graduation planning by giving
+                students clear, accurate, and accessible information.
               </div>
             </div>
 
             <div>
-              <h3 className="text-blue-800 mb-3 bodyText">
+              <h3 className="text-lg font-semibold mb-3">
                 The Pathways Team
               </h3>
-              <div className="bg-(--page-background-primary) rounded-xl p-5 text-sm leading-relaxed bodyText">
-                We are a team of students — Cam, C.D., Dylan, and Trau — working together to improve how students understand and navigate graduation requirements. As students ourselves, we recognized how confusing diploma endorsements, credit requirements, and course pathways can be. This inspired us to create a solution that is built by students, for students.
+
+              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+                We are a team of students — Cam, C.D., Dylan, and Trau —
+                working together to improve how students understand and navigate
+                graduation requirements.
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="max-w bg-blue-100 rounded-3xl p-8 space-y-6 mt-12">
-            <h3 className="pageTitle text-xl">What are pathways?</h3>
+          {/* WHAT ARE PATHWAYS SECTION */}
+          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-6">
+            <h3 className="text-xl font-semibold">
+              What are pathways?
+            </h3>
 
-            <p className="text-sm bodyText">
-              Pathway endorsements are a set of academic requirements that give students a seal on their diploma, signifying that they studied in that field.
+            <p className="text-sm">
+              Pathway endorsements are a set of academic requirements that give
+              students a seal on their diploma, signifying that they studied in
+              that field.
             </p>
 
-            <h4 className="text-blue-800 bodyText">
+            <h4 className="text-lg font-semibold">
               How do I get them?
             </h4>
 
-            <div className="bg-(--page-background-primary) rounded-xl p-5 text-sm bodyText">
-              <p className="mb-3">
-                Certain pathway endorsements can be available at your school. Completing their requirements result in getting the seal on your diploma. Generally, counselors track this.
-              </p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>
-                  Classes related to the pathway (ex: programming classes for the “Programming and Software Development” endorsement)
-                </li>
+            <div className="bg-(--bg-soft) rounded-xl p-5 text-sm border border-(--border-primary)">
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Classes related to the pathway</li>
                 <li>Professional learning experience</li>
-                <li>
-                  A standard of academic success in reading and math — complete certain Math & English classes
-                </li>
+                <li>Meeting required Math & English standards</li>
               </ul>
             </div>
-          </div>
+          </section>
+
         </main>
       </div>
     </div>
