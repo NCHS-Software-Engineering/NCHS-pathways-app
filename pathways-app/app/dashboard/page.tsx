@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
@@ -23,12 +24,36 @@ export default function DashboardPage() {
           Pathways Portal
         </h1>
 
-        <Link
-          href="/signin"
-          className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
-        >
-          Sign In
-        </Link>
+        {!session ? (
+          <button
+            onClick={() => signIn("google")}
+            className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition flex items-center gap-2"
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              className="w-4 h-4"
+              alt="Google logo"
+            />
+            Sign in with Google
+          </button>
+        ) : (
+          <div className="flex items-center gap-3">
+            <img
+              src={session.user?.image || "/default-avatar.png"}
+              className="w-8 h-8 rounded-full"
+              alt="User avatar"
+            />
+
+            <span className="font-medium">{session.user?.name}</span>
+
+            <button
+              onClick={() => signOut()}
+              className="px-3 py-1 bg-(--border-primary) rounded-md hover:opacity-80 transition"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </header>
 
       <div className="container flex">

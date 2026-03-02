@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 
 import "./globals.css";
+import Providers from "./providers";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body className="bg-(--bg-page) text-(--text-primary) transition-colors duration-300">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
