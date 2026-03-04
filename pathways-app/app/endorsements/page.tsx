@@ -4,6 +4,7 @@ import Link from "next/link";
 import { StaticImageData } from 'next/image';
 import SideBar from "@/app/components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Star } from "lucide-react";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
@@ -28,12 +29,32 @@ interface PathwayCardProps {
 
 // Card Component for Pathways
 const PathwayCard: React.FC<PathwayCardProps> = ({ title, category, image }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
   const { data: session } = useSession();
+  const [isStarred, setIsStarred] = React.useState(false);
+  
 
   return (
-    <div className="group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
       
+    {/*Star button*/}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsStarred((prev) => !prev);
+      }}
+      className="absolute bottom-5 right-5"
+    >
+      <Star
+     size={35}
+      className={`
+        transition-colors duration-200
+        text-gray-400 hover:text-yellow-600
+        ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
+      `}
+      />
+
+    </button>
+
       <div
         className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
         style={{ backgroundImage: `url(${image.src})` }}
@@ -52,6 +73,37 @@ const PathwayCard: React.FC<PathwayCardProps> = ({ title, category, image }) => 
 
 export default function EndorsementsPage() {
   const { data: session } = useSession();
+  const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
+  
+  //Take from local storage, load
+  React.useEffect(() => {
+    const saved = localStorage.getItem("starredPathways");
+    if(saved) {
+      setStarredPathways(JSON.parse(saved));
+    }
+  }, []);
+
+  //Commit to local storage
+  React.useEffect(() => {
+    localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
+  }, [starredPathways]);
+
+  const toggleStar = (id: number) => {
+    setStarredPathways((prev) => {
+      //If starred, remove
+      if (prev.includes(id)) {return prev.filter((cardId) => cardId !== id);}
+
+      // If max (3), alert
+      if (prev.length >= 3) {/*ALERT ABOUT MAX 3 HERE*/
+        alert("You can only have up to 3 pathways.");
+        return prev;
+      }
+
+      //Otherwise, add pathway
+      return [...prev, id];
+    });
+  };
+
   return (
     <>
       <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
