@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
@@ -10,6 +10,16 @@ export default function DashboardPage() {
   const [pathway, setPathway] = useState("");
 
   const { data: session } = useSession();
+
+
+  //Locale storage loading (remove for database loading)
+  const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
+  React.useEffect(() => {
+      const saved = localStorage.getItem("starredPathways");
+      if(saved) {
+        setStarredPathways(JSON.parse(saved));
+      }
+    }, []);
 
   function openPathway(name) {
     setPathway(name);
