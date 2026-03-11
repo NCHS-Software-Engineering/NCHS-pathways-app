@@ -22,17 +22,17 @@ import plantSystemsImage from "./images/plant-systems.jpg";
 import programmingImage from "./images/programming-software.jpg";
 
 interface PathwayCardProps {
-  id: number;
+  pathwayId: string;
   title: string;
   category: string;
   image: StaticImageData;
   isStarred: boolean;
-  onToggle: (id: number) => void;
+  onToggle: (pathwayId: string) => void;
 }
 
 // Card Component for Pathways
 const PathwayCard: React.FC<PathwayCardProps> = ({
-  id,
+  pathwayId,
   title,
   category,
   image,
@@ -47,7 +47,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onToggle(id);
+          onToggle(pathwayId);
         }}
         className="absolute bottom-5 right-5"
       >
@@ -81,7 +81,7 @@ export default function EndorsementsPage() {
   const { data: session } = useSession();
   //This paragraph can be replaced with const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
   //The rest was used to get past a bug with loading.
-  const [starredPathways, setStarredPathways] = React.useState<number[]>(() => {
+  const [starredPathways, setStarredPathways] = React.useState<string[]>(() => {
   if (typeof window === "undefined") return [];
 
   const saved = localStorage.getItem("starredPathways");
@@ -101,10 +101,10 @@ export default function EndorsementsPage() {
     localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
   }, [starredPathways]);
 
-  const toggleStar = (id: number) => {
+  const toggleStar = (pathwayId: string) => {
     setStarredPathways((prev) => {
       //If starred, remove
-      if (prev.includes(id)) {return prev.filter((cardId) => cardId !== id);}
+      if (prev.includes(pathwayId)) {return prev.filter((id) => id !== pathwayId);}
 
       // If max (3), alert
       if (prev.length >= 3) {/*ALERT ABOUT MAX 3 HERE*/
@@ -113,7 +113,7 @@ export default function EndorsementsPage() {
       }
 
       //Otherwise, add pathway
-      return [...prev, id];
+      return [...prev, pathwayId];
     });
   };
 
@@ -169,119 +169,119 @@ export default function EndorsementsPage() {
           <div className="flex flex-wrap gap-6">
  
             <PathwayCard
-              id={1}
+              pathwayId="animal-systems"
               title="Animal Systems"
               category="Agriculture"
               image={animalImage}
-              isStarred={starredPathways.includes(1)}
+              isStarred={starredPathways.includes("animal-systems")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={2}
+              pathwayId="health-sciences"
               title = "Health Sciences"
               category="Healthcare & Human Services"
               image={healthSciencesImage}
-              isStarred={starredPathways.includes(2)}
+              isStarred={starredPathways.includes("health-sciences")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={3}
+              pathwayId="cosmetology"
               title = "Cosmetology"
               category="Human Services"
               image={cosmetologyImage}
-              isStarred={starredPathways.includes(3)}
+              isStarred={starredPathways.includes("cosmetology")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={4}
+              pathwayId="education-training"
               title = "Education & Training"
               category="Education"
               image={educationImage}
-              isStarred={starredPathways.includes(4)}
+              isStarred={starredPathways.includes("education-training")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={5}
+              pathwayId="emt"
               title = "Emergency Medical Technician (EMT)"
               category="Public Services & Safety"
               image={emtImage}
-              isStarred={starredPathways.includes(5)}
+              isStarred={starredPathways.includes("emt")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={6}
+              pathwayId="entrepreneurship"
               title = "Entrepreneurship"
               category="Management & Entrepreneurship"
               image={entrepreneurshipImage}
-              isStarred={starredPathways.includes(6)}
+              isStarred={starredPathways.includes("entrepreneurship")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={7}
+              pathwayId="finance-accounting"
               title = "Finance/Accounting"
               category="Financial Services"
               image={financeImage}
-              isStarred={starredPathways.includes(7)}
+              isStarred={starredPathways.includes("finance-accounting")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={8}
+              pathwayId="global-domestic-policy"
               title = "Global & Domestic Policy"
               category="Public Services & Safety"
               image={policyImage}
-              isStarred={starredPathways.includes(8)}
+              isStarred={starredPathways.includes("global-domestic-policy")}
               onToggle={toggleStar}
             />  
 
             <PathwayCard
-              id={9}
+              pathwayId="marketing"
               title = "Marketing"
               category="Marketing & Sales"
               image={marketingImage}
-              isStarred={starredPathways.includes(9)}
+              isStarred={starredPathways.includes("marketing")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={10}
+              pathwayId="network-systems-info-services"
               title = "Network Systems/Information Support & Services"
               category="Digital Technology"
               image={networkImage}
-              isStarred={starredPathways.includes(10)}
+              isStarred={starredPathways.includes("network-systems-info-services")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={11}
+              pathwayId="nursing-assistant"
               title = "Nursing Assistant"
               category="Healthcare & Human Services"
               image={nursingImage}
-              isStarred={starredPathways.includes(11)}
+              isStarred={starredPathways.includes("nursing-assistant")}
               onToggle={toggleStar}
             />
 
             <PathwayCard
-              id={12}
+              pathwayId="plant-systems"
               title = "Plant Systems"
               category="Agriculture"
               image={plantSystemsImage}
-              isStarred={starredPathways.includes(12)}
+              isStarred={starredPathways.includes("plant-systems")}
               onToggle={toggleStar}
             />
             
             <PathwayCard
-              id={13}
+              pathwayId="programming-software-dev"
               title = "Programming & Software Development"
               category="Digital Technology"
               image={programmingImage}
-              isStarred={starredPathways.includes(13)}
+              isStarred={starredPathways.includes("programming-software-dev")}
               onToggle={toggleStar}
             />  
 
