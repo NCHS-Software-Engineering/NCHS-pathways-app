@@ -123,7 +123,7 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={index}
-                        onClick={() => openPathway(name)}
+                        onClick={() => openPathway(data.title)}
                         className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
                       >
                         <div className="flex justify-between items-center mb-3">
