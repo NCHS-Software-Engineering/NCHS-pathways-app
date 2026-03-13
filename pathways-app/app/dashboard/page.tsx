@@ -128,7 +128,6 @@ export default function DashboardPage() {
                       >
                         <div className="flex justify-between items-center mb-3">
                           <h4 className="bodyText">{data.title}</h4>
-                          <span className="text-yellow-600 font-semibold">50%</span>
                         </div>
                       </div>
                     );

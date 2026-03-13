@@ -81,25 +81,35 @@ export default function EndorsementsPage() {
   const { data: session } = useSession();
   //This paragraph can be replaced with const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
   //The rest was used to get past a bug with loading.
+  /*
   const [starredPathways, setStarredPathways] = React.useState<string[]>(() => {
   if (typeof window === "undefined") return [];
 
   const saved = localStorage.getItem("starredPathways");
   return saved ? JSON.parse(saved) : [];
-});
-  
-  //Take from local storage, load
+});*/
+  const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
+  const [mounted, setMounted] = React.useState(false);
+
+  //Load from localStorage on mount
+  //MOUNT = SOLUTION for loading starred pathways upon refresh AND page changes
   React.useEffect(() => {
     const saved = localStorage.getItem("starredPathways");
-    if(saved) {
+    if (saved) {
       setStarredPathways(JSON.parse(saved));
     }
+    setMounted(true);
   }, []);
 
-  //Commit to local storage
+  //Save to localStorage when updated
   React.useEffect(() => {
-    localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
-  }, [starredPathways]);
+    if (mounted) {
+      localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
+    }
+  }, [starredPathways, mounted]);
+
+  //Prevent rendering before localStorage loads
+  if (!mounted) return null;
 
   const toggleStar = (pathwayId: string) => {
     setStarredPathways((prev) => {

@@ -10,7 +10,8 @@ import marketing from "./marketing.json";
 import networkSystems from "./network-systems-info-services.json";
 import nursingAssistant from "./nursing-assistant.json";
 import plantSystems from "./plant-systems.json";
-import softwareDev from "./programing-software-dev.json";
+import softwareDev from "./programming-software-dev.json";
+import emt from "./emt.json"
 
 export const pathways = {
   "academic-success": academicSuccess,
@@ -25,5 +26,6 @@ export const pathways = {
   "network-systems-info-services": networkSystems,
   "nursing-assistant": nursingAssistant,
   "plant-systems": plantSystems,
-  "programming-software-dev": softwareDev
+  "programming-software-dev": softwareDev,
+  emt
 };
