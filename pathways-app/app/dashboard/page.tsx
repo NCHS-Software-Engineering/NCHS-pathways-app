@@ -1,17 +1,28 @@
 "use client";
-
+import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
 import { signIn, signOut, useSession } from "next-auth/react";
 
+import { pathways } from "../data/pathways";
+
 export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [pathway, setPathway] = useState("");
+  const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
 
   const { data: session } = useSession();
 
-  function openPathway(name) {
+  // Locale storage loading (remove for database loading)
+  React.useEffect(() => {
+    const saved = localStorage.getItem("starredPathways");
+    if (saved) {
+      setStarredPathways(JSON.parse(saved));
+    }
+  }, []);
+
+  function openPathway(name: string) {
     setPathway(name);
     setShowModal(true);
   }
@@ -50,7 +61,6 @@ export default function DashboardPage() {
           </div>
         )}
       </header>
-      
 
       <div className="container flex">
         {/* Sidebar */}
@@ -99,50 +109,58 @@ export default function DashboardPage() {
             {/* ===== PATHWAYS ===== */}
             <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
               <h3 className="cardTitle text-lg">My Pathways</h3>
+              {starredPathways.length === 0 ? (
+                <p className="bodyText">
+                  No selected pathway endorsements! Select pathways in the "Endorsements" page.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {starredPathways.map((name, index) => {
+                    const data = pathways[name];
 
-              <div
-                onClick={() => openPathway("STEM Endorsement")}
-                className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="bodyText">STEM Endorsement</h4>
-                  <span className="text-(--success) bodyText">75%</span>
+                    if (!data) return null;
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => openPathway(data.title)}
+                        className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
+                      >
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="bodyText">{data.title}</h4>
+                        </div>
+                      </div>
+                    );
+                  })
+
+                    /*return (
+                      <div
+                        key={index}
+                        onClick={() => openPathway(pathwayName)}
+                        className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
+                      >
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="bodyText">{data.title}</h4>
+                          <span className="text-yellow-600 font-semibold">50%</span>
+                        </div>
+
+                        <ul className="space-y-2 text-sm">
+                          <li className="flex items-center gap-2 text-(--success) bodyText">
+                            ✓ Required Courses
+                          </li>
+                          <li className="flex items-center gap-2 text-yellow-600 bodyText">
+                            ⏳ Credits Earned
+                          </li>
+                          <li className="flex items-center gap-2 text-yellow-600 bodyText">
+                            ⏳ Test Scores
+                          </li>
+                        </ul>
+                      </div>
+                    );
+                    */
+                  }
                 </div>
-
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-(--success) bodyText">
-                    ✓ Required Courses
-                  </li>
-                  <li className="flex items-center gap-2 text-(--success) bodyText">
-                    ✓ Credits Earned
-                  </li>
-                  <li className="flex items-center gap-2 text-yellow-600 bodyText">
-                    ⏳ Test Scores
-                  </li>
-                </ul>
-              </div>
-
-              <div
-                onClick={() => openPathway("Business & Industry")}
-                className="cursor-pointer rounded-lg border p-4 hover:bg-gray-50 transition"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="bodyText">Business & Industry</h4>
-                  <span className="text-yellow-600 font-semibold">50%</span>
-                </div>
-
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-(--success) bodyText">
-                    ✓ Required Courses
-                  </li>
-                  <li className="flex items-center gap-2 text-yellow-600 bodyText">
-                    ⏳ Credits Earned
-                  </li>
-                  <li className="flex items-center gap-2 text-yellow-600 bodyText">
-                    ⏳ Test Scores
-                  </li>
-                </ul>
-              </div>
+              )}
             </div>
           </div>
         </main>
@@ -185,9 +203,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
-      {/* ===== PROGRESS MODAL ===== */}
-
     </>
   );
 }

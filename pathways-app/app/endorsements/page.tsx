@@ -4,6 +4,7 @@ import Link from "next/link";
 import { StaticImageData } from 'next/image';
 import SideBar from "@/app/components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Star } from "lucide-react";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
@@ -21,19 +22,45 @@ import plantSystemsImage from "./images/plant-systems.jpg";
 import programmingImage from "./images/programming-software.jpg";
 
 interface PathwayCardProps {
+  pathwayId: string;
   title: string;
   category: string;
   image: StaticImageData;
+  isStarred: boolean;
+  onToggle: (pathwayId: string) => void;
 }
 
 // Card Component for Pathways
-const PathwayCard: React.FC<PathwayCardProps> = ({ title, category, image }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const { data: session } = useSession();
+const PathwayCard: React.FC<PathwayCardProps> = ({
+  pathwayId,
+  title,
+  category,
+  image,
+  isStarred,
+  onToggle
+}) => {
+  
 
   return (
-    <div className="group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-      
+    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle(pathwayId);
+        }}
+        className="absolute bottom-5 right-5"
+      >
+        <Star
+          size={35}
+          className={`
+            transition-colors duration-200
+            text-gray-400 hover:text-yellow-600
+            ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
+          `}
+        />
+      </button>
+
       <div
         className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
         style={{ backgroundImage: `url(${image.src})` }}
@@ -52,6 +79,54 @@ const PathwayCard: React.FC<PathwayCardProps> = ({ title, category, image }) => 
 
 export default function EndorsementsPage() {
   const { data: session } = useSession();
+  //This paragraph can be replaced with const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
+  //The rest was used to get past a bug with loading.
+  /*
+  const [starredPathways, setStarredPathways] = React.useState<string[]>(() => {
+  if (typeof window === "undefined") return [];
+
+  const saved = localStorage.getItem("starredPathways");
+  return saved ? JSON.parse(saved) : [];
+});*/
+  const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
+  const [mounted, setMounted] = React.useState(false);
+
+  //Load from localStorage on mount
+  //MOUNT = SOLUTION for loading starred pathways upon refresh AND page changes
+  React.useEffect(() => {
+    const saved = localStorage.getItem("starredPathways");
+    if (saved) {
+      setStarredPathways(JSON.parse(saved));
+    }
+    setMounted(true);
+  }, []);
+
+  //Save to localStorage when updated
+  React.useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
+    }
+  }, [starredPathways, mounted]);
+
+  //Prevent rendering before localStorage loads
+  if (!mounted) return null;
+
+  const toggleStar = (pathwayId: string) => {
+    setStarredPathways((prev) => {
+      //If starred, remove
+      if (prev.includes(pathwayId)) {return prev.filter((id) => id !== pathwayId);}
+
+      // If max (3), alert
+      if (prev.length >= 3) {/*ALERT ABOUT MAX 3 HERE*/
+        alert("You can only have up to 3 pathways.");
+        return prev;
+      }
+
+      //Otherwise, add pathway
+      return [...prev, pathwayId];
+    });
+  };
+
   return (
     <>
       <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
@@ -104,81 +179,120 @@ export default function EndorsementsPage() {
           <div className="flex flex-wrap gap-6">
  
             <PathwayCard
+              pathwayId="animal-systems"
               title="Animal Systems"
               category="Agriculture"
               image={animalImage}
+              isStarred={starredPathways.includes("animal-systems")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="health-sciences"
               title = "Health Sciences"
               category="Healthcare & Human Services"
               image={healthSciencesImage}
+              isStarred={starredPathways.includes("health-sciences")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="cosmetology"
               title = "Cosmetology"
               category="Human Services"
               image={cosmetologyImage}
+              isStarred={starredPathways.includes("cosmetology")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="education-training"
               title = "Education & Training"
               category="Education"
               image={educationImage}
+              isStarred={starredPathways.includes("education-training")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="emt"
               title = "Emergency Medical Technician (EMT)"
               category="Public Services & Safety"
               image={emtImage}
+              isStarred={starredPathways.includes("emt")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="entrepreneurship"
               title = "Entrepreneurship"
               category="Management & Entrepreneurship"
               image={entrepreneurshipImage}
+              isStarred={starredPathways.includes("entrepreneurship")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="finance-accounting"
               title = "Finance/Accounting"
               category="Financial Services"
               image={financeImage}
+              isStarred={starredPathways.includes("finance-accounting")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="global-domestic-policy"
               title = "Global & Domestic Policy"
               category="Public Services & Safety"
               image={policyImage}
+              isStarred={starredPathways.includes("global-domestic-policy")}
+              onToggle={toggleStar}
             />  
 
             <PathwayCard
+              pathwayId="marketing"
               title = "Marketing"
               category="Marketing & Sales"
               image={marketingImage}
+              isStarred={starredPathways.includes("marketing")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="network-systems-info-services"
               title = "Network Systems/Information Support & Services"
               category="Digital Technology"
               image={networkImage}
+              isStarred={starredPathways.includes("network-systems-info-services")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="nursing-assistant"
               title = "Nursing Assistant"
               category="Healthcare & Human Services"
               image={nursingImage}
+              isStarred={starredPathways.includes("nursing-assistant")}
+              onToggle={toggleStar}
             />
 
             <PathwayCard
+              pathwayId="plant-systems"
               title = "Plant Systems"
               category="Agriculture"
               image={plantSystemsImage}
+              isStarred={starredPathways.includes("plant-systems")}
+              onToggle={toggleStar}
             />
             
             <PathwayCard
+              pathwayId="programming-software-dev"
               title = "Programming & Software Development"
               category="Digital Technology"
               image={programmingImage}
+              isStarred={starredPathways.includes("programming-software-dev")}
+              onToggle={toggleStar}
             />  
 
 
