@@ -62,11 +62,18 @@ export default function AboutPage() {
               </h3>
 
               <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
-                The purpose of the Pathways App is to help students clearly understand,
-                track, and achieve pathway endorsement requirements for graduation.
-                Many students are unaware of what pathway endorsements are, which ones
-                are offered at their school, or what classes and experiences they
-                need to complete to earn them.
+                The purpose of the Pathways App is to help students understand,
+                track, and achieve pathway endorsement requirements to earn {" "}
+                <Link
+                  href="https://app.schoolinks.com/student-pathways"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline">
+                  pathway endorsements
+                </Link>
+                . Many students are unaware of what pathway endorsements
+                are, which ones are offered at their school, or what classes and
+                experiences they need to complete to earn them.
               </div>
             </div>
 
@@ -109,7 +116,7 @@ export default function AboutPage() {
               </h3>
 
               <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
-                We are a team of students — Cam, C.D., Dylan, and Trau —
+                We are a team of students — Cam, Connor, Dylan, and Taran —
                 working together to improve how students understand and navigate
                 graduation requirements.
               </div>
@@ -125,7 +132,14 @@ export default function AboutPage() {
             <p className="text-sm">
               Pathway endorsements are a set of academic requirements that give
               students a seal on their diploma, signifying that they studied in
-              that field.
+              that field. More information can be found on {""}
+              <Link
+                href="https://app.schoolinks.com/student-pathways"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline">
+                Schoolinks's website
+              </Link>.
             </p>
 
             <h4 className="text-lg font-semibold">
