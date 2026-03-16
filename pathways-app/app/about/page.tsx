@@ -8,60 +8,21 @@ export default function AboutPage() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
+    <div className="min-h-screen bg-(--brand-soft) md:bg-(--bg-primary) text-(--text-primary)">
       
-      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
-        <h1 className="text-lg font-semibold">Pathways Portal</h1>
-
-        {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-(--border-primary) transition"
-          >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              className="w-5 h-5"
-              alt="Google logo"
-            />
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full"
-              alt="User avatar"
-            />
-
-            <span className="font-medium">
-              {session.user?.name}
-            </span>
-
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </header>
-
       <div className="flex">
-        <SideBar />
-
-        <main className="flex-1 p-10 space-y-12">
+        <div className="flex-1 space-y-8 w-full md:space-y-12">
 
           {/* PURPOSE SECTION */}
-          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
-            <h2 className="text-2xl font-semibold">Purpose</h2>
+          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
+            <h2 className="text-2xl font-semibold text-(--brand-text)">Purpose</h2>
 
             <div>
               <h3 className="text-lg font-semibold mb-3">
                 What is the purpose of the Pathways App?
               </h3>
 
-              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
                 The purpose of the Pathways App is to help students clearly understand,
                 track, and achieve pathway endorsement requirements for graduation.
                 Many students are unaware of what pathway endorsements are, which ones
@@ -75,7 +36,7 @@ export default function AboutPage() {
                 How does it do this?
               </h3>
 
-              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
                 The Pathways App simplifies this process by organizing graduation
                 requirements into easy-to-follow pathways, showing students how
                 their courses, academic progress, and professional learning
@@ -85,8 +46,8 @@ export default function AboutPage() {
           </section>
 
           {/* ABOUT SECTION */}
-          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-8">
-            <h2 className="text-2xl font-semibold">
+          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
+            <h2 className="text-2xl font-semibold  text-(--brand-text)">
               About The Pathways App
             </h2>
 
@@ -95,7 +56,7 @@ export default function AboutPage() {
                 Mission Statement
               </h3>
 
-              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
                 Our mission is to create a pathways app that helps students educate
                 themselves on the requirements needed to earn specific diploma
                 endorsements. We aim to simplify graduation planning by giving
@@ -108,8 +69,8 @@ export default function AboutPage() {
                 The Pathways Team
               </h3>
 
-              <div className="bg-(--bg-soft) rounded-xl p-5 text-sm leading-relaxed border border-(--border-primary)">
-                We are a team of students — Cam, C.D., Dylan, and Trau —
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
+                We are a team of students — Cam, Connor Doyle, Dylan, and Trau —
                 working together to improve how students understand and navigate
                 graduation requirements.
               </div>
@@ -117,12 +78,12 @@ export default function AboutPage() {
           </section>
 
           {/* WHAT ARE PATHWAYS SECTION */}
-          <section className="bg-(--brand-soft) border border-(--border-primary) rounded-3xl p-8 space-y-6">
-            <h3 className="text-xl font-semibold">
+          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
+            <h3 className="text-3xl font-semibold  text-(--brand-text)">
               What are pathways?
             </h3>
 
-            <p className="text-sm">
+            <p className="bg-(--bg-card) rounded-xl p-5 text-sm  ">
               Pathway endorsements are a set of academic requirements that give
               students a seal on their diploma, signifying that they studied in
               that field.
@@ -132,7 +93,7 @@ export default function AboutPage() {
               How do I get them?
             </h4>
 
-            <div className="bg-(--bg-soft) rounded-xl p-5 text-sm border border-(--border-primary)">
+            <div className="bg-(--bg-card) rounded-xl p-5 text-sm ">
               <ul className="list-disc pl-5 space-y-2">
                 <li>Classes related to the pathway</li>
                 <li>Professional learning experience</li>
@@ -141,7 +102,7 @@ export default function AboutPage() {
             </div>
           </section>
 
-        </main>
+        </div>
       </div>
     </div>
   );

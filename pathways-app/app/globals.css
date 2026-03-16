@@ -27,7 +27,7 @@ html, body {
 
 main {
   flex: 1;
-  padding: 32px;
+  
 }
 
 h2 {
@@ -281,38 +281,42 @@ footer {
   --bg-card: #ffffff;
   --bg-soft: #f3f4f6;
 
-  --border-primary: #e5e7eb;
+  --border-primary: #cecece;
 
   --text-primary: #1f2937;
   --text-secondary: #4b5563;
 
-  --brand: #2563eb;
-  --brand-soft: #e0e7ff;
+  --brand: #2592DA;
+  --brand-soft: #E8F2FB;
+  --brand-text: #2592DA;
 
   --success: #22c55e;
 
   --chip-bg: #e0e7ff;
   --chip-text: #3730a3;
+  
 }
 
 .dark {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-soft: #334155;
+  --bg-primary: #0A121A;
+  --bg-secondary: #0E1A25;
+  --bg-card: #1D3449;
+  --bg-soft: #2B4E6E;
 
   --border-primary: #334155;
 
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
 
-  --brand: #4f7df3;
-  --brand-soft: #1e3a8a;
+  --brand: #165783;
+  --brand-soft: #2F4A66;
+  --brand-text: #E8F2FB;
 
   --success: #22c55e;
 
   --chip-bg: #1e3a8a;
   --chip-text: #bfdbfe;
+;
 }
 
 .pageTitle {
