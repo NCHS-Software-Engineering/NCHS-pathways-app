@@ -71,7 +71,8 @@ export default function AboutPage() {
                   className="text-blue-600 underline">
                   pathway endorsements
                 </Link>
-                . Many students are unaware of what pathway endorsements
+                {" "}from their school.
+                Many students are unaware of what pathway endorsements
                 are, which ones are offered at their school, or what classes and
                 experiences they need to complete to earn them.
               </div>
