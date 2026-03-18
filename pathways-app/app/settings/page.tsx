@@ -37,41 +37,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
       
-      {/* Header */}
-      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-card)">
-        <h1 className="text-lg font-semibold">
-          Pathways Portal
-        </h1>
-
-        {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
-          >
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full"
-              alt="User avatar"
-            />
-            <span className="font-medium">
-              {session.user?.name}
-            </span>
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-(--border-primary) rounded-md hover:opacity-80 transition"
-            >
-              Sign out
-            </button>
-          </div>
-        )}
-      </header>
-
       <div className="flex">
-        <SideBar />
 
         <main className="flex-1 p-8 space-y-8">
           <h2 className="text-2xl font-semibold">

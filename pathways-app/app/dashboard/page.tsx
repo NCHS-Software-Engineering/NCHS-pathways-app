@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+
+import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -28,45 +28,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <>
-      {/* Header */}
-      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
-        <h1 className="text-lg font-semibold">Pathways Portal</h1>
+    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary) w-full">
 
-        {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-(--border-primary) transition"
-          >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              className="w-5 h-5"
-            />
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full"
-            />
-            <span className="font-medium">{session.user?.name}</span>
-
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </header>
-
-      <div className="container flex">
-        {/* Sidebar */}
-        <SideBar />
-
-        <main className="flex-1 p-8 space-y-8">
+      <div className="flex w-full ">
+        <main className="flex-1 p-8 space-y-5 w-full">
           <div>
             <h2 className="pageTitle text-2xl font-bold">My Dashboard</h2>
             <p className="text-(--text-secondary) mt-1">
@@ -75,9 +40,9 @@ export default function DashboardPage() {
           </div>
 
           {/* GRID */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* ===== TO-DO ===== */}
-            <div className="bg-(--bg-card) rounded-xl border p-6 space-y-6">
+            <div className="bg-(--bg-card) rounded-xl border p-5 space-y-5">
               <h3 className="cardTitle text-lg">To-Do List</h3>
 
               <div className="space-y-3">
@@ -203,6 +168,9 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </>
+
+      {/* ===== PROGRESS MODAL ===== */}
+
+    </div>
   );
 }
