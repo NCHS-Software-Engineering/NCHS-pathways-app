@@ -1,6 +1,7 @@
 "use client";
 
 import { SetStateAction, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import SideBar from "../components/sidebar.jsx";
 import { signIn, signOut, useSession } from "next-auth/react";
