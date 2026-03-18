@@ -164,12 +164,12 @@ export default function EndorsementsPage() {
       <div className = "container ">
         <SideBar />
         <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
-          <h2 className="text-3xl font-semibold mb-4">Pathways</h2>
+          <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
           <p className="text-(--text-primary)/80 max-w-2xl mb-8">
             Explore different career pathways to help you earn endorsements for
-            your diploma. Each pathway guides you toward completing specific
-            requirements to gain valuable skills in your chosen field.
+            your diploma. Each pathway endorsement guides you toward completing specific
+            requirements to gain valuable skills and experience in a chosen field.
           </p>
 
           <h3 className="text-xl font-semibold mb-6">
