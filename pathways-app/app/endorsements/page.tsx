@@ -5,6 +5,7 @@ import { StaticImageData } from 'next/image';
 import SideBar from "@/app/components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { pathways } from "../data/pathways";
 
@@ -43,11 +44,12 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   isStarred,
   onToggle
 }) => {
-  
 
+  const router = useRouter();
+  
   return (
-    <Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
+    <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <button
         onClick={(e) => {
@@ -79,7 +81,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {category}
       </div>
     </div>
-    </Link>
+    //</Link>
   );
 };
 
