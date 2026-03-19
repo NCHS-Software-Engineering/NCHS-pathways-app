@@ -39,12 +39,14 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   title,
   category,
   image,
+  link,
   isStarred,
   onToggle
 }) => {
   
 
   return (
+    <Link href={link} target="_blank" rel="noopener noreferrer" className="block">
     <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <button
@@ -77,6 +79,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {category}
       </div>
     </div>
+    </Link>
   );
 };
 
@@ -175,9 +178,12 @@ export default function EndorsementsPage() {
             requirements to gain valuable skills and experience in a chosen field.
           </p>
 
-          <h3 className="text-xl font-semibold mb-6">
+          <h3 className="text-xl font-semibold mb-2">
             Explore Your Career Pathways
           </h3>
+          <h4 className="text-(--text-primary)/80 max-w-2xl mb-3">
+            Click on a pathway card to open Schoolink's page on it.
+          </h4>
 
           <div className="flex flex-wrap gap-6">
  
