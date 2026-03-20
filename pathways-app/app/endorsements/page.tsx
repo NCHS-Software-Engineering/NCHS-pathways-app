@@ -170,7 +170,6 @@ export default function EndorsementsPage() {
       </header>
 
       <div className = "container ">
-        <SideBar />
         <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
@@ -323,6 +322,6 @@ export default function EndorsementsPage() {
           </div>
         </main>
       </div>
-    </div>
+    </>
   );
 }
