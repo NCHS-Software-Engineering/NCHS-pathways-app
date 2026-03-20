@@ -78,7 +78,7 @@ export default function AboutPage() {
           </section>
 
           {/* WHAT ARE PATHWAYS SECTION */}
-          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
+          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 lg:p-8 space-y-8">
             <h3 className="text-3xl font-semibold  text-(--brand-text)">
               What are pathways?
             </h3>

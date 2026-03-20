@@ -137,38 +137,6 @@ export default function EndorsementsPage() {
 
   return (
     <>
-      <header className="h-14 flex items-center justify-between px-6 border-b border-(--border-primary) bg-(--bg-page)">
-        <h1 className="text-lg font-semibold">Pathways Portal</h1>
-
-        {!session ? (
-          <button
-            onClick={() => signIn("google")}
-            className="flex items-center gap-2 px-4 py-2 bg-(--bg-card) text-(--text-primary) border rounded-lg shadow hover:bg-(--border-primary) transition"
-          >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              className="w-5 h-5"
-            />
-            Sign in with Google
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full"
-            />
-            <span className="font-medium">{session.user?.name}</span>
-
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </header>
-
       <div className = "container ">
         <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
