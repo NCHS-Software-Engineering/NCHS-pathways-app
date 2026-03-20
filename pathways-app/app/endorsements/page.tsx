@@ -77,7 +77,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {title}
       </h3>
 
-      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--border-primary) text-(--text-primary)">
+      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
         {category}
       </div>
     </div>
@@ -323,6 +323,6 @@ export default function EndorsementsPage() {
           </div>
         </main>
       </div>
-    </>
+    </div>
   );
 }
