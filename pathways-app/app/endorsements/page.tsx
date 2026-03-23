@@ -151,7 +151,7 @@ export default function EndorsementsPage() {
             Explore Your Career Pathways
           </h3>
           <h4 className="text-(--text-primary)/80 max-w-2xl mb-3">
-            Click on a pathway card to open Schoolink's page on it.
+            Click on a pathway card to open Schoolinks's page for it (you must be logged in).
           </h4>
 
           <div className="flex flex-wrap gap-6">
