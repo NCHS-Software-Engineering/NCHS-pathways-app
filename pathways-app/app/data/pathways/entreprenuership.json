@@ -4,6 +4,7 @@
     "category": "Management & Entreprenuership",
 
     "link": "https://app.schoolinks.com/student-pathways/entrepreneurship/",
+    "tcd": false,
 
     "requirements": {
         "pathwayType": "Regular",

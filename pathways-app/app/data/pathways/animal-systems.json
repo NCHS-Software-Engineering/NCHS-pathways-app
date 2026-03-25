@@ -4,6 +4,7 @@
     "category": "Agriculture",
     
     "link": "https://app.schoolinks.com/student-pathways/animal-systems/",
+    "tcd": false,
 
     "requirements": {
         "pathwayType": "Regular",

@@ -4,6 +4,7 @@
     "category": "Healthcare & Human Services",
 
     "link": "https://app.schoolinks.com/student-pathways/education-teaching-training/",
+    "tcd": false,
 
     "requirements": {
         "pathwayType": "Regular",

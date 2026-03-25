@@ -4,6 +4,7 @@
     "category": "Digital Technology",
 
     "link": "https://app.schoolinks.com/student-pathways/programming-software-development/",
+    "tcd": false,
 
     "requirements": {
         "pathwayType": "Regular",
