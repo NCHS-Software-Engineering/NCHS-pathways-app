@@ -3,6 +3,9 @@
     "title": "template",
     "category": "template",
 
+    "link": "link",
+    "tcd": false,
+
     "requirements": {
 
         "courseCredits": {

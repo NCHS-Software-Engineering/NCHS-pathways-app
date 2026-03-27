@@ -3,6 +3,9 @@
     "title": "Network Systems/Information Support & Services",
     "category": "Digital Technology",
 
+    "link": "https://app.schoolinks.com/student-pathways/network-systemsinformation-support-services/",
+    "tcd": false,
+
     "requirements": {
         "pathwayType": "Regular",
         "courseCredits": {

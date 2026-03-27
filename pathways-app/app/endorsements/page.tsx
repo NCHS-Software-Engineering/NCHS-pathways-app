@@ -5,6 +5,9 @@ import { StaticImageData } from 'next/image';
 import SideBar from "@/app/components/sidebar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { pathways } from "../data/pathways";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
@@ -26,6 +29,7 @@ interface PathwayCardProps {
   title: string;
   category: string;
   image: StaticImageData;
+  link: string; //in jsons for each pathway, does not need to be hard-coded
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
 }
@@ -36,13 +40,16 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   title,
   category,
   image,
+  link,
   isStarred,
   onToggle
 }) => {
-  
 
+  const router = useRouter();
+  
   return (
-    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
+    <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <button
         onClick={(e) => {
@@ -74,6 +81,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {category}
       </div>
     </div>
+    //</Link>
   );
 };
 
@@ -128,22 +136,23 @@ export default function EndorsementsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
-    
-      <div className = "container">
-        
-        <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen w-full">
-          <h2 className="text-3xl font-semibold mb-4">Pathways</h2>
+    <>
+      <div className = "container ">
+        <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
+          <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
           <p className="text-(--text-primary)/80 max-w-2xl mb-8">
             Explore different career pathways to help you earn endorsements for
-            your diploma. Each pathway guides you toward completing specific
-            requirements to gain valuable skills in your chosen field.
+            your diploma. Each pathway endorsement guides you toward completing specific
+            requirements to gain valuable skills and experience in a chosen field.
           </p>
 
-          <h3 className="text-xl font-semibold mb-6">
+          <h3 className="text-xl font-semibold mb-2">
             Explore Your Career Pathways
           </h3>
+          <h4 className="text-(--text-primary)/80 max-w-2xl mb-3">
+            Click on a pathway card to open Schoolinks's page for it (you must be logged in).
+          </h4>
 
           <div className="flex flex-wrap gap-6">
  
@@ -152,6 +161,7 @@ export default function EndorsementsPage() {
               title="Animal Systems"
               category="Agriculture"
               image={animalImage}
+              link="https://app.schoolinks.com/student-pathways/animal-systems/"
               isStarred={starredPathways.includes("animal-systems")}
               onToggle={toggleStar}
             />
@@ -161,6 +171,7 @@ export default function EndorsementsPage() {
               title = "Health Sciences"
               category="Healthcare & Human Services"
               image={healthSciencesImage}
+              link="https://app.schoolinks.com/student-pathways/biotechnology-research-development/"
               isStarred={starredPathways.includes("health-sciences")}
               onToggle={toggleStar}
             />
@@ -170,6 +181,7 @@ export default function EndorsementsPage() {
               title = "Cosmetology"
               category="Human Services"
               image={cosmetologyImage}
+              link="https://app.schoolinks.com/student-pathways/cosmetology/"
               isStarred={starredPathways.includes("cosmetology")}
               onToggle={toggleStar}
             />
@@ -179,6 +191,7 @@ export default function EndorsementsPage() {
               title = "Education & Training"
               category="Education"
               image={educationImage}
+              link="https://app.schoolinks.com/student-pathways/education-teaching-training/"
               isStarred={starredPathways.includes("education-training")}
               onToggle={toggleStar}
             />
@@ -188,6 +201,7 @@ export default function EndorsementsPage() {
               title = "Emergency Medical Technician (EMT)"
               category="Public Services & Safety"
               image={emtImage}
+              link="https://app.schoolinks.com/student-pathways/emergency-medical-technician/"
               isStarred={starredPathways.includes("emt")}
               onToggle={toggleStar}
             />
@@ -197,6 +211,7 @@ export default function EndorsementsPage() {
               title = "Entrepreneurship"
               category="Management & Entrepreneurship"
               image={entrepreneurshipImage}
+              link="https://app.schoolinks.com/student-pathways/entrepreneurship/"
               isStarred={starredPathways.includes("entrepreneurship")}
               onToggle={toggleStar}
             />
@@ -206,6 +221,7 @@ export default function EndorsementsPage() {
               title = "Finance/Accounting"
               category="Financial Services"
               image={financeImage}
+              link="https://app.schoolinks.com/student-pathways/financeaccounting/"
               isStarred={starredPathways.includes("finance-accounting")}
               onToggle={toggleStar}
             />
@@ -215,6 +231,7 @@ export default function EndorsementsPage() {
               title = "Global & Domestic Policy"
               category="Public Services & Safety"
               image={policyImage}
+              link="https://app.schoolinks.com/student-pathways/government-public-administration/"
               isStarred={starredPathways.includes("global-domestic-policy")}
               onToggle={toggleStar}
             />  
@@ -224,6 +241,7 @@ export default function EndorsementsPage() {
               title = "Marketing"
               category="Marketing & Sales"
               image={marketingImage}
+              link="https://app.schoolinks.com/student-pathways/merchandisingmarketing/"
               isStarred={starredPathways.includes("marketing")}
               onToggle={toggleStar}
             />
@@ -233,6 +251,7 @@ export default function EndorsementsPage() {
               title = "Network Systems/Information Support & Services"
               category="Digital Technology"
               image={networkImage}
+              link="https://app.schoolinks.com/student-pathways/network-systemsinformation-support-services/"
               isStarred={starredPathways.includes("network-systems-info-services")}
               onToggle={toggleStar}
             />
@@ -242,6 +261,7 @@ export default function EndorsementsPage() {
               title = "Nursing Assistant"
               category="Healthcare & Human Services"
               image={nursingImage}
+              link="https://app.schoolinks.com/student-pathways/nursing-assistant/"
               isStarred={starredPathways.includes("nursing-assistant")}
               onToggle={toggleStar}
             />
@@ -251,6 +271,7 @@ export default function EndorsementsPage() {
               title = "Plant Systems"
               category="Agriculture"
               image={plantSystemsImage}
+              link="https://app.schoolinks.com/student-pathways/plant-systems/"
               isStarred={starredPathways.includes("plant-systems")}
               onToggle={toggleStar}
             />
@@ -260,6 +281,7 @@ export default function EndorsementsPage() {
               title = "Programming & Software Development"
               category="Digital Technology"
               image={programmingImage}
+              link="https://app.schoolinks.com/student-pathways/programming-software-development/"
               isStarred={starredPathways.includes("programming-software-dev")}
               onToggle={toggleStar}
             />  
@@ -268,6 +290,6 @@ export default function EndorsementsPage() {
           </div>
         </main>
       </div>
-    </div>
+    </>
   );
 }

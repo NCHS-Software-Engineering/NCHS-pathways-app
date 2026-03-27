@@ -3,6 +3,9 @@
     "title": "Emergency Medical Technician",
     "category": "Public Service and Safety",
 
+    "link": "https://app.schoolinks.com/student-pathways/emergency-medical-technician/",
+    "tcd": true,
+
     "requirements": {
         "pathwayType": "TCD",
         "courseCredits": {
