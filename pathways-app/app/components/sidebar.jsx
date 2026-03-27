@@ -13,6 +13,8 @@ export default function SideBar({ open, setOpen }) {
     return `
       flex items-center gap-3 px-3 py-2 rounded-md text-medium font-semibold
       transition-colors duration-200
+      max-h-100%
+      
       ${
         isActive
           ? "bg-(--brand) text-white"
@@ -35,9 +37,9 @@ export default function SideBar({ open, setOpen }) {
       <aside
         className={`
           fixed md:static top-0 left-0 z-50
-          h-screen w-64
-          bg-(--bg-secondary)
-          border-r border-(--border-primary)
+          h-screen md:h-auto w-64
+          bg-(--bg-secondary) md:bg-transparent
+          border-r border-(--border-primary) md:border-r-0
           p-4
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}

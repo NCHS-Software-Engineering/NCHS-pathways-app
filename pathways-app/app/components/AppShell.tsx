@@ -81,7 +81,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* MAIN LAYOUT */}
       <div className="flex">
-        <div className="hidden md:block">
+        <div className="hidden md:block md:self-stretch bg-(--bg-secondary) border-r border-(--border-primary)">
           <SideBar open={menuOpen} setOpen={setMenuOpen} />
         </div>
 

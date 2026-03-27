@@ -1,57 +1,34 @@
 {
-    "title": "Academic Success Requirements",
-    "description": "Requirements to gain an endorsement for a pathway",
-
-    "link": "https://docs.google.com/document/d/1UR2Dw7cMjPuOuuCgTlTGCmGpn19g6NGSu9qjfnnCN14/",
-
-    "reading": {
-        "courseOptions": [
-        "Composition & Reflection",
-        "English Composition 1",
-        "English Composition 2",
-        "AP Literature & Composition",
-        "Blended AP Literature & Composition",
-        "AP Language & Composition",
-        "Blended AP Language & Composition",
-        "Senior Rhetoric",
-        "Blended Senior Rhetoric",
-        "Honors Senior Rhetoric",
-        "Blended Honors Senior Rhetoric"
-        ],
-        "examOptions": [
-        "Score of 3+ on AP Literature & Composition Exam",
-        "Score of 3+ on AP Language & Composition Exam"
-        ],
-        "testScoreOptions": [
-        "ACT English 18 + Reading 22",
-        "SAT EBRW 540"
-        ]
-    },
-
-    "math": {
-        "courseOptions": [
-        "Quantitative Literacy and Statistics",
-        "AP Calculus AB",
-        "AP Calculus BC",
-        "AP Statistics",
-        "Multivariable Calculus w/ Linear Algebra",
-        "Multivariable Calculus",
-        "Differential Equations",
-        "Algebra 2",
-        "Algebra 2 Modeling & Problem Solving",
-        "Honors Algebra 2",
-        "Blended Honors Algebra 2",
-        "Blended Algebra 2"
-        ],
-        "examOptions": [
-        "Score of 3+ on AP Calculus AB Exam",
-        "Score of 3+ on AP Calculus BC Exam",
-        "Score of 3+ on AP Statistics Exam"
-        ],
-        "testScoreOptions": [
-        "ACT Math 22 + Enrollment in Senior Math",
-        "SAT Math 540 + Enrollment in Senior Math"
-        ]
-    }
-
+  "title": "Academic Success Requirements",
+  "description": "Requirements to gain an endorsement for a pathway",
+  "reading": {
+    "courseOptions": [
+      "Composition & Reflection", "English Composition 1", "English Composition 2", 
+      "AP Literature & Composition", "Blended AP Literature & Composition", 
+      "AP Language & Composition", "Blended AP Language & Composition", 
+      "Senior Rhetoric", "Blended Senior Rhetoric", "Honors Senior Rhetoric", "Blended Honors Senior Rhetoric"
+    ],
+    "examOptions": [
+      "Score of 3+ on AP Literature & Composition Exam", 
+      "Score of 3+ on AP Language & Composition Exam"
+    ],
+    "testScoreOptions": [
+      "ACT English 18 + Reading 22", "SAT EBRW 540"
+    ]
+  },
+  "math": {
+    "courseOptions": [
+      "Quantitative Literacy and Statistics", "AP Calculus AB", "AP Calculus BC", 
+      "AP Statistics", "Multivariable Calculus w/ Linear Algebra", "Multivariable Calculus", 
+      "Differential Equations", "Algebra 2", "Algebra 2 Modeling & Problem Solving", 
+      "Honors Algebra 2", "Blended Honors Algebra 2", "Blended Algebra 2"
+    ],
+    "examOptions": [
+      "Score of 3+ on AP Calculus AB Exam", "Score of 3+ on AP Calculus BC Exam", 
+      "Score of 3+ on AP Statistics Exam"
+    ],
+    "testScoreOptions": [
+      "ACT Math 22 + Enrollment in Senior Math", "SAT Math 540 + Enrollment in Senior Math"
+    ]
+ }
 }
