@@ -44,6 +44,7 @@ interface PathwayCardProps {
   pathwayId: string;
   title: string;
   category: string;
+  tcd: boolean;
   image: StaticImageData;
   link: string; //in jsons for each pathway, does not need to be hard-coded
   isStarred: boolean;
@@ -55,6 +56,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   pathwayId,
   title,
   category,
+  tcd,
   image,
   link,
   isStarred,
@@ -177,6 +179,7 @@ export default function EndorsementsPage() {
                 pathwayId={pathway.id}
                 title={pathway.title}
                 category={pathway.category}
+                tcd={pathway.tcd}
                 image={pathwayImages[pathway.id]} 
                 link={pathway.link}
                 isStarred={starredPathways.includes(pathway.id)}
@@ -184,7 +187,7 @@ export default function EndorsementsPage() {
               />
             ))}
           </div>
-          
+
         </main>
       </div>
     </>
