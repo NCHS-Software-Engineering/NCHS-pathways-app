@@ -24,6 +24,22 @@ import nursingImage from "./images/nursing-assistant.jpg";
 import plantSystemsImage from "./images/plant-systems.jpg";
 import programmingImage from "./images/programming-software.jpg";
 
+const pathwayImages: Record<string, StaticImageData> = {
+  "animal-systems": animalImage,
+  "health-sciences": healthSciencesImage,
+  "cosmetology": cosmetologyImage,
+  "education-training": educationImage,
+  "emt": emtImage,
+  "entreprenuership": entrepreneurshipImage,
+  "finance-accounting": financeImage,
+  "global-domestic-policy": policyImage,
+  "marketing": marketingImage,
+  "network-systems-info-services": networkImage,
+  "nursing-assistant": nursingImage,
+  "plant-systems": plantSystemsImage,
+  "programming-software-dev": programmingImage,
+};
+
 interface PathwayCardProps {
   pathwayId: string;
   title: string;
@@ -78,7 +94,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
       </h3>
 
       <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
-        {category}
+        {category} 
       </div>
     </div>
     //</Link>
@@ -154,140 +170,21 @@ export default function EndorsementsPage() {
             Click on a pathway card to open Schoolinks's page for it (you must be logged in).
           </h4>
 
-          <div className="flex flex-wrap gap-6">
- 
-            <PathwayCard
-              pathwayId="animal-systems"
-              title="Animal Systems"
-              category="Agriculture"
-              image={animalImage}
-              link="https://app.schoolinks.com/student-pathways/animal-systems/"
-              isStarred={starredPathways.includes("animal-systems")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="health-sciences"
-              title = "Health Sciences"
-              category="Healthcare & Human Services"
-              image={healthSciencesImage}
-              link="https://app.schoolinks.com/student-pathways/biotechnology-research-development/"
-              isStarred={starredPathways.includes("health-sciences")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="cosmetology"
-              title = "Cosmetology"
-              category="Human Services"
-              image={cosmetologyImage}
-              link="https://app.schoolinks.com/student-pathways/cosmetology/"
-              isStarred={starredPathways.includes("cosmetology")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="education-training"
-              title = "Education & Training"
-              category="Education"
-              image={educationImage}
-              link="https://app.schoolinks.com/student-pathways/education-teaching-training/"
-              isStarred={starredPathways.includes("education-training")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="emt"
-              title = "Emergency Medical Technician (EMT)"
-              category="Public Services & Safety"
-              image={emtImage}
-              link="https://app.schoolinks.com/student-pathways/emergency-medical-technician/"
-              isStarred={starredPathways.includes("emt")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="entrepreneurship"
-              title = "Entrepreneurship"
-              category="Management & Entrepreneurship"
-              image={entrepreneurshipImage}
-              link="https://app.schoolinks.com/student-pathways/entrepreneurship/"
-              isStarred={starredPathways.includes("entrepreneurship")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="finance-accounting"
-              title = "Finance/Accounting"
-              category="Financial Services"
-              image={financeImage}
-              link="https://app.schoolinks.com/student-pathways/financeaccounting/"
-              isStarred={starredPathways.includes("finance-accounting")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="global-domestic-policy"
-              title = "Global & Domestic Policy"
-              category="Public Services & Safety"
-              image={policyImage}
-              link="https://app.schoolinks.com/student-pathways/government-public-administration/"
-              isStarred={starredPathways.includes("global-domestic-policy")}
-              onToggle={toggleStar}
-            />  
-
-            <PathwayCard
-              pathwayId="marketing"
-              title = "Marketing"
-              category="Marketing & Sales"
-              image={marketingImage}
-              link="https://app.schoolinks.com/student-pathways/merchandisingmarketing/"
-              isStarred={starredPathways.includes("marketing")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="network-systems-info-services"
-              title = "Network Systems/Information Support & Services"
-              category="Digital Technology"
-              image={networkImage}
-              link="https://app.schoolinks.com/student-pathways/network-systemsinformation-support-services/"
-              isStarred={starredPathways.includes("network-systems-info-services")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="nursing-assistant"
-              title = "Nursing Assistant"
-              category="Healthcare & Human Services"
-              image={nursingImage}
-              link="https://app.schoolinks.com/student-pathways/nursing-assistant/"
-              isStarred={starredPathways.includes("nursing-assistant")}
-              onToggle={toggleStar}
-            />
-
-            <PathwayCard
-              pathwayId="plant-systems"
-              title = "Plant Systems"
-              category="Agriculture"
-              image={plantSystemsImage}
-              link="https://app.schoolinks.com/student-pathways/plant-systems/"
-              isStarred={starredPathways.includes("plant-systems")}
-              onToggle={toggleStar}
-            />
-            
-            <PathwayCard
-              pathwayId="programming-software-dev"
-              title = "Programming & Software Development"
-              category="Digital Technology"
-              image={programmingImage}
-              link="https://app.schoolinks.com/student-pathways/programming-software-development/"
-              isStarred={starredPathways.includes("programming-software-dev")}
-              onToggle={toggleStar}
-            />  
-
-
+         <div className="flex flex-wrap gap-6">
+            {Object.values(pathways).map((pathway) => (
+              <PathwayCard
+                key={pathway.id}
+                pathwayId={pathway.id}
+                title={pathway.title}
+                category={pathway.category}
+                image={pathwayImages[pathway.id]} 
+                link={pathway.link}
+                isStarred={starredPathways.includes(pathway.id)}
+                onToggle={toggleStar}
+              />
+            ))}
           </div>
+          
         </main>
       </div>
     </>
