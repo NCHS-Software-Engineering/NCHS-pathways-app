@@ -95,9 +95,12 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {title}
       </h3>
 
-      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
-        {category} 
+      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text) mr-1.5">
+        {category}
       </div>
+      {tcd ? <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
+      
+
     </div>
     //</Link>
   );
