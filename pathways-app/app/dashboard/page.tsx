@@ -13,9 +13,8 @@ import {
   Save
 } from "lucide-react";
 
-const useSession = () => ({
-  data: { user: { name: "Stu Dent" } }
-});
+import { useSession } from "next-auth/react";
+
 
 
 import { pathways as pathwaysData } from "../data/pathways";
