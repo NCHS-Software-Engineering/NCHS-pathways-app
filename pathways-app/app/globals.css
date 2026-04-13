@@ -398,7 +398,7 @@ footer {
   }
 
   .headerStyle {
-    @apply transition-colors duration-300 dark:!bg-gray-700;
+    @apply transition-colors duration-300 dark:bg-gray-700!;
   }
 
   .signIn {
@@ -408,6 +408,6 @@ footer {
   
 
   .sideBarBackground {
-    @apply transition-colors duration-300 dark:!bg-gray-700;
+    @apply transition-colors duration-300 dark:bg-gray-700!;
   }
 }

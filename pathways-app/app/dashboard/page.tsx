@@ -10,18 +10,21 @@ import {
   Clock,
   Award,
   Info,
-  Save
+  Save,
+  CheckSquare,
+  Square
 } from "lucide-react";
+import academicSuccessData from "../data/pathways/academic-success.json";
 
 const useSession = () => ({
   data: { user: { name: "Stu Dent" } }
 });
 
-
 import { pathways as pathwaysData } from "../data/pathways";
 
 const STARRED_PATHWAYS_STORAGE_KEY = "starredPathways";
 const PATHWAY_PROGRESS_STORAGE_KEY = "pathwayProgress";
+const ACADEMIC_STATUS_STORAGE_KEY = "academicStatusProgress";
 
 interface Course {
   name: string;
@@ -45,21 +48,197 @@ interface Pathway {
   };
   [key: string]: any; // Allow additional properties from pathways data
 }
+// --- Academic Success Action Item Component ---
+function AcademicSuccessActionItem({ 
+  requirements, 
+  academicStatus, 
+  setAcademicStatus 
+}: { 
+  requirements: typeof academicSuccessData;
+  academicStatus: { reading: boolean; math: boolean };
+  setAcademicStatus: React.Dispatch<React.SetStateAction<{ reading: boolean; math: boolean }>>;
+}) {
+  const [showReadingDetails, setShowReadingDetails] = useState(false);
+  const [showMathDetails, setShowMathDetails] = useState(false);
+  const [showReadingCourses, setShowReadingCourses] = useState(false);
+  const [showMathCourses, setShowMathCourses] = useState(false);
+
+  return (
+    <div className="mt-6">
+      <h4 className="font-semibold text-(--text-primary) text-lg mb-1">{requirements.title}</h4>
+      <p className="text-base text-(--text-secondary) mb-4">{requirements.description}</p>
+      
+      <div className="space-y-4">
+        {/* Reading Section */}
+        <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
+              <div className={`mt-0.5 ${academicStatus.reading ? 'text-(--success)' : 'text-gray-300'}`}>
+                <input 
+                  type="checkbox" 
+                  className="hidden"
+                  checked={academicStatus.reading}
+                  onChange={(e) => setAcademicStatus(prev => ({ ...prev, reading: e.target.checked }))}
+                />
+                {academicStatus.reading ? <CheckSquare size={24} /> : <Square size={24} />}
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-medium text-(--text-primary)">Reading Competency</p>
+                <p className="text-sm text-(--text-secondary) mt-0.5">{academicStatus.reading ? 'Requirement verified' : 'Pending completion'}</p>
+              </div>
+            </label>
+            <button 
+              onClick={() => setShowReadingDetails(!showReadingDetails)}
+              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              style={{ transform: showReadingDetails ? 'rotate(90deg)' : 'rotate(0deg)' }}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {showReadingDetails && (
+            <div className="p-4 border-t border-(--border-primary) bg-blue-50/50 space-y-4">
+              <p className="text-sm text-blue-700">Complete one of the following to fulfill this requirement:</p>
+              
+              {/* Courses Toggle */}
+              <div className="bg-white rounded-lg border border-blue-200 overflow-hidden shadow-sm">
+                <button 
+                  onClick={() => setShowReadingCourses(!showReadingCourses)}
+                  className="w-full flex items-center justify-between p-3 text-base font-medium text-slate-700 hover:bg-blue-50 transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <BookOpen size={18} className="text-blue-500" /> 
+                    Approved Coursework ({requirements.reading.courseOptions.length} options)
+                  </span>
+                  <ChevronRight size={18} className={`transition-transform ${showReadingCourses ? 'rotate-90' : ''}`} />
+                </button>
+                {showReadingCourses && (
+                  <div className="p-3 border-t border-blue-100 bg-slate-50">
+                    <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                      {requirements.reading.courseOptions.map((c: string) => <li key={c}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Exams */}
+              <div className="bg-white rounded-lg border border-blue-200 p-3 shadow-sm">
+                <h4 className="text-base font-medium text-slate-700 mb-2 flex items-center gap-2">
+                  <Award size={18} className="text-blue-500" /> AP Exams
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                  {requirements.reading.examOptions.map((e: string) => <li key={e}>{e}</li>)}
+                </ul>
+              </div>
+
+              {/* Test Scores */}
+              <div className="bg-white rounded-lg border border-blue-200 p-3 shadow-sm">
+                <h4 className="text-base font-medium text-slate-700 mb-2 flex items-center gap-2">
+                  <Award size={18} className="text-blue-500" /> Standardized Tests
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                  {requirements.reading.testScoreOptions.map((e: string) => <li key={e}>{e}</li>)}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Math Section */}
+        <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
+              <div className={`mt-0.5 ${academicStatus.math ? 'text-(--success)' : 'text-gray-300'}`}>
+                <input 
+                  type="checkbox" 
+                  className="hidden"
+                  checked={academicStatus.math}
+                  onChange={(e) => setAcademicStatus(prev => ({ ...prev, math: e.target.checked }))}
+                />
+                {academicStatus.math ? <CheckSquare size={24} /> : <Square size={24} />}
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-medium text-(--text-primary)">Math Competency</p>
+                <p className="text-sm text-(--text-secondary) mt-0.5">{academicStatus.math ? 'Requirement verified' : 'Pending completion'}</p>
+              </div>
+            </label>
+            <button 
+              onClick={() => setShowMathDetails(!showMathDetails)}
+              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              style={{ transform: showMathDetails ? 'rotate(90deg)' : 'rotate(0deg)' }}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {showMathDetails && (
+            <div className="p-4 border-t border-(--border-primary) bg-indigo-50/50 space-y-4">
+              <p className="text-sm text-indigo-700">Complete one of the following to fulfill this requirement:</p>
+              
+              {/* Courses Toggle */}
+              <div className="bg-white rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                <button 
+                  onClick={() => setShowMathCourses(!showMathCourses)}
+                  className="w-full flex items-center justify-between p-3 text-base font-medium text-slate-700 hover:bg-indigo-50 transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <BookOpen size={18} className="text-indigo-500" /> 
+                    Approved Coursework ({requirements.math.courseOptions.length} options)
+                  </span>
+                  <ChevronRight size={18} className={`transition-transform ${showMathCourses ? 'rotate-90' : ''}`} />
+                </button>
+                {showMathCourses && (
+                  <div className="p-3 border-t border-indigo-100 bg-slate-50">
+                    <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                      {requirements.math.courseOptions.map((c: string) => <li key={c}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Exams */}
+              <div className="bg-white rounded-lg border border-indigo-200 p-3 shadow-sm">
+                <h4 className="text-base font-medium text-slate-700 mb-2 flex items-center gap-2">
+                  <Award size={18} className="text-indigo-500" /> AP Exams
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                  {requirements.math.examOptions.map((e: string) => <li key={e}>{e}</li>)}
+                </ul>
+              </div>
+
+              {/* Test Scores */}
+              <div className="bg-white rounded-lg border border-indigo-200 p-3 shadow-sm">
+                <h4 className="text-base font-medium text-slate-700 mb-2 flex items-center gap-2">
+                  <Award size={18} className="text-indigo-500" /> Standardized Tests
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
+                  {requirements.math.testScoreOptions.map((e: string) => <li key={e}>{e}</li>)}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [pathways, setPathways] = useState(pathwaysData);
+  const [academicStatus, setAcademicStatus] = useState({ reading: false, math: false });
   const [showModal, setShowModal] = useState(false);
   const [activePathway, setActivePathway] = useState<Pathway | null>(null);
   const [activePathwayKey, setActivePathwayKey] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'courses' | 'scores'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'academic'>('courses');
   const [starredPathways, setStarredPathways] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
-
+  
   const { data: session } = useSession();
 
   useEffect(() => {
     const savedStarred = localStorage.getItem(STARRED_PATHWAYS_STORAGE_KEY);
     const savedProgress = localStorage.getItem(PATHWAY_PROGRESS_STORAGE_KEY);
+    const savedAcademicStatus = localStorage.getItem(ACADEMIC_STATUS_STORAGE_KEY);
 
     try {
       if (savedStarred) {
@@ -89,6 +268,15 @@ export default function App() {
           }
         }
       }
+      if (savedAcademicStatus) {
+        const parsedAcademicStatus = JSON.parse(savedAcademicStatus);
+        if (parsedAcademicStatus && typeof parsedAcademicStatus === "object") {
+          setAcademicStatus({
+            reading: !!parsedAcademicStatus.reading,
+            math: !!parsedAcademicStatus.math
+          });
+        }
+      }
     } catch {
       // Ignore invalid localStorage values and fall back to defaults.
     } finally {
@@ -99,7 +287,9 @@ export default function App() {
   useEffect(() => {
     if (!isHydrated) return;
     localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(pathways));
-  }, [pathways, isHydrated]);
+    localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(starredPathways));
+    localStorage.setItem(ACADEMIC_STATUS_STORAGE_KEY, JSON.stringify(academicStatus));
+  }, [pathways, starredPathways, academicStatus, isHydrated]);
 
   function openPathway(pathwayKey: string) {
     const pathwayData = pathways[pathwayKey as keyof typeof pathways];
@@ -146,13 +336,26 @@ export default function App() {
     const req = pathway.requirements.courseCredits;
     const earnedReq = req.requiredCourses.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0);
     const earnedElec = req.electiveCourseOptions.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0);
-    
-    const earnedCredits = earnedReq + earnedElec;
-    // Calculate progress % based on total credits required (capped at 100%)
-    const progress = Math.min(100, Math.round((earnedCredits / req.totalCreditsRequired) * 100));
-    
+
+    const requiredCreditsRequired = Math.max(0, req.totalCreditsRequired - req.electiveCreditsRequired);
+    const effectiveEarnedReq = Math.min(earnedReq, requiredCreditsRequired);
+    const effectiveEarnedElec = Math.min(earnedElec, req.electiveCreditsRequired);
+    const earnedCredits = effectiveEarnedReq + effectiveEarnedElec;
+
+    // Calculate progress from the required and elective buckets separately so electives
+    // can only count up to their own requirement.
+    const progress = req.totalCreditsRequired > 0
+      ? Math.min(100, Math.round((earnedCredits / req.totalCreditsRequired) * 100))
+      : 0;
+
     return { earnedCredits, totalCredits: req.totalCreditsRequired, progress, earnedReq, earnedElec };
   }
+  const globalReqsMet = academicStatus.reading && academicStatus.math;
+  const pendingActionsCount = [
+    starredPathways.length === 0,
+    !academicStatus.reading,
+    !academicStatus.math
+  ].filter(Boolean).length;
 
   const totalEarnedCredits = starredPathways.reduce((sum, key) => {
     const pathway = pathways[key as keyof typeof pathways] as Pathway | undefined;
@@ -167,7 +370,7 @@ export default function App() {
         <header className="space-y-2 border-b border-(--border-primary) pb-6">
           <div className="flex items-center gap-3 text-(--modal-accent-text) mb-2">
             <GraduationCap size={28} />
-            <span className="font-semibold tracking-wider uppercase text-sm">Student Portal</span>
+            <span className="font-semibold tracking-wider uppercase text-base">Student Portal</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-(--text-primary)">
             Welcome back, {session?.user?.name || "Student"}
@@ -184,7 +387,7 @@ export default function App() {
               <Award size={24} />
             </div>
             <div>
-              <p className="text-sm font-medium text-(--brand-text)">Active Endorsements</p>
+              <p className="text-base font-medium text-(--brand-text)">Active Endorsements</p>
               <p className="text-2xl font-bold text-(--text-primary)">{starredPathways.length}</p>
             </div>
           </div>
@@ -193,38 +396,43 @@ export default function App() {
               <BookOpen size={24} />
             </div>
             <div>
-              <p className="text-sm font-medium text-(--text-secondary)">Total Credits Earned</p>
+              <p className="text-base font-medium text-(--text-secondary)">Total Credits Earned</p>
               <p className="text-2xl font-bold text-(--text-primary)">{totalEarnedCredits}</p>
             </div>
           </div>
-            <div className="bg-(--status-warning-light) rounded-xl p-5 border border-(--border-primary) flex items-center gap-4">
-            <div className="bg-(--status-warning) text-white p-3 rounded-lg">
+            <div className={`${pendingActionsCount === 0 ? 'bg-(--badge-success-bg)' : 'bg-(--status-warning-light)'} rounded-xl p-5 border border-(--border-primary) flex items-center gap-4`}>
+              <div className={`${pendingActionsCount === 0 ? 'bg-(--success)' : 'bg-(--status-warning)'} text-white p-3 rounded-lg`}>
               <AlertCircle size={24} />
             </div>
             <div>
-              <p className="text-sm font-medium text-(--status-warning-text)">Pending Actions</p>
-              <p className="text-2xl font-bold text-(--status-warning-text)">1</p>
+                <p className={`text-base font-medium ${pendingActionsCount === 0 ? 'text-(--badge-success-text)' : 'text-(--status-warning-text)'}`}>
+                  {pendingActionsCount === 0 ? 'All Set' : 'Pending Actions'}
+                </p>
+                <p className={`text-2xl font-bold ${pendingActionsCount === 0 ? 'text-(--badge-success-text)' : 'text-(--status-warning-text)'}`}>
+                  {pendingActionsCount}
+                </p>
             </div>
             </div>
           </div>
 
         {/* Main Grid Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
           {/* Left Column: Pathways */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-6 self-start">
             <div className="flex justify-between items-end">
               <div>
                 <h3 className="text-xl font-serif font-bold text-(--text-primary) flex items-center gap-2">
                   My Selected Pathways
                 </h3>
-                <p className="text-sm text-(--text-secondary) mt-1">
+                <p className="text-base text-(--text-secondary) mt-1">
                   Click on a pathway to view detailed requirements and log your courses.
                 </p>
-              </div>
-              <a href="/endorsements" className="text-sm font-medium text-(--link) hover:underline hidden sm:block">
+                <a href="/endorsements" className="text-base font-medium text-(--link) hover:underline hidden sm:block">
                 Browse More Endorsements &rarr;
-              </a>
+                </a>
+              </div>
+              
             </div>
 
             {starredPathways.length === 0 ? (
@@ -263,21 +471,24 @@ export default function App() {
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-1">
                               <h4 className="text-lg font-bold text-(--text-primary)">{pathwayData.title}</h4>
-                              {allCoursesComplete && (
-                                <span className="bg-(--badge-success-bg) text-(--badge-success-text) text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                                  <CheckCircle2 size={12} /> Completed
+                              {(allCoursesComplete && globalReqsMet) ? (
+                                <span className="bg-(--badge-success-bg) text-(--badge-success-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--status-complete)/20">
+                                  <Award size={14} /> Endorsement Earned
                                 </span>
-                              )}
+                              ) : allCoursesComplete ? (
+                                <span className="bg-(--brand-soft) text-(--brand-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--brand)/20">
+                                  <BookOpen size={14} /> Credits Met
+                                </span>
+                              ) : null}
                             </div>
                           </div>
                         <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary) ml-2">
                           <ChevronRight size={20} />
                         </div>
                       </div>
-
                       {/* Mini Progress Indicator */}
                       <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-base">
                           <span className="font-medium text-(--text-secondary)">Progress Overview</span>
                           <span className="font-bold text-(--brand)">{stats.progress}%</span>
                         </div>
@@ -287,10 +498,16 @@ export default function App() {
                             style={{ width: `${stats.progress}%` }} 
                           />
                         </div>
-                        <div className="flex gap-4 mt-3 pt-3 border-t border-(--border-primary) text-sm">
+                        <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-(--border-primary) text-base">
                           <div className="flex items-center gap-1.5 text-(--text-secondary)">
                             {allCoursesComplete ? <CheckCircle2 size={16} className="text-(--status-complete)" /> : <Clock size={16} className="text-(--status-warning)" />}
-                            <span>{stats.earnedCredits} / {stats.totalCredits} Credits</span>
+                            <span>{stats.earnedCredits} / {stats.totalCredits} Pathway Credits</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-(--text-secondary)">
+                            {globalReqsMet ? <CheckCircle2 size={16} className="text-(--status-complete)" /> : <AlertCircle size={16} className="text-(--status-warning)" />}
+                            <span className={globalReqsMet ? "" : "text-(--status-warning-text) font-medium"}>
+                              {globalReqsMet ? 'Academic Success Met' : 'Missing Academic Success'}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -309,35 +526,10 @@ export default function App() {
             
             <div className="bg-(--bg-card) rounded-xl border border-(--border-primary) shadow-sm overflow-hidden">
               <div className="bg-(--bg-soft) px-5 py-3 border-b border-(--border-primary)">
-                <h4 className="font-semibold text-(--text-primary) text-sm uppercase tracking-wider">Required Tasks</h4>
+                <h4 className="font-semibold text-(--text-primary) text-base uppercase tracking-wider">Required Tasks</h4>
               </div>
-              
-              <div className="divide-y divide-(--border-primary)">
-                {/* Task 1: Pending */}
-                <div className="p-5 hover:bg-(--bg-soft) transition-colors">
-                  <div className="flex gap-3">
-                    <div className="mt-0.5 text-(--status-warning)">
-                      <AlertCircle size={20} />
-                    </div>
-                    <div className="space-y-2 flex-1">
-                      <div>
-                        <h5 className="font-medium text-(--text-primary)">Submit Scores</h5>
-                        <p className="text-sm text-(--text-secondary) mt-1">
-                          We need your latest academic success scores to verify your endorsement eligibility.
-                        </p>
-                      </div>
-                      <a
-                        href="#upload"
-                        className="inline-flex items-center justify-center gap-2 w-full py-2 px-4 rounded-lg bg-(--brand) hover:opacity-90 text-(--text-on-brand) text-sm font-medium transition-colors shadow-sm"
-                      >
-                        <Upload size={16} />
-                        Submit Documents
-                      </a>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Task 2: Completed */}
+                {/* Task 1: Select Initial Pathways */}
                 <div className="p-5">
                   <div className="flex gap-3">
                     <div className={`mt-0.5 ${starredPathways.length > 0 ? 'text-(--status-complete)' : 'text-(--status-warning)'}`}>
@@ -347,7 +539,7 @@ export default function App() {
                       <h5 className={`font-medium ${starredPathways.length > 0 ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
                         Select Initial Pathways
                       </h5>
-                      <p className="text-sm mt-1 text-(--text-secondary)">
+                      <p className="text-base mt-1 text-(--text-secondary)">
                         {starredPathways.length > 0 
                           ? "You've selected your first endorsement track." 
                           : "Choose at least one diploma endorsement track."}
@@ -355,15 +547,25 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-              </div>
+                {/* Divider */}
+                <div className="border-t border-(--border-primary)"></div>
+
+                {/* Academic Success Checklist */}
+                <div className="p-5">
+                <AcademicSuccessActionItem 
+                  requirements={academicSuccessData} 
+                  academicStatus={academicStatus}
+                  setAcademicStatus={setAcademicStatus}
+                />
+                </div>
             </div>
 
             {/* Helpful Academic Tip Card */}
             <div className="bg-(--chip-bg) opacity-85 rounded-xl p-5 border border-(--border-primary) flex gap-3 text-(--chip-text)">
               <Info size={20} className="shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-medium text-sm mb-1">Did you know?</h4>
-                <p className="text-xs leading-relaxed opacity-90">
+                <h4 className="font-medium text-base mb-1">Did you know?</h4>
+                <p className="text-sm leading-relaxed opacity-90">
                   Completing multiple endorsements can make you more competitive for college admissions. You can track up to 3 simultaneously!
                 </p>
               </div>
@@ -387,7 +589,7 @@ export default function App() {
             <div className="px-6 pt-5 bg-(--bg-card)">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <span className="text-xs font-bold tracking-wider uppercase text-(--modal-accent-text) mb-1 block">Endorsement Details</span>
+                  <span className="text-sm font-bold tracking-wider uppercase text-(--modal-accent-text) mb-1 block">Endorsement Details</span>
                   <h2 className="text-2xl font-serif font-bold text-(--text-primary)">{activePathway.title}</h2>
                 </div>
                 <button 
@@ -398,30 +600,15 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Modal Tabs */}
-              <div className="flex border-b border-(--border-primary)">
-                <button
-                  onClick={() => setActiveTab('courses')}
-                  className={`pb-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'courses' ? 'border-(--modal-accent-text) text-(--modal-accent-text)' : 'border-transparent text-(--text-secondary) hover:text-(--text-primary)'}`}
-                >
-                  Courses
-                </button>
-                <button
-                  onClick={() => setActiveTab('scores')}
-                  className={`pb-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'scores' ? 'border-(--modal-accent-text) text-(--modal-accent-text)' : 'border-transparent text-(--text-secondary) hover:text-(--text-primary)'}`}
-                >
-                  Test Scores
-                </button>
-              </div>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-6">
+            <div className="p-6 overflow-y-auto space-y-6 flex-1">
               
-              {/* Overall Progress (Always visible) */}
+              {/* Overall Progress */}
               <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="font-semibold text-(--text-primary)">Overall Completion</span>
+                <div className="flex justify-between text-base mb-2">
+                  <span className="font-semibold text-(--text-primary)">Pathway Coursework Completion</span>
                   <span className="font-bold text-(--modal-accent-text)">{activePathway ? getPathwayStats(activePathway).progress : 0}%</span>
                 </div>
                 <div className="w-full bg-(--bg-soft) h-3 rounded-full overflow-hidden">
@@ -432,112 +619,96 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Tab Content: Courses */}
-              {activeTab === 'courses' && (
-                <div className="space-y-6">
-                  {/* Required Courses */}
-                  <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
-                    <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
-                       <div>
-                         <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
-                           <BookOpen size={18} className="text-(--brand)" />
-                           Required Courses
-                         </h4>
-                         <p className="text-xs text-(--text-secondary) mt-1">Check off classes you have completed.</p>
-                       </div>
-                       <span className="text-sm font-semibold text-(--text-secondary)">
-                         {activePathway.requirements.courseCredits.requiredCourses.reduce((sum, c) => sum + (c.completed ? c.credits : 0), 0)} credits earned
-                       </span>
-                    </div>
-                    <div className="p-2 space-y-1">
-                      {activePathway.requirements.courseCredits.requiredCourses.map((course: any, idx: number) => (
-                        <label
-                          key={`req-${idx}`}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={course.completed ?? false}
-                            onChange={(e) => handleCourseToggle('required', idx, e.target.checked)}
-                            className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
-                          />
-                          <div className="flex-1 flex justify-between items-center">
-                            <span className={`text-sm ${course.completed ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
-                              {course.name}
-                              {course.earlyCollegeCredit && <span className="ml-2 text-[10px] bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">College Credit</span>}
-                            </span>
-                            <span className="text-xs font-medium text-(--text-secondary)">{course.credits} cr</span>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Elective Courses */}
-                  <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
-                    <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
-                       <div>
-                         <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
-                           <GraduationCap size={18} className="text-(--brand)" />
-                           Elective Options
-                         </h4>
-                         <p className="text-xs text-(--text-secondary) mt-1">
-                           {activePathway.requirements.courseCredits.electiveCreditsRequired} elective credits required.
-                         </p>
-                       </div>
-                       <span className="text-sm font-semibold text-(--text-secondary)">
-                         {activePathway.requirements.courseCredits.electiveCourseOptions.reduce((sum, c) => sum + (c.completed ? c.credits : 0), 0)} / {activePathway.requirements.courseCredits.electiveCreditsRequired} cr
-                       </span>
-                    </div>
-                    <div className="p-2 space-y-1">
-                      {activePathway.requirements.courseCredits.electiveCourseOptions.map((course: any, idx: number) => (
-                        <label
-                          key={`elec-${idx}`}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={course.completed ?? false}
-                            onChange={(e) => handleCourseToggle('elective', idx, e.target.checked)}
-                            className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
-                          />
-                          <div className="flex-1 flex justify-between items-center">
-                            <span className={`text-sm ${course.completed ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
-                              {course.name}
-                              {course.earlyCollegeCredit && <span className="ml-2 text-[10px] bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">College Credit</span>}
-                            </span>
-                            <span className="text-xs font-medium text-(--text-secondary)">{course.credits} cr</span>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+              {/* Warning if credits are met but academic success isn't */}
+              {activePathway && getPathwayStats(activePathway).progress === 100 && !globalReqsMet && (
+                <div className="bg-(--status-warning-light) border border-(--status-warning)/30 text-(--status-warning-text) p-4 rounded-xl flex items-start gap-3 shadow-sm">
+                  <AlertCircle size={20} className="mt-0.5 shrink-0" />
+                  <div>
+                    <h4 className="font-semibold text-base">Pathway Credits Completed!</h4>
+                    <p className="text-sm mt-1 opacity-90">
+                      You have finished all required courses for this pathway, but you still need to complete your <strong>Academic Success Requirements</strong> on the dashboard to officially earn this endorsement.
+                    </p>
                   </div>
                 </div>
               )}
 
-              {/* Tab Content: Test Scores */}
-              {activeTab === 'scores' && (
-                <div className="border border-(--border-primary) rounded-xl overflow-hidden">
-                  <div className="p-4 flex items-start gap-4 bg-(--bg-card)">
-                    <div className={`p-2 rounded-full mt-1 ${!activePathway.testPending ? 'bg-(--bg-soft) text-(--status-complete)' : 'bg-(--bg-soft) text-(--status-warning)'}`}>
-                      {!activePathway.testPending ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-(--text-primary)">Standardized Test Scores</h4>
-                      <p className="text-sm text-(--text-secondary) mt-1">
-                        {!activePathway.testPending 
-                          ? "Required scores have been verified." 
-                          : "Pending verification. Please upload your latest score report."}
-                      </p>
-                      {activePathway.testPending && (
-                         <a href="#upload" className="mt-3 text-sm font-medium text-(--link) hover:underline flex items-center gap-1 w-fit">
-                           Upload Scores Now <ChevronRight size={14} />
-                         </a>
-                      )}
-                    </div>
-                  </div>
+              {/* Required Courses */}
+              <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
+                <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
+                   <div>
+                     <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
+                       <BookOpen size={18} className="text-(--brand)" />
+                       Required Courses
+                     </h4>
+                     <p className="text-sm text-(--text-secondary) mt-1">Check off classes you have completed.</p>
+                   </div>
+                   <span className="text-base font-semibold text-(--text-secondary)">
+                     {activePathway.requirements.courseCredits.requiredCourses.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0)} credits earned
+                   </span>
                 </div>
-              )}
+                <div className="p-2 space-y-1">
+                  {activePathway.requirements.courseCredits.requiredCourses.map((course: any, idx: number) => (
+                    <label
+                      key={`req-${idx}`}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={course.completed ?? false}
+                        onChange={(e) => handleCourseToggle('required', idx, e.target.checked)}
+                        className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                      />
+                      <div className="flex-1 flex justify-between items-center">
+                        <span className={`text-base ${course.completed ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
+                          {course.name}
+                          {course.earlyCollegeCredit && <span className="ml-2 text-xs bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">College Credit</span>}
+                        </span>
+                        <span className="text-sm font-medium text-(--text-secondary)">{course.credits} cr</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Elective Courses */}
+              <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
+                <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
+                   <div>
+                     <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
+                       <GraduationCap size={18} className="text-(--brand)" />
+                       Elective Options
+                     </h4>
+                     <p className="text-sm text-(--text-secondary) mt-1">
+                       {activePathway.requirements.courseCredits.electiveCreditsRequired} elective credits required.
+                     </p>
+                   </div>
+                   <span className="text-base font-semibold text-(--text-secondary)">
+                     {activePathway.requirements.courseCredits.electiveCourseOptions.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0)} / {activePathway.requirements.courseCredits.electiveCreditsRequired} cr
+                   </span>
+                </div>
+                <div className="p-2 space-y-1">
+                  {activePathway.requirements.courseCredits.electiveCourseOptions.map((course: any, idx: number) => (
+                    <label
+                      key={`elec-${idx}`}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={course.completed ?? false}
+                        onChange={(e) => handleCourseToggle('elective', idx, e.target.checked)}
+                        className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                      />
+                      <div className="flex-1 flex justify-between items-center">
+                        <span className={`text-base ${course.completed ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
+                          {course.name}
+                          {course.earlyCollegeCredit && <span className="ml-2 text-xs bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">College Credit</span>}
+                        </span>
+                        <span className="text-sm font-medium text-(--text-secondary)">{course.credits} cr</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
             </div>
 
