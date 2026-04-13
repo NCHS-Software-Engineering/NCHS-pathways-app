@@ -3,6 +3,9 @@
     "title": "Cosmetology",
     "category": "Healthcare & Human Services",
 
+    "link": "https://app.schoolinks.com/student-pathways/cosmetology/",
+    "tcd": true,
+
     "requirements": {
         "pathwayType": "TCD",
         "courseCredits": {

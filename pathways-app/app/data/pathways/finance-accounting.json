@@ -3,6 +3,9 @@
     "title": "Fincance/Accounting",
     "category": "Financial Services",
 
+    "link": "https://app.schoolinks.com/student-pathways/financeaccounting/",
+    "tcd": false,
+
     "requirements": {
         "pathwayType": "Regular",
         "courseCredits": {

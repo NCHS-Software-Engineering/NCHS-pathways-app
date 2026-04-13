@@ -1,7 +1,10 @@
 {
-    "id": "Network Systems/Information Support & Services",
-    "title": "network-systems-info-services",
+    "id": "network-systems-info-services",
+    "title": "Network Systems/Information Support & Services",
     "category": "Digital Technology",
+
+    "link": "https://app.schoolinks.com/student-pathways/network-systemsinformation-support-services/",
+    "tcd": false,
 
     "requirements": {
         "pathwayType": "Regular",
