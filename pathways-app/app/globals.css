@@ -304,8 +304,12 @@ footer {
   --badge-college-bg: #dbeafe;
   --badge-college-text: #1e40af;
 
-  --chip-bg: #3730a3;
-  --chip-text: #e0e7ff;
+  /* KEEP THIS*/
+  --chip-bg: #245eff;
+  --chip-text: #d7e1ff;
+  --tcd-chip-bg: #1e3a8a;
+  --tcd-chip-text: #dbebff;
+
   --link: #1d4ed8;
   --action-soft-bg: #5eead4;
   --action-soft-text: #065f46;
@@ -323,7 +327,7 @@ footer {
   --border-primary: #334155;
 
   --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
+  --text-secondary: #d0d9e4;
   --text-on-brand: #e2edf7;
   --text-on-success: #f8fafc;
 
@@ -345,8 +349,12 @@ footer {
   --badge-college-bg: #1e3a8a;
   --badge-college-text: #dbeafe;
 
-  --chip-bg: #1e3a8a;
-  --chip-text: #bfdbfe;
+  /* KEEP THIS*/
+  --chip-bg: #245eff;
+  --chip-text: #d7e1ff;
+  --tcd-chip-bg: #1b357e;
+  --tcd-chip-text: #dbebff;
+
   --link: #93c5fd;
   --action-soft-bg: #134e4a;
   --action-soft-text: #99f6e4;
