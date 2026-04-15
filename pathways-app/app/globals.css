@@ -290,11 +290,20 @@ footer {
   --brand-text: #2592da;
   --modal-accent-text: #1d4ed8;
   --modal-progress-incomplete: #4672eb;
+  --competency-reading-soft: #eff6ff;
+  --competency-reading-border: #bfdbfe;
+  --competency-reading-accent: #3b82f6;
+  --competency-reading-text: #1d4ed8;
+  --competency-math-soft: #eef2ff;
+  --competency-math-border: #c7d2fe;
+  --competency-math-accent: #6366f1;
+  --competency-math-text: #4338ca;
   --credits-icon-bg: #dbeafe;
   --credits-icon-text: #1e40af;
 
   --success: #22c55e;
   --status-warning: #F59E0B;
+  --status-warning-icon: #F59E0B;
   --status-warning-light: #FFFBEB;
   --status-warning-text: #92400E;
   
@@ -309,6 +318,9 @@ footer {
   --chip-text: #d7e1ff;
   --tcd-chip-bg: #1e3a8a;
   --tcd-chip-text: #dbebff;
+  --tcd-dash-bg: #f5f3ff;
+  --tcd-dash-border: #d8b4fe;
+  --tcd-dash-text: #6b21a8;
 
   --link: #1d4ed8;
   --action-soft-bg: #5eead4;
@@ -336,11 +348,20 @@ footer {
   --brand-text: #e8f2fb;
   --modal-accent-text: #93c5fd;
   --modal-progress-incomplete: #60a5fa;
+  --competency-reading-soft: #153047;
+  --competency-reading-border: #2f4a66;
+  --competency-reading-accent: #93c5fd;
+  --competency-reading-text: #bfdbfe;
+  --competency-math-soft: #1e2642;
+  --competency-math-border: #334155;
+  --competency-math-accent: #a5b4fc;
+  --competency-math-text: #c7d2fe;
   --credits-icon-bg: #1e3a8a;
   --credits-icon-text: #dbeafe;
   --color: #d9e2f7;
   --success: #22c55e;
   --status-warning: #413893;
+  --status-warning-icon: #fbbf24;
   --status-warning-light: #1e2642;
   --status-warning-text: #e8f2fb;
   --status-complete: #86efac;
@@ -354,6 +375,9 @@ footer {
   --chip-text: #d7e1ff;
   --tcd-chip-bg: #1b357e;
   --tcd-chip-text: #dbebff;
+  --tcd-dash-bg: #1e2642;
+  --tcd-dash-border: #334155; 
+  --tcd-dash-text: #cbd5e1;
 
   --link: #93c5fd;
   --action-soft-bg: #134e4a;
