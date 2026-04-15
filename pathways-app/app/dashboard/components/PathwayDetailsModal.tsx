@@ -38,7 +38,7 @@ export function PathwayDetailsModal({
       onClick={onClose}
     >
       <div
-        className="bg-(--bg-card) rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-(--bg-card) rounded-2xl w-full max-w-lg md:max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
