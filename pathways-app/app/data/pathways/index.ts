@@ -1,4 +1,4 @@
-import academicSuccess from "./academic-success.json";
+//import academicSuccess from "./academic-success.json";
 import animalSystems from "./animal-systems.json";
 import cosmetology from "./cosmetology.json";
 import educationTraining from "./education-training.json";
@@ -14,7 +14,7 @@ import softwareDev from "./programming-software-dev.json";
 import emt from "./emt.json"
 
 export const pathways = {
-  "academic-success": academicSuccess,
+  //"academic-success": academicSuccess,
   "animal-systems": animalSystems,
   cosmetology,
   "education-training": educationTraining,

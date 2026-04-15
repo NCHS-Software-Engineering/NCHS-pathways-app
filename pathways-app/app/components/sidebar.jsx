@@ -36,8 +36,8 @@ export default function SideBar({ open, setOpen }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:static top-0 left-0 z-50
-          h-screen md:h-auto w-64
+          fixed md:sticky top-0 md:top-4 left-0 z-50
+          h-screen md:h-[calc(100vh-2rem)] md:overflow-y-auto w-64
           bg-(--bg-secondary) md:bg-transparent
           border-r border-(--border-primary) md:border-r-0
           p-4

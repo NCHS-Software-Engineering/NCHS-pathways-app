@@ -290,11 +290,20 @@ footer {
   --brand-text: #2592da;
   --modal-accent-text: #1d4ed8;
   --modal-progress-incomplete: #4672eb;
+  --competency-reading-soft: #eff6ff;
+  --competency-reading-border: #bfdbfe;
+  --competency-reading-accent: #3b82f6;
+  --competency-reading-text: #1d4ed8;
+  --competency-math-soft: #eef2ff;
+  --competency-math-border: #c7d2fe;
+  --competency-math-accent: #6366f1;
+  --competency-math-text: #4338ca;
   --credits-icon-bg: #dbeafe;
   --credits-icon-text: #1e40af;
 
   --success: #22c55e;
   --status-warning: #F59E0B;
+  --status-warning-icon: #F59E0B;
   --status-warning-light: #FFFBEB;
   --status-warning-text: #92400E;
   
@@ -304,8 +313,15 @@ footer {
   --badge-college-bg: #dbeafe;
   --badge-college-text: #1e40af;
 
-  --chip-bg: #3730a3;
-  --chip-text: #e0e7ff;
+  /* KEEP THIS*/
+  --chip-bg: #245eff;
+  --chip-text: #d7e1ff;
+  --tcd-chip-bg: #1e3a8a;
+  --tcd-chip-text: #dbebff;
+  --tcd-dash-bg: #f5f3ff;
+  --tcd-dash-border: #d8b4fe;
+  --tcd-dash-text: #6b21a8;
+
   --link: #1d4ed8;
   --action-soft-bg: #5eead4;
   --action-soft-text: #065f46;
@@ -323,7 +339,7 @@ footer {
   --border-primary: #334155;
 
   --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
+  --text-secondary: #d0d9e4;
   --text-on-brand: #e2edf7;
   --text-on-success: #f8fafc;
 
@@ -332,11 +348,20 @@ footer {
   --brand-text: #e8f2fb;
   --modal-accent-text: #93c5fd;
   --modal-progress-incomplete: #60a5fa;
+  --competency-reading-soft: #153047;
+  --competency-reading-border: #2f4a66;
+  --competency-reading-accent: #93c5fd;
+  --competency-reading-text: #bfdbfe;
+  --competency-math-soft: #1e2642;
+  --competency-math-border: #334155;
+  --competency-math-accent: #a5b4fc;
+  --competency-math-text: #c7d2fe;
   --credits-icon-bg: #1e3a8a;
   --credits-icon-text: #dbeafe;
   --color: #d9e2f7;
   --success: #22c55e;
   --status-warning: #413893;
+  --status-warning-icon: #fbbf24;
   --status-warning-light: #1e2642;
   --status-warning-text: #e8f2fb;
   --status-complete: #86efac;
@@ -345,8 +370,15 @@ footer {
   --badge-college-bg: #1e3a8a;
   --badge-college-text: #dbeafe;
 
-  --chip-bg: #1e3a8a;
-  --chip-text: #bfdbfe;
+  /* KEEP THIS*/
+  --chip-bg: #245eff;
+  --chip-text: #d7e1ff;
+  --tcd-chip-bg: #1b357e;
+  --tcd-chip-text: #dbebff;
+  --tcd-dash-bg: #1e2642;
+  --tcd-dash-border: #334155; 
+  --tcd-dash-text: #cbd5e1;
+
   --link: #93c5fd;
   --action-soft-bg: #134e4a;
   --action-soft-text: #99f6e4;
@@ -398,7 +430,7 @@ footer {
   }
 
   .headerStyle {
-    @apply transition-colors duration-300 dark:!bg-gray-700;
+    @apply transition-colors duration-300 dark:bg-gray-700!;
   }
 
   .signIn {
@@ -408,6 +440,6 @@ footer {
   
 
   .sideBarBackground {
-    @apply transition-colors duration-300 dark:!bg-gray-700;
+    @apply transition-colors duration-300 dark:bg-gray-700!;
   }
 }
