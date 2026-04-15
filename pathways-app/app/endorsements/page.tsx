@@ -95,10 +95,12 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {title}
       </h3>
 
-      <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text) mr-1.5">
-        {category}
+      <div className="flex flex-wrap gap-1.5">
+        <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
+          {category}
+        </div>
+        {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
       </div>
-      {tcd ? <div className="inline-block px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
       
 
     </div>
