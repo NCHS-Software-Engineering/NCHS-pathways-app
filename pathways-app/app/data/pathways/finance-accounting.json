@@ -85,12 +85,6 @@
         "teamChallenges": 2,
         "workExperienceHours": 60,
         "notes": "Hours may be completed through the Blended Career Internship."
-        },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-        ]
         }
     }
 }

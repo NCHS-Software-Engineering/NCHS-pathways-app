@@ -80,13 +80,6 @@
         "teamChallenges": 2,
         "workExperienceHours": 60,
         "notes": "These hours can be met through the Introduction to Teaching 2 course."
-        },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-            
-        ]
         }
     }
 }

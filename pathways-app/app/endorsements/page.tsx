@@ -1,13 +1,7 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import { StaticImageData } from 'next/image';
-import SideBar from "@/app/components/sidebar";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { Star } from "lucide-react";
-import { useRouter } from "next/navigation";
-
-import { pathways } from "../data/pathways";
 
 // Importing images
 import animalImage from "./images/animal-systems.jpg";
@@ -45,10 +39,18 @@ interface PathwayCardProps {
   title: string;
   category: string;
   tcd: boolean;
-  image: StaticImageData;
+  image?: StaticImageData;
   link: string; //in jsons for each pathway, does not need to be hard-coded
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
+}
+
+interface EndorsementPathway {
+  id: string;
+  title: string;
+  category: string;
+  tcd: boolean;
+  link: string;
 }
 
 // Card Component for Pathways
@@ -62,9 +64,6 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   isStarred,
   onToggle
 }) => {
-
-  const router = useRouter();
-  
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
     <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
@@ -86,10 +85,14 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         />
       </button>
 
-      <div
-        className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
-        style={{ backgroundImage: `url(${image.src})` }}
-      />
+      {image ? (
+        <div
+          className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
+          style={{ backgroundImage: `url(${image.src})` }}
+        />
+      ) : (
+        <div className="h-35 rounded-lg mb-3 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 transition-transform duration-300 group-hover:scale-105" />
+      )}
 
       <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
         {title}
@@ -109,7 +112,8 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
 };
 
 export default function EndorsementsPage() {
-  const { data: session } = useSession();
+  const [pathways, setPathways] = React.useState<EndorsementPathway[]>([]);
+  const [isLoadingPathways, setIsLoadingPathways] = React.useState(true);
   //This paragraph can be replaced with const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
   //The rest was used to get past a bug with loading.
   /*
@@ -121,6 +125,39 @@ export default function EndorsementsPage() {
 });*/
   const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
   const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    let mountedRef = true;
+
+    const loadPathways = async () => {
+      try {
+        const response = await fetch("/api/pathways");
+        if (!response.ok) throw new Error("Failed to load endorsements.");
+
+        const data = await response.json();
+        if (!mountedRef) return;
+
+        const normalized = (Array.isArray(data) ? data : [])
+          .filter((pathway) => pathway && typeof pathway.id === "string")
+          .sort((a, b) => String(a.title ?? "").localeCompare(String(b.title ?? "")));
+
+        setPathways(normalized);
+      } catch {
+        if (!mountedRef) return;
+        setPathways([]);
+      } finally {
+        if (mountedRef) {
+          setIsLoadingPathways(false);
+        }
+      }
+    };
+
+    loadPathways();
+
+    return () => {
+      mountedRef = false;
+    };
+  }, []);
 
   //Load from localStorage on mount
   //MOUNT = SOLUTION for loading starred pathways upon refresh AND page changes
@@ -140,7 +177,7 @@ export default function EndorsementsPage() {
   }, [starredPathways, mounted]);
 
   //Prevent rendering before localStorage loads
-  if (!mounted) return null;
+  if (!mounted || isLoadingPathways) return null;
 
   const toggleStar = (pathwayId: string) => {
     setStarredPathways((prev) => {
@@ -174,11 +211,11 @@ export default function EndorsementsPage() {
             Explore Your Career Pathways
           </h3>
           <h4 className="text-(--text-primary)/80 max-w-2xl mb-3">
-            Click on a pathway card to open Schoolinks's page for it (you must be logged in).
+            Click on a pathway card to open Schoolinks&apos;s page for it (you must be logged in).
           </h4>
 
          <div className="flex flex-wrap gap-6">
-            {Object.values(pathways).map((pathway) => (
+            {pathways.map((pathway) => (
               <PathwayCard
                 key={pathway.id}
                 pathwayId={pathway.id}
@@ -186,7 +223,7 @@ export default function EndorsementsPage() {
                 category={pathway.category}
                 tcd={pathway.tcd}
                 image={pathwayImages[pathway.id]} 
-                link={pathway.link}
+                link={pathway.link || "https://app.schoolinks.com"}
                 isStarred={starredPathways.includes(pathway.id)}
                 onToggle={toggleStar}
               />

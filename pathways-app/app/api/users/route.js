@@ -1,4 +1,6 @@
 import { db } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions, isAllowedDistrictEmail } from "@/lib/auth";
 
 // helper functions
 function parseField(field) {
@@ -12,9 +14,23 @@ function stringifyField(arr) {
   return arr; // fallback if already string
 }
 
+async function authorizeRequest() {
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+
+  if (!isAllowedDistrictEmail(email)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  return null;
+}
+
 // GET all users (PARSED)
 export async function GET() {
   try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
     const [rows] = await db.query("SELECT * FROM User_Data");
 
     const parsed = rows.map((row) => ({
@@ -32,6 +48,9 @@ export async function GET() {
 // CREATE user
 export async function POST(req) {
   try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
     const body = await req.json();
 
     const { Username, Stored_Pathways, Pathway_Progress } = body;
@@ -60,6 +79,9 @@ export async function POST(req) {
 // UPDATE user
 export async function PUT(req) {
   try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
     const body = await req.json();
 
     const { Username, Stored_Pathways, Pathway_Progress } = body;
@@ -90,6 +112,9 @@ export async function PUT(req) {
 // DELETE user
 export async function DELETE(req) {
   try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
     const body = await req.json();
     const { Username } = body;
 

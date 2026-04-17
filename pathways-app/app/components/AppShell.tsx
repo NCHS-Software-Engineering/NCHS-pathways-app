@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import SideBar from "./sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  if (pathname?.startsWith("/admin")) {
+    return <>{children}</>;
+  }
 
   return (
     <>
@@ -85,7 +91,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <SideBar open={menuOpen} setOpen={setMenuOpen} />
         </div>
 
-        <main className="flex-1 w-full min-w-0">
+        <main className="flex-1 w-full min-w-0 p-4 md:p-6 lg:p-8">
           {children}
         </main>
       </div>

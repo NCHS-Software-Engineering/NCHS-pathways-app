@@ -32,13 +32,6 @@
         "teamChallenges": 2,
         "workExperienceHours": 60,
         "notes": "These hours are embedded within the required career-focused coursework"
-        },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-            "club 1", "club 2"
-        ]
         }
     }
 }
