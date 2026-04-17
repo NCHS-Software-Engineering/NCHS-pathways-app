@@ -136,6 +136,20 @@ export default function EndorsementsPage() {
   React.useEffect(() => {
     if (mounted) {
       localStorage.setItem("starredPathways", JSON.stringify(starredPathways));
+      if (session?.user?.email) {
+      console.log("adding ts");
+
+      fetch("/api/users", {
+
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          User_Email: session.user.email,
+          Stored_Pathways: starredPathways,
+          Pathway_Progress: [],
+        }),
+      }).catch(() => { });
+    }
     }
   }, [starredPathways, mounted]);
 

@@ -223,24 +223,22 @@ export async function PUT(req) {
   try {
     const body = await req.json();
 
-    const { Username, User_Email, Stored_Pathways, Pathway_Progress } = body;
+    const { User_Email, Stored_Pathways, Pathway_Progress } = body;
 
-    if (!Username) {
-      return Response.json({ error: "Username required" }, { status: 400 });
+    if (!User_Email) {
+      return Response.json({ error: "User_Email required" }, { status: 400 });
     }
 
     await db.query(
       `UPDATE User_Data 
-       SET User_Email = ?,
-           Stored_Pathways = ?, 
+       SET Stored_Pathways = ?, 
            Pathway_Progress = ?, 
            UpdatedAt = NOW()
-       WHERE Username = ?`,
+       WHERE User_Email = ?`,
       [
-        User_Email ?? null,
         stringifyField(Stored_Pathways),
         stringifyField(Pathway_Progress),
-        Username,
+        User_Email,
       ]
     );
 
