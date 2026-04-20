@@ -9,7 +9,6 @@ export default function SettingsPage() {
 
   const [dark, setDark] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  const [gradYear, setGradYear] = useState("2026");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
@@ -113,23 +112,6 @@ export default function SettingsPage() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page) focus:outline-none focus:ring-2 focus:ring-(--brand)"
               />
-            </div>
-
-            {/* Graduation Year */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Graduation Year
-              </label>
-              <select
-                value={gradYear}
-                onChange={(e) => setGradYear(e.target.value)}
-                className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page)"
-              >
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-              </select>
             </div>
 
             <button className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition">
