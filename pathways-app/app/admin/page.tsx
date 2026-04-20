@@ -5,8 +5,40 @@ import AdminHeader from "./components/AdminHeader";
 import DeletePathwayModal from "./components/DeletePathwayModal";
 import PathwayEditorView from "./components/PathwayEditorView";
 import PathwaysListView from "./components/PathwaysListView";
-import { emptyPathway, initialAcademicData } from "./mockData";
 import { AcademicRequirement, AdminView, Course, Pathway, AcademicSuccessData } from "./types";
+
+const emptyPathway: Pathway = {
+  id: "",
+  title: "",
+  category: "STEM",
+  tcd: false,
+  requirements: {
+    pathwayType: "Regular",
+    courseCredits: {
+      totalCreditsRequired: 0,
+      requiredCourses: [],
+      electiveCreditsRequired: 0,
+      electiveCourseOptions: []
+    },
+    professionalLearning: { fulfillmentMethod: "embedded" },
+    coCurricular: { required: false, examples: [] }
+  }
+};
+
+const emptyAcademicData: AcademicSuccessData = {
+  title: "",
+  description: "",
+  reading: {
+    courseOptions: [],
+    examOptions: [],
+    testScoreOptions: []
+  },
+  math: {
+    courseOptions: [],
+    examOptions: [],
+    testScoreOptions: []
+  }
+};
 
 async function parseApiResponse(response: Response) {
   if (!response.ok) {
@@ -25,7 +57,7 @@ async function parseApiResponse(response: Response) {
 
 export default function AdminPage() {
   const [pathwaysDb, setPathwaysDb] = useState<Pathway[]>([]);
-  const [academicDb, setAcademicDb] = useState<AcademicSuccessData>(initialAcademicData);
+  const [academicDb, setAcademicDb] = useState<AcademicSuccessData>(emptyAcademicData);
 
   const [view, setView] = useState<AdminView>("list");
   const [saveMessage, setSaveMessage] = useState("");

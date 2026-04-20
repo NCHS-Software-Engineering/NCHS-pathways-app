@@ -34,7 +34,7 @@ export default function AdminHeader({ saveMessage }: AdminHeaderProps) {
         <div className="flex items-center gap-3 text-(--brand)">
           <Database size={34} />
           <div>
-            <h1 className="text-2xl font-bold text-(--text-primary) leading-tight">Database Manager</h1>
+            <h1 className="text-2xl font-bold text-(--text-primary) leading-tight"> Pathway Data Manager</h1>
             <p className="text-sm text-(--text-secondary) font-medium uppercase tracking-wider">Endorsement System</p>
           </div>
         </div>
