@@ -16,6 +16,7 @@ import {
   ACADEMIC_STATUS_STORAGE_KEY,
   getPathwayStats,
 } from "./utils";
+import path from "path";
 
 type PathwayCourseLike = {
   name?: unknown;
@@ -164,83 +165,73 @@ export default function Dashboard() {
 
   // Load canonical data + local progress on mount.
   useEffect(() => {
-    let mounted = true;
 
-    const loadData = async () => {
-      try {
-        setIsLoadingData(true);
-        setLoadError("");
+    async function loadData() {
+      if (session?.user?.email) {
+        try {
+          const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
+          if (res.ok) {
 
-        const [pathwaysResponse, academicResponse] = await Promise.all([
-          fetch("/api/pathways"),
-          fetch("/api/academic-success"),
-        ]);
+            const data = await res.json();
+            const user = data[0];
+            console.log(user.Pathway_Progress);
+            if (user && Array.isArray(user.Stored_Pathways)) {
+              const validPathways = Array.from(
+                new Set(
+                  user.Stored_Pathways
+                    .filter((key: unknown): key is string => typeof key === "string")
+                    .map((key: string) => normalizePathwayKey(key))
+                    .filter((key: string | null): key is string => key !== null)
+                )
+              );
 
-        if (!pathwaysResponse.ok || !academicResponse.ok) {
-          throw new Error("Failed to load pathway data.");
-        }
-
-        const pathwaysList = (await pathwaysResponse.json()) as Pathway[];
-        const academicData = await academicResponse.json();
-
-        if (!mounted) return;
-
-        const canonicalPathways = normalizePathwayRecord(
-          Object.fromEntries(
-          pathwaysList
-            .filter((pathway) => typeof pathway?.id === "string" && pathway.id.length > 0)
-            .map((pathway) => [pathway.id, pathway])
-          ) as Record<string, Pathway>
-        );
-
-        const keyMap = Object.entries(canonicalPathways).reduce<Record<string, string>>(
-          (acc, [key, value]) => {
-            acc[key] = key;
-            if (value?.id) {
-              acc[value.id] = key;
+              localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(validPathways));
+              setStarredPathways(validPathways);
             }
-            return acc;
-          },
-          {}
-        );
+            if (user?.Pathway_Progress && Array.isArray(user.Pathway_Progress)) {
+              const completedCourses = new Set<string>(user.Pathway_Progress);
 
-        if (keyMap.entreprenuership) {
-          keyMap.entrepreneurship = keyMap.entreprenuership;
+              const updatedPathways = Object.fromEntries(
+                Object.entries(pathwaysData).map(([key, pathway]) => [
+                  key,
+                  {
+                    ...pathway,
+                    requirements: {
+                      ...pathway.requirements,
+                      courseCredits: {
+                        ...pathway.requirements.courseCredits,
+                        requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
+                          ...c,
+                          completed: completedCourses.has(c.name),
+                        })),
+                        electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
+                          ...c,
+                          completed: completedCourses.has(c.name),
+                        })),
+                      },
+                    },
+                  },
+                ])
+              ) as unknown as typeof pathwaysData;
+
+              setPathways(updatedPathways);
+              localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
+            }
+          }
+
+        } catch {
+          // ignore
+        } finally {
+          setIsHydrated(true);
         }
+        return;
+      }
 
+      // Not signed in — load from localStorage as before
+      try {
         const savedStarred = localStorage.getItem(STARRED_PATHWAYS_STORAGE_KEY);
         const savedProgress = localStorage.getItem(PATHWAY_PROGRESS_STORAGE_KEY);
         const savedAcademicStatus = localStorage.getItem(ACADEMIC_STATUS_STORAGE_KEY);
-
-        let hydratedPathways = canonicalPathways;
-
-        if (savedProgress) {
-          const parsedProgress = JSON.parse(savedProgress);
-          if (parsedProgress && typeof parsedProgress === "object") {
-            const validProgressEntries = Object.entries(parsedProgress)
-              .map(([key, value]) => [keyMap[key] ?? null, value] as const)
-              .filter(
-                (
-                  entry
-                ): entry is readonly [string, Record<string, unknown>] =>
-                  entry[0] !== null &&
-                  entry[1] !== null &&
-                  typeof entry[1] === "object"
-              );
-
-            if (validProgressEntries.length > 0) {
-              hydratedPathways = {
-                ...canonicalPathways,
-                ...Object.fromEntries(validProgressEntries),
-              };
-            }
-          }
-        }
-
-        hydratedPathways = normalizePathwayRecord(hydratedPathways);
-
-        setPathways(hydratedPathways);
-        setAcademicSuccessData(academicData);
 
         if (savedStarred) {
           const parsed = JSON.parse(savedStarred);
@@ -249,11 +240,31 @@ export default function Dashboard() {
               new Set(
                 parsed
                   .filter((key): key is string => typeof key === "string")
-                  .map((key) => keyMap[key] ?? null)
+                  .map((key) => normalizePathwayKey(key))
                   .filter((key): key is string => key !== null)
               )
             );
             setStarredPathways(validPathways);
+          }
+        }
+
+        if (savedProgress) {
+          const parsedProgress = JSON.parse(savedProgress);
+          if (parsedProgress && typeof parsedProgress === "object") {
+            const validProgressEntries = Object.entries(parsedProgress)
+              .map(([key, value]) => [normalizePathwayKey(key), value] as const)
+              .filter(
+                (entry): entry is readonly [string, Record<string, unknown>] =>
+                  entry[0] !== null &&
+                  entry[1] !== null &&
+                  typeof entry[1] === "object"
+              );
+            if (validProgressEntries.length > 0) {
+              setPathways((prevPathways) => ({
+                ...prevPathways,
+                ...Object.fromEntries(validProgressEntries),
+              }));
+            }
           }
         }
 
@@ -267,30 +278,29 @@ export default function Dashboard() {
           }
         }
       } catch {
-        if (!mounted) return;
-        setLoadError("Could not load pathway data right now.");
+        // Ignore invalid localStorage values
       } finally {
-        if (mounted) {
-          setIsHydrated(true);
-          setIsLoadingData(false);
-        }
+        setIsHydrated(true);
       }
-    };
+    }
 
     loadData();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  }, [session, normalizePathwayKey]);
 
   // Save to localStorage whenever state changes
   useEffect(() => {
+
     if (!isHydrated) return;
+    console.log("first run");
+
     localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(pathways));
     localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(starredPathways));
     localStorage.setItem(ACADEMIC_STATUS_STORAGE_KEY, JSON.stringify(academicStatus));
-  }, [pathways, starredPathways, academicStatus, isHydrated]);
+    console.log("first run");
+    if (session?.user?.email) {
+
+    }
+  }, [pathways, starredPathways, academicStatus, isHydrated, session]);
 
   function openPathway(pathwayKey: string) {
     const normalizedPathwayKey = normalizePathwayKey(pathwayKey);
@@ -324,13 +334,37 @@ export default function Dashboard() {
       return updated;
     });
   }
-
+  function extractProgress(pathwaysState: typeof pathways) {
+    return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
+      ...pathway.requirements.courseCredits.requiredCourses
+        .filter((c) => c.completed)
+        .map((c) => c.name as string),
+      ...pathway.requirements.courseCredits.electiveCourseOptions
+        .filter((c) => c.completed)
+        .map((c) => c.name as string),
+    ]).join(";");
+  }
   function handleSave() {
     if (activePathway && activePathwayKey) {
-      setPathways((prevPathways: typeof pathways) => ({
-        ...prevPathways,
+      const updatedPathways = {
+        ...pathways,
         [activePathwayKey]: activePathway,
-      }));
+      };
+
+      setPathways(updatedPathways);
+
+      if (session?.user?.email) {
+        fetch("/api/users", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            User_Email: session.user.email,
+            Stored_Pathways: starredPathways,
+            Pathway_Progress: extractProgress(updatedPathways),
+          }),
+        }).catch(() => { });
+      }
+
       setShowModal(false);
     }
   }
