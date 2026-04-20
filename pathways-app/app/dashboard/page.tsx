@@ -238,12 +238,50 @@ export default function Dashboard() {
   }
   function handleSave() {
     if (activePathway && activePathwayKey) {
-      const updatedPathways = {
-        ...pathways,
-        [activePathwayKey]: activePathway,
-      };
+      const completedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => c.completed).map(c => c.name),
+      ]);
 
-      setPathways(updatedPathways);
+      const uncompletedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => !c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => !c.completed).map(c => c.name),
+      ]);
+
+      const syncedPathways = Object.fromEntries(
+        Object.entries({ ...pathways, [activePathwayKey]: activePathway }).map(
+          ([key, pathway]) => [
+            key,
+            {
+              ...pathway,
+              requirements: {
+                ...pathway.requirements,
+                courseCredits: {
+                  ...pathway.requirements.courseCredits,
+                  requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name) ? true
+                      : uncompletedNames.has(c.name) ? false
+                        : c.completed,
+                  })),
+                  electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name) ? true
+                      : uncompletedNames.has(c.name) ? false
+                        : c.completed,
+                  })),
+                },
+              },
+            },
+          ]
+        )
+      ) as unknown as typeof pathways;
+
+      setPathways(syncedPathways);
 
       if (session?.user?.email) {
         fetch("/api/users", {
@@ -252,7 +290,7 @@ export default function Dashboard() {
           body: JSON.stringify({
             User_Email: session.user.email,
             Stored_Pathways: starredPathways,
-            Pathway_Progress: extractProgress(updatedPathways),
+            Pathway_Progress: extractProgress(syncedPathways),
           }),
         }).catch(() => { });
       }
