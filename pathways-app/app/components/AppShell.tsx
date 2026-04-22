@@ -10,13 +10,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [dbUsername, setDbUsername] = useState<string>("");
 
   useEffect(() => {
-    if (!session?.user?.email) return;
-    fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data[0]?.Username) setDbUsername(data[0].Username);
-      })
-      .catch(() => { });
+    const fetchUsername = () => {
+      if (!session?.user?.email) return;
+      fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data[0]?.Username) setDbUsername(data[0].Username);
+        })
+        .catch(() => { });
+    };
+    fetchUsername();
+    window.addEventListener("usernameUpdated", fetchUsername);
+    return () => window.removeEventListener("usernameUpdated", fetchUsername);
   }, [session]);
   return (
     <>
@@ -58,8 +63,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             />
 
             <span className="font-medium text-base hidden sm:block self-center">
-              {dbUsername || session.user?.name}          
-                </span>
+              {dbUsername || session.user?.name}
+            </span>
 
             <button
               onClick={() => signOut()}
