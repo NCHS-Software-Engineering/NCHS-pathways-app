@@ -30,7 +30,7 @@ const pathwayImages: Record<string, StaticImageData> = {
   "cosmetology": cosmetologyImage,
   "education-training": educationImage,
   "emt": emtImage,
-  "entreprenuership": entrepreneurshipImage,
+  "entrepreneurship": entrepreneurshipImage,
   "finance-accounting": financeImage,
   "global-domestic-policy": policyImage,
   "marketing": marketingImage,

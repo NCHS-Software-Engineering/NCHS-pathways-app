@@ -23,29 +23,33 @@ export default function SettingsPage() {
         User_Email: session.user.email,
         Username: displayName,
       }),
+
     });
+    if (typeof window !== "undefined") {  
+      window.dispatchEvent(new Event("usernameUpdated"));
+    }
   }
   useEffect(() => {
-  const fetchUser = async () => {
-    if (session?.user?.image) {
-      setImagePreview(session.user.image);
-    }
+    const fetchUser = async () => {
+      if (session?.user?.image) {
+        setImagePreview(session.user.image);
+      }
 
-    if (session?.user?.email) {
-      const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
-      if (res.ok) {
-        const data = await res.json();
-        const user = data[0];
-        if (user?.Username) {
-          setDbUsername(user.Username);
-          setDisplayName(user.Username);
+      if (session?.user?.email) {
+        const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
+        if (res.ok) {
+          const data = await res.json();
+          const user = data[0];
+          if (user?.Username) {
+            setDbUsername(user.Username);
+            setDisplayName(user.Username);
+          }
         }
       }
-    }
-  };
+    };
 
-  fetchUser();
-}, [session]);
+    fetchUser();
+  }, [session]);
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setDark(isDark);
