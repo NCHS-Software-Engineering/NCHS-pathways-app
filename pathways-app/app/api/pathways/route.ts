@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import mysql from "mysql2/promise";
 
 const db = mysql.createPool({
@@ -8,7 +8,7 @@ const db = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
-export async function GET(req) {
+export async function GET(req: NextRequest) {
   const name = req.nextUrl.searchParams.get("name");
 
   try {
@@ -16,7 +16,7 @@ export async function GET(req) {
       const [rows] = await db.execute(
         "SELECT course_json FROM courses WHERE course_name = ?",
         [name]
-      );
+      ) as any[];
 
       if (rows.length === 0) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -27,11 +27,10 @@ export async function GET(req) {
 
     const [rows] = await db.execute(
       "SELECT course_name, course_json FROM courses"
-    );
+    ) as any[];
 
     const result = Object.fromEntries(
-      rows.map((r) => [r.course_name, r.course_json])
-    );
+      rows.map((r: any) => [r.course_name, r.course_json]));
 
     return NextResponse.json(result);
   } catch (err) {

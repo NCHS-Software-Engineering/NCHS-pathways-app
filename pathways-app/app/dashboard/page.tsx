@@ -80,7 +80,7 @@ export default function Dashboard() {
                     .map((key: string) => normalizePathwayKey(key))
                     .filter((key: string | null): key is string => key !== null)
                 )
-              );
+              ) as string[];
 
               localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(validPathways));
               setStarredPathways(validPathways);
@@ -99,11 +99,11 @@ export default function Dashboard() {
                         ...pathway.requirements.courseCredits,
                         requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
                           ...c,
-                          completed: completedCourses.has(c.name),
+                          completed: completedCourses.has(c.name ?? ""),
                         })),
                         electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
                           ...c,
-                          completed: completedCourses.has(c.name),
+                          completed: completedCourses.has(c.name ?? ""),
                         })),
                       },
                     },
@@ -234,11 +234,11 @@ export default function Dashboard() {
   function extractProgress(pathwaysState: typeof pathways) {
     return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
       ...pathway.requirements.courseCredits.requiredCourses
-        .filter((c) => c.completed)
-        .map((c) => c.name as string),
+        .filter((c: any) => c.completed)
+        .map((c: any) => c.name as string),
       ...pathway.requirements.courseCredits.electiveCourseOptions
-        .filter((c) => c.completed)
-        .map((c) => c.name as string),
+        .filter((c: any) => c.completed)
+        .map((c: any) => c.name as string),
     ]).join(";");
   }
   function handleSave() {
@@ -269,15 +269,15 @@ export default function Dashboard() {
                   ...pathway.requirements.courseCredits,
                   requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
                     ...c,
-                    completed: completedNames.has(c.name) ? true
-                      : uncompletedNames.has(c.name) ? false
-                        : c.completed,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : (c as any).completed,
                   })),
                   electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
                     ...c,
-                    completed: completedNames.has(c.name) ? true
-                      : uncompletedNames.has(c.name) ? false
-                        : c.completed,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : (c as any).completed,
                   })),
                 },
               },
