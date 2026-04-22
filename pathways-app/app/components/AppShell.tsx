@@ -1,13 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import SideBar from "./sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dbUsername, setDbUsername] = useState<string>("");
 
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data[0]?.Username) setDbUsername(data[0].Username);
+      })
+      .catch(() => { });
+  }, [session]);
   return (
     <>
       {/* HEADER */}
@@ -48,13 +58,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             />
 
             <span className="font-medium text-base hidden sm:block self-center">
-              {session.user?.name}
-            </span>
+              {dbUsername || session.user?.name}          
+                </span>
 
             <button
               onClick={() => signOut()}
               className="flex items-center gap-2 h-11 px-3 text-sm md:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
-          >
+            >
               Sign Out
             </button>
           </div>
@@ -65,19 +75,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {menuOpen && (
         <div className="fixed inset-x-0 top-14 bottom-0 z-50 flex md:hidden">
 
-            {/* dark overlay */}
-            <div
+          {/* dark overlay */}
+          <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setMenuOpen(false)}
-            />
+          />
 
-            {/* sidebar */}
-            <div className="relative w-72 h-full bg-(--bg-secondary) text-xl">
+          {/* sidebar */}
+          <div className="relative w-72 h-full bg-(--bg-secondary) text-xl">
             <SideBar open={menuOpen} setOpen={setMenuOpen} />
-            </div>
+          </div>
 
         </div>
-        )}
+      )}
 
       {/* MAIN LAYOUT */}
       <div className="flex min-h-screen pt-14 md:pt-16">
