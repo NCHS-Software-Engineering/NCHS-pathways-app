@@ -18,9 +18,10 @@ import {
   ACADEMIC_STATUS_STORAGE_KEY,
   getPathwayStats,
 } from "./utils";
-import path from "path";
 
 export default function Dashboard() {
+  const [dbUsername, setDbUsername] = useState<string>("");
+
   const [pathways, setPathways] = useState(pathwaysData);
   const [academicStatus, setAcademicStatus] = useState<AcademicStatus>({
     reading: false,
@@ -59,6 +60,7 @@ export default function Dashboard() {
   useEffect(() => {
 
     async function loadData() {
+
       if (session?.user?.email) {
         try {
           const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
@@ -66,6 +68,9 @@ export default function Dashboard() {
 
             const data = await res.json();
             const user = data[0];
+            if (user?.Username) {
+              setDbUsername(user.Username);
+            }
             console.log(user.Pathway_Progress);
             if (user && Array.isArray(user.Stored_Pathways)) {
               const validPathways = Array.from(
@@ -325,7 +330,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen w-full font-sans bg-(--bg-primary) text-(--text-primary)">
       <div className="w-full min-h-screen px-12 py-4 md:px-14 md:py-8 space-y-8 flex flex-col max-w-412.5 mx-auto">
-        <DashboardHeader userName={session?.user?.name || "Student"} isLoggedIn={!!session} />
+        <DashboardHeader userName={dbUsername || session?.user?.name || "Student"} isLoggedIn={!!session} />
 
         <QuickStats
           activeEndorsements={starredPathways.length}

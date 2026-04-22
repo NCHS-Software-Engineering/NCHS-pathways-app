@@ -146,7 +146,6 @@ export default function EndorsementsPage() {
         body: JSON.stringify({
           User_Email: session.user.email,
           Stored_Pathways: starredPathways,
-          Pathway_Progress: [],
         }),
       }).catch(() => { });
     }
