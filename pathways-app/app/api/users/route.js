@@ -39,6 +39,17 @@ function stringifyField(arr) {
   return arr;
 }
 
+async function authorizeRequest() {
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+
+  if (!isAllowedDistrictEmail(email)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // GET /api/users
 // GET /api/users?username=alice
@@ -102,6 +113,9 @@ function stringifyField(arr) {
  */
 export async function GET(req) {
   try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username");
     const email = searchParams.get("email");

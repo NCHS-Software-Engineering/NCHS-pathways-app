@@ -1,86 +1,81 @@
 {
-    "id": "marketing",
-    "title": "Marketing",
-    "category": "Marketing & Sales",
-
-    "link": "https://app.schoolinks.com/student-pathways/merchandisingmarketing/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 2.5,
-
-        "requiredCourses": [
-            {
-            "name": "Marketing",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Social Media Marketing",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Blended Career Internship",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            }
-        
-        ],
-
-        "electiveCreditsRequired": 1.0,
-
-        "electiveCourseOptions": [
-            {
-            "name": "Advanced Marketing",
-            "credits": 0.5,
-            "earlyCollegeCredit": false 
-            },
-            {
-            "name": "Business INCubatoredu",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Accounting 1",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Digital Art 1",
-            "credits": 0.5,
-            "earlyCollegeCredit": false
-            },
-            {
-            "name": "Introduction to Business",
-            "credits": 0.5,
-            "earlyCollegeCredit": false
-            },
-            {
-            "name": "AP Microeconomics",
-            "credits": 0.5,
-            "earlyCollegeCredit": true
-            },
-            {
-            "name": "AP Macroeconomics",
-            "credits": 0.5,
-            "earlyCollegeCredit": true
-            },
-            {
-            "name": "AP Statistics",
-            "credits": 1.0,
-            "earlyCollegeCredit": true
-            }    
-        ]
+  "id": "marketing",
+  "title": "Marketing",
+  "category": "Marketing & Sales",
+  "link": "https://app.schoolinks.com/student-pathways/merchandisingmarketing/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 2.5,
+      "requiredCourses": [
+        {
+          "name": "Marketing",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "These hours can be met through the Blended Career Internship course"
+        {
+          "name": "Social Media Marketing",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 1,
+      "electiveCourseOptions": [
+        {
+          "name": "Advanced Marketing",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Business INCubatoredu",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Accounting 1",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Digital Art 1",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Introduction to Business",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "AP Microeconomics",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Macroeconomics",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Statistics",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "Requires student to take the Blended Career Internship course to fulfill hours",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "marketing.jpg",
+  "imagePath": "/endorsements/images/marketing.jpg"
 }

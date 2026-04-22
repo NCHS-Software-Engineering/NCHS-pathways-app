@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import academicSuccessData from "../data/pathways/academic-success.json";
 
 import { DashboardHeader } from "./components/DashboardHeader";
 import { QuickStats } from "./components/QuickStats";
@@ -16,111 +17,28 @@ import {
   ACADEMIC_STATUS_STORAGE_KEY,
   getPathwayStats,
 } from "./utils";
-import path from "path";
 
-type PathwayCourseLike = {
-  name?: unknown;
-  credits?: unknown;
-  earlyCollegeCredit?: unknown;
-  completed?: unknown;
-  groupLabel?: unknown;
-  options?: unknown;
-};
+type PathwayRecord = Record<string, Pathway>;
 
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value);
-}
-
-function normalizeCourseEntry(course: PathwayCourseLike, index: number) {
-  if (Array.isArray(course.options)) {
-    const options = course.options.filter(
-      (option): option is { name?: unknown; credits?: unknown; earlyCollegeCredit?: unknown } =>
-        option !== null && typeof option === "object"
-    );
-
-    const optionCredits = options
-      .map((option) => (isFiniteNumber(option.credits) ? option.credits : 0))
-      .filter((credits) => credits > 0);
-
-    const maxCredits = optionCredits.length > 0 ? Math.max(...optionCredits) : 0;
-    const label =
-      typeof course.groupLabel === "string" && course.groupLabel.trim().length > 0
-        ? course.groupLabel
-        : `Grouped Requirement ${index + 1}`;
-
-    return {
-      name: label,
-      credits: maxCredits,
-      earlyCollegeCredit: options.some((option) => Boolean(option.earlyCollegeCredit)),
-      completed: Boolean(course.completed),
-    };
+function parsePathwayProgress(rawProgress: unknown): string[] {
+  if (Array.isArray(rawProgress)) {
+    return rawProgress.filter((entry): entry is string => typeof entry === "string");
   }
 
-  if (typeof course.name === "string" && isFiniteNumber(course.credits)) {
-    return {
-      name: course.name,
-      credits: course.credits,
-      earlyCollegeCredit: Boolean(course.earlyCollegeCredit),
-      completed: Boolean(course.completed),
-    };
+  if (typeof rawProgress === "string") {
+    return rawProgress
+      .split(/[;,]/)
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
   }
 
-  return null;
-}
-
-function normalizePathwayForDashboard(pathway: Pathway): Pathway {
-  const courseCredits = pathway.requirements?.courseCredits;
-  if (!courseCredits) return pathway;
-
-  const requiredCourses = Array.isArray(courseCredits.requiredCourses)
-    ? courseCredits.requiredCourses
-        .map((course, index) => normalizeCourseEntry(course as PathwayCourseLike, index))
-        .filter((course): course is NonNullable<typeof course> => course !== null)
-    : [];
-
-  const electiveCourseOptions = Array.isArray(courseCredits.electiveCourseOptions)
-    ? courseCredits.electiveCourseOptions
-        .map((course, index) => normalizeCourseEntry(course as PathwayCourseLike, index))
-        .filter((course): course is NonNullable<typeof course> => course !== null)
-    : [];
-
-  return {
-    ...pathway,
-    requirements: {
-      ...pathway.requirements,
-      courseCredits: {
-        ...courseCredits,
-        requiredCourses,
-        electiveCourseOptions,
-      },
-    },
-  };
-}
-
-function normalizePathwayRecord(pathwayRecord: Record<string, Pathway>) {
-  return Object.fromEntries(
-    Object.entries(pathwayRecord).map(([key, pathway]) => [key, normalizePathwayForDashboard(pathway)])
-  ) as Record<string, Pathway>;
+  return [];
 }
 
 export default function Dashboard() {
-  type AcademicSuccessData = {
-    title: string;
-    description: string;
-    reading: {
-      courseOptions: string[];
-      examOptions: string[];
-      testScoreOptions: string[];
-    };
-    math: {
-      courseOptions: string[];
-      examOptions: string[];
-      testScoreOptions: string[];
-    };
-  };
-
-  const [pathways, setPathways] = useState<Record<string, Pathway>>({});
-  const [academicSuccessData, setAcademicSuccessData] = useState<AcademicSuccessData | null>(null);
+  const [pathways, setPathways] = useState<PathwayRecord>({});
+  const [isLoadingPathways, setIsLoadingPathways] = useState(true);
+  const [pathwaysLoadError, setPathwaysLoadError] = useState("");
   const [academicStatus, setAcademicStatus] = useState<AcademicStatus>({
     reading: false,
     math: false,
@@ -130,10 +48,53 @@ export default function Dashboard() {
   const [activePathwayKey, setActivePathwayKey] = useState<string | null>(null);
   const [starredPathways, setStarredPathways] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const [loadError, setLoadError] = useState("");
 
   const { data: session } = useSession();
+
+  useEffect(() => {
+    let mountedRef = true;
+
+    async function loadPathways() {
+      try {
+        const response = await fetch("/api/pathways");
+        if (!response.ok) {
+          throw new Error("Failed to load pathways.");
+        }
+
+        const data = await response.json();
+        if (!mountedRef) return;
+
+        const pathwayEntries = (Array.isArray(data) ? data : [])
+          .filter((pathway): pathway is Pathway => {
+            return (
+              pathway !== null &&
+              typeof pathway === "object" &&
+              typeof (pathway as Pathway).id === "string" &&
+              (pathway as Pathway).id.trim().length > 0
+            );
+          })
+          .sort((a, b) => String(a.title ?? "").localeCompare(String(b.title ?? "")))
+          .map((pathway) => [pathway.id, pathway] as const);
+
+        setPathways(Object.fromEntries(pathwayEntries));
+        setPathwaysLoadError("");
+      } catch {
+        if (!mountedRef) return;
+        setPathways({});
+        setPathwaysLoadError("Could not load pathways. Please refresh and try again.");
+      } finally {
+        if (mountedRef) {
+          setIsLoadingPathways(false);
+        }
+      }
+    }
+
+    loadPathways();
+
+    return () => {
+      mountedRef = false;
+    };
+  }, []);
 
   const pathwayKeyById = useMemo(() => {
     const keyMap = Object.entries(pathways).reduce<Record<string, string>>(
@@ -150,8 +111,11 @@ export default function Dashboard() {
       {}
     );
 
-    // Keep compatibility with legacy localStorage keys.
-    if (keyMap.entreprenuership) {
+    // Backward compatibility for the historical id typo.
+    if (keyMap.entrepreneurship && !keyMap.entreprenuership) {
+      keyMap.entreprenuership = keyMap.entrepreneurship;
+    }
+    if (keyMap.entreprenuership && !keyMap.entrepreneurship) {
       keyMap.entrepreneurship = keyMap.entreprenuership;
     }
 
@@ -163,10 +127,14 @@ export default function Dashboard() {
     [pathwayKeyById]
   );
 
-  // Load canonical data + local progress on mount.
+  // Load from localStorage on mount
   useEffect(() => {
+    if (isLoadingPathways) return;
 
     async function loadData() {
+      // Inline normalization to avoid stale closure issues
+      const normalizeKey = (keyOrId: string): string | null => pathwayKeyById[keyOrId] ?? null;
+
       if (session?.user?.email) {
         try {
           const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
@@ -174,25 +142,25 @@ export default function Dashboard() {
 
             const data = await res.json();
             const user = data[0];
-            console.log(user.Pathway_Progress);
             if (user && Array.isArray(user.Stored_Pathways)) {
               const validPathways = Array.from(
                 new Set(
                   user.Stored_Pathways
                     .filter((key: unknown): key is string => typeof key === "string")
-                    .map((key: string) => normalizePathwayKey(key))
+                    .map((key: string) => normalizeKey(key))
                     .filter((key: string | null): key is string => key !== null)
                 )
-              );
+              ) as string[];
 
               localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(validPathways));
               setStarredPathways(validPathways);
             }
-            if (user?.Pathway_Progress && Array.isArray(user.Pathway_Progress)) {
-              const completedCourses = new Set<string>(user.Pathway_Progress);
+            const progressCourses = parsePathwayProgress(user?.Pathway_Progress);
+            if (progressCourses.length > 0) {
+              const completedCourses = new Set<string>(progressCourses);
 
               const updatedPathways = Object.fromEntries(
-                Object.entries(pathwaysData).map(([key, pathway]) => [
+                Object.entries(pathways).map(([key, pathway]) => [
                   key,
                   {
                     ...pathway,
@@ -202,17 +170,17 @@ export default function Dashboard() {
                         ...pathway.requirements.courseCredits,
                         requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
                           ...c,
-                          completed: completedCourses.has(c.name),
+                          completed: c.name ? completedCourses.has(c.name) : false,
                         })),
                         electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
                           ...c,
-                          completed: completedCourses.has(c.name),
+                          completed: c.name ? completedCourses.has(c.name) : false,
                         })),
                       },
                     },
                   },
                 ])
-              ) as unknown as typeof pathwaysData;
+              ) as PathwayRecord;
 
               setPathways(updatedPathways);
               localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
@@ -240,11 +208,11 @@ export default function Dashboard() {
               new Set(
                 parsed
                   .filter((key): key is string => typeof key === "string")
-                  .map((key) => normalizePathwayKey(key))
+                  .map((key) => normalizeKey(key))
                   .filter((key): key is string => key !== null)
               )
             );
-            setStarredPathways(validPathways);
+              setStarredPathways(validPathways as string[]);
           }
         }
 
@@ -252,7 +220,7 @@ export default function Dashboard() {
           const parsedProgress = JSON.parse(savedProgress);
           if (parsedProgress && typeof parsedProgress === "object") {
             const validProgressEntries = Object.entries(parsedProgress)
-              .map(([key, value]) => [normalizePathwayKey(key), value] as const)
+              .map(([key, value]) => [normalizeKey(key), value] as const)
               .filter(
                 (entry): entry is readonly [string, Record<string, unknown>] =>
                   entry[0] !== null &&
@@ -285,18 +253,16 @@ export default function Dashboard() {
     }
 
     loadData();
-  }, [session, normalizePathwayKey]);
+  }, [session, isLoadingPathways]);
 
   // Save to localStorage whenever state changes
   useEffect(() => {
 
     if (!isHydrated) return;
-    console.log("first run");
 
     localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(pathways));
     localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(starredPathways));
     localStorage.setItem(ACADEMIC_STATUS_STORAGE_KEY, JSON.stringify(academicStatus));
-    console.log("first run");
     if (session?.user?.email) {
 
     }
@@ -306,7 +272,7 @@ export default function Dashboard() {
     const normalizedPathwayKey = normalizePathwayKey(pathwayKey);
     if (!normalizedPathwayKey) return;
 
-    const pathwayData = pathways[normalizedPathwayKey as keyof typeof pathways];
+    const pathwayData = pathways[normalizedPathwayKey];
     if (pathwayData) {
       setActivePathwayKey(normalizedPathwayKey);
       setActivePathway(JSON.parse(JSON.stringify(pathwayData)));
@@ -337,21 +303,59 @@ export default function Dashboard() {
   function extractProgress(pathwaysState: typeof pathways) {
     return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
       ...pathway.requirements.courseCredits.requiredCourses
-        .filter((c) => c.completed)
+        .filter((c) => "completed" in c && c.completed)
         .map((c) => c.name as string),
       ...pathway.requirements.courseCredits.electiveCourseOptions
-        .filter((c) => c.completed)
+        .filter((c) => "completed" in c && c.completed)
         .map((c) => c.name as string),
     ]).join(";");
   }
   function handleSave() {
     if (activePathway && activePathwayKey) {
-      const updatedPathways = {
-        ...pathways,
-        [activePathwayKey]: activePathway,
-      };
+      const completedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => "completed" in c && c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => "completed" in c && c.completed).map(c => c.name),
+      ]);
 
-      setPathways(updatedPathways);
+      const uncompletedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => !("completed" in c) || !c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => !("completed" in c) || !c.completed).map(c => c.name),
+      ]);
+
+      const syncedPathways = Object.fromEntries(
+        Object.entries({ ...pathways, [activePathwayKey]: activePathway }).map(
+          ([key, pathway]) => [
+            key,
+            {
+              ...pathway,
+              requirements: {
+                ...pathway.requirements,
+                courseCredits: {
+                  ...pathway.requirements.courseCredits,
+                  requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : "completed" in c ? c.completed : false,
+                  })),
+                  electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : "completed" in c ? c.completed : false,
+                  })),
+                },
+              },
+            },
+          ]
+        )
+      ) as unknown as typeof pathways;
+
+      setPathways(syncedPathways);
 
       if (session?.user?.email) {
         fetch("/api/users", {
@@ -360,7 +364,7 @@ export default function Dashboard() {
           body: JSON.stringify({
             User_Email: session.user.email,
             Stored_Pathways: starredPathways,
-            Pathway_Progress: extractProgress(updatedPathways),
+            Pathway_Progress: extractProgress(syncedPathways),
           }),
         }).catch(() => { });
       }
@@ -380,31 +384,35 @@ export default function Dashboard() {
     const normalizedPathwayKey = normalizePathwayKey(key);
     if (!normalizedPathwayKey) return sum;
 
-    const pathway = pathways[normalizedPathwayKey as keyof typeof pathways] as
-      | Pathway
-      | undefined;
+    const pathway = pathways[normalizedPathwayKey];
     if (!pathway) return sum;
     return sum + getPathwayStats(pathway).earnedCredits;
   }, 0);
 
-  const activeCanonicalPathway = activePathwayKey ? pathways[activePathwayKey] : null;
+  const activeCanonicalPathway = activePathwayKey
+    ? pathways[activePathwayKey]
+    : null;
   const isActivePathwayTCD = Boolean(activeCanonicalPathway?.tcd ?? activePathway?.tcd);
 
-  if (isLoadingData) {
+  if (isLoadingPathways) {
     return (
       <div className="min-h-screen w-full font-sans bg-(--bg-primary) text-(--text-primary)">
-        <div className="w-full min-h-screen px-12 py-8 md:px-14 space-y-8 flex flex-col max-w-412.5 mx-auto">
-          Loading dashboard...
+        <div className="w-full min-h-screen px-12 py-4 md:px-14 md:py-8 space-y-8 flex flex-col max-w-412.5 mx-auto">
+          <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6">
+            Loading pathways...
+          </div>
         </div>
       </div>
     );
   }
 
-  if (loadError) {
+  if (pathwaysLoadError) {
     return (
       <div className="min-h-screen w-full font-sans bg-(--bg-primary) text-(--text-primary)">
-        <div className="w-full min-h-screen px-12 py-8 md:px-14 space-y-8 flex flex-col max-w-412.5 mx-auto">
-          <div className="rounded-xl border border-(--danger) bg-(--danger-soft) text-(--danger) p-4">{loadError}</div>
+        <div className="w-full min-h-screen px-12 py-4 md:px-14 md:py-8 space-y-8 flex flex-col max-w-412.5 mx-auto">
+          <div className="bg-(--danger-soft) border border-(--danger) text-(--danger) rounded-xl p-6">
+            {pathwaysLoadError}
+          </div>
         </div>
       </div>
     );

@@ -60,6 +60,9 @@ export interface PathwaysRepository {
 
 const PATHWAYS_DIR = path.join(process.cwd(), "app", "data", "pathways");
 const ACADEMIC_SUCCESS_FILE = path.join(PATHWAYS_DIR, "academic-success.json");
+const APP_ENDORSEMENT_IMAGES_DIR = path.join(process.cwd(), "app", "endorsements", "images");
+const PUBLIC_ENDORSEMENT_IMAGES_DIR = path.join(process.cwd(), "public", "endorsements", "images");
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif"] as const;
 
 const EMBEDDED_NOTES = "these hours are embedded within the required career-focused coursework";
 const INTERNSHIP_NOTES = "Requires student to take the Blended Career Internship course to fulfill hours";
@@ -76,6 +79,9 @@ interface PathwayRequirementsRaw {
 }
 
 interface PathwayRaw {
+  id?: unknown;
+  imageFile?: unknown;
+  imagePath?: unknown;
   tcd?: unknown;
   requirements?: PathwayRequirementsRaw;
   [key: string]: unknown;
@@ -175,6 +181,38 @@ function makeNewPathwayFilePath(id: string): string {
   return path.join(PATHWAYS_DIR, `${safeId || `pathway-${Date.now()}`}.json`);
 }
 
+function safeUnlink(filePath: string): Promise<void> {
+  return fs.unlink(filePath).catch(() => undefined);
+}
+
+async function deletePathwayImages(pathway: PathwayRaw): Promise<void> {
+  const pathwayId = typeof pathway.id === "string" ? pathway.id.trim().toLowerCase() : "";
+  const explicitImageFile =
+    typeof pathway.imageFile === "string" && pathway.imageFile.trim().length > 0
+      ? path.basename(pathway.imageFile.trim())
+      : "";
+  const imagePathFile =
+    typeof pathway.imagePath === "string" && pathway.imagePath.trim().length > 0
+      ? path.basename(pathway.imagePath.trim())
+      : "";
+
+  const candidateFiles = new Set<string>();
+  if (explicitImageFile) candidateFiles.add(explicitImageFile);
+  if (imagePathFile) candidateFiles.add(imagePathFile);
+  if (pathwayId) {
+    for (const extension of IMAGE_EXTENSIONS) {
+      candidateFiles.add(`${pathwayId}${extension}`);
+    }
+  }
+
+  await Promise.all(
+    Array.from(candidateFiles).flatMap((fileName) => [
+      safeUnlink(path.join(APP_ENDORSEMENT_IMAGES_DIR, fileName)),
+      safeUnlink(path.join(PUBLIC_ENDORSEMENT_IMAGES_DIR, fileName)),
+    ])
+  );
+}
+
 export const fileSystemPathwaysRepository: PathwaysRepository = {
   async getAllPathwaysForAdmin() {
     const files = await listPathwayFiles();
@@ -194,6 +232,9 @@ export const fileSystemPathwaysRepository: PathwaysRepository = {
   async deletePathwayById(id) {
     const existingPath = await resolvePathwayFilePathById(id);
     if (!existingPath) return;
+
+    const existingPathway = await readJsonFile<PathwayRaw>(existingPath);
+    await deletePathwayImages(existingPathway);
 
     await fs.unlink(existingPath);
   },

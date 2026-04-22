@@ -1,11 +1,64 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AcademicEditorView from "./components/AcademicEditorView";
 import AdminHeader from "./components/AdminHeader";
 import DeletePathwayModal from "./components/DeletePathwayModal";
 import PathwayEditorView from "./components/PathwayEditorView";
 import PathwaysListView from "./components/PathwaysListView";
 import { AcademicRequirement, AdminView, Course, Pathway, AcademicSuccessData } from "./types";
+
+const BLENDED_CAREER_INTERNSHIP_NAME = "Blended Career Internship";
+const BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE =
+  "Class only available if you choose it for Professional Learning Fulfillment.";
+
+function normalizeCourseName(name: unknown): string {
+  if (typeof name !== "string") return "";
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function makeBlendedCareerInternshipCourse(): Course {
+  return {
+    name: BLENDED_CAREER_INTERNSHIP_NAME,
+    credits: 0.5,
+    earlyCollegeCredit: true,
+  };
+}
+
+function enforceProfessionalLearningCourseRule(pathway: Pathway): Pathway {
+  const method = pathway.requirements.professionalLearning.fulfillmentMethod;
+  const currentRequired = pathway.requirements.courseCredits.requiredCourses;
+  const internshipCourseKey = normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME);
+  const nonInternshipCourses = currentRequired.filter(
+    (course) => normalizeCourseName(course.name) !== internshipCourseKey
+  );
+
+  if (method === "internship") {
+    return {
+      ...pathway,
+      requirements: {
+        ...pathway.requirements,
+        courseCredits: {
+          ...pathway.requirements.courseCredits,
+          requiredCourses: [
+            ...nonInternshipCourses,
+            makeBlendedCareerInternshipCourse(),
+          ],
+        },
+      },
+    };
+  }
+
+  return {
+    ...pathway,
+    requirements: {
+      ...pathway.requirements,
+      courseCredits: {
+        ...pathway.requirements.courseCredits,
+        requiredCourses: nonInternshipCourses,
+      },
+    },
+  };
+}
 
 const emptyPathway: Pathway = {
   id: "",
@@ -65,6 +118,7 @@ export default function AdminPage() {
   const [loadError, setLoadError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [pathwayToDelete, setPathwayToDelete] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [editingPathway, setEditingPathway] = useState<Pathway>(emptyPathway);
   const [isNewPathway, setIsNewPathway] = useState(false);
@@ -114,7 +168,8 @@ export default function AdminPage() {
   };
 
   const handleEditPathway = (pathway: Pathway) => {
-    setEditingPathway(JSON.parse(JSON.stringify(pathway))); // Deep clone
+    const clonedPathway = JSON.parse(JSON.stringify(pathway)) as Pathway;
+    setEditingPathway(enforceProfessionalLearningCourseRule(clonedPathway));
     setIsNewPathway(false);
     setView("edit-pathway");
   };
@@ -151,19 +206,23 @@ export default function AdminPage() {
     }
 
     try {
+      const pathwayToSave = applyAutoCredits(enforceProfessionalLearningCourseRule(editingPathway));
+
       await fetch("/api/admin/pathways", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingPathway)
+        body: JSON.stringify(pathwayToSave)
       }).then(parseApiResponse);
+
+      setEditingPathway(pathwayToSave);
 
       setPathwaysDb((prev) => {
         if (isNewPathway) {
-          return [...prev, editingPathway].sort((a, b) => a.title.localeCompare(b.title));
+          return [...prev, pathwayToSave].sort((a, b) => a.title.localeCompare(b.title));
         }
 
         return prev
-          .map((p) => (p.id === editingPathway.id ? editingPathway : p))
+          .map((p) => (p.id === pathwayToSave.id ? pathwayToSave : p))
           .sort((a, b) => a.title.localeCompare(b.title));
       });
 
@@ -207,10 +266,20 @@ export default function AdminPage() {
   };
 
   const handleProfLearningMethodChange = (method: "embedded" | "internship") => {
-    setEditingPathway((prev) => ({
-      ...prev,
-      requirements: { ...prev.requirements, professionalLearning: { fulfillmentMethod: method } }
-    }));
+    setEditingPathway((prev) => {
+      const updatedPathway = {
+        ...prev,
+        requirements: {
+          ...prev.requirements,
+          professionalLearning: {
+            ...prev.requirements.professionalLearning,
+            fulfillmentMethod: method,
+          },
+        },
+      };
+
+      return enforceProfessionalLearningCourseRule(updatedPathway);
+    });
   };
 
   const manageCourse = (
@@ -220,6 +289,22 @@ export default function AdminPage() {
     field?: keyof Course,
     value?: string | number | boolean
   ) => {
+    if (
+      type === "required" &&
+      action === "update" &&
+      field === "name" &&
+      typeof value === "string" &&
+      normalizeCourseName(value) === normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME) &&
+      editingPathway.requirements.professionalLearning.fulfillmentMethod !== "internship"
+    ) {
+      if (typeof window !== "undefined") {
+        window.alert(BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE);
+      }
+      setErrorMessage(BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE);
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
+    }
+
     setEditingPathway((prev) => {
       const key = type === "required" ? "requiredCourses" : "electiveCourseOptions";
       const newArray = [...prev.requirements.courseCredits[key]];
@@ -228,10 +313,12 @@ export default function AdminPage() {
       if (action === 'remove' && index !== undefined) newArray.splice(index, 1);
       if (action === 'update' && index !== undefined && field) newArray[index] = { ...newArray[index], [field]: value };
 
-      return {
+      const updatedPathway = {
         ...prev,
         requirements: { ...prev.requirements, courseCredits: { ...prev.requirements.courseCredits, [key]: newArray } }
       };
+
+      return enforceProfessionalLearningCourseRule(updatedPathway);
     });
   };
 
@@ -275,16 +362,6 @@ export default function AdminPage() {
     }));
   };
 
-  const handleTotalCreditsChange = (value: number) => {
-    setEditingPathway((prev) => ({
-      ...prev,
-      requirements: {
-        ...prev.requirements,
-        courseCredits: { ...prev.requirements.courseCredits, totalCreditsRequired: value }
-      }
-    }));
-  };
-
   const handleElectiveCreditsChange = (value: number) => {
     setEditingPathway((prev) => ({
       ...prev,
@@ -304,6 +381,59 @@ export default function AdminPage() {
       }
     }));
   };
+
+  const handlePathwayImageUpload = async (file: File) => {
+    const pathwayId = editingPathway.id.trim();
+    if (!pathwayId) {
+      setErrorMessage("Set a pathway ID before uploading an image.");
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
+    }
+
+    try {
+      setIsUploadingImage(true);
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("pathwayId", pathwayId);
+
+      const result = await fetch("/api/admin/pathway-image", {
+        method: "POST",
+        body: formData
+      }).then(parseApiResponse);
+
+      setEditingPathway((prev) => ({
+        ...prev,
+        imageFile: result.imageFile,
+        imagePath: result.imagePath
+      }));
+      showSaveSuccess("Pathway image uploaded.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to upload pathway image.";
+      setErrorMessage(message);
+      setTimeout(() => setErrorMessage(""), 3000);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const imagePreviewCandidates = useMemo(() => {
+    const pathwayId = editingPathway.id.trim();
+    if (!pathwayId) {
+      return [];
+    }
+
+    const params = new URLSearchParams({ pathwayId });
+    if (typeof editingPathway.imageFile === "string" && editingPathway.imageFile.trim().length > 0) {
+      params.set("imageFile", editingPathway.imageFile.trim());
+    }
+
+    return [`/api/admin/pathway-image?${params.toString()}`];
+  }, [editingPathway.id, editingPathway.imageFile, editingPathway.imagePath]);
+
+  const computedTotalCredits = useMemo(
+    () => calculateTotalCreditsRequired(editingPathway),
+    [editingPathway]
+  );
 
 
   return (
@@ -338,14 +468,17 @@ export default function AdminPage() {
           <PathwayEditorView
             editingPathway={editingPathway}
             isNewPathway={isNewPathway}
+            computedTotalCredits={computedTotalCredits}
             errorMessage={errorMessage}
+            isUploadingImage={isUploadingImage}
+            imagePreviewCandidates={imagePreviewCandidates}
             onBack={() => setView("list")}
             onSave={savePathwayToDb}
             onPathwayBasicChange={handlePathwayBasicChange}
+            onPathwayImageUpload={handlePathwayImageUpload}
             onProfLearningMethodChange={handleProfLearningMethodChange}
             onManageCourse={manageCourse}
             onManageCoCurricular={manageCoCurricular}
-            onTotalCreditsChange={handleTotalCreditsChange}
             onElectiveCreditsChange={handleElectiveCreditsChange}
             onCoCurricularRequiredChange={handleCoCurricularRequiredChange}
           />
@@ -365,4 +498,26 @@ export default function AdminPage() {
       </main>
     </div>
   );
+}
+
+function calculateTotalCreditsRequired(pathway: Pathway): number {
+  const requiredCredits = pathway.requirements.courseCredits.requiredCourses.reduce(
+    (sum, course) => sum + (typeof course.credits === "number" ? course.credits : 0),
+    0
+  );
+  const electiveCredits = Number(pathway.requirements.courseCredits.electiveCreditsRequired ?? 0);
+  return requiredCredits + electiveCredits;
+}
+
+function applyAutoCredits(pathway: Pathway): Pathway {
+  return {
+    ...pathway,
+    requirements: {
+      ...pathway.requirements,
+      courseCredits: {
+        ...pathway.requirements.courseCredits,
+        totalCreditsRequired: calculateTotalCreditsRequired(pathway),
+      },
+    },
+  };
 }

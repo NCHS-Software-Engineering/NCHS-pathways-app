@@ -1,13 +1,25 @@
-import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Plus, Save, Trash2 } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Plus, Save, Trash2, Upload } from "lucide-react";
 import { Course, Pathway } from "../types";
+
+const BLENDED_CAREER_INTERNSHIP_NAME = "Blended Career Internship";
+
+function normalizeCourseName(name: unknown): string {
+  if (typeof name !== "string") return "";
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
+}
 
 interface PathwayEditorViewProps {
   editingPathway: Pathway;
   isNewPathway: boolean;
+  computedTotalCredits: number;
   errorMessage: string;
+  isUploadingImage: boolean;
+  imagePreviewCandidates: string[];
   onBack: () => void;
   onSave: () => void;
   onPathwayBasicChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onPathwayImageUpload: (file: File) => void;
   onProfLearningMethodChange: (method: "embedded" | "internship") => void;
   onManageCourse: (
     action: "add" | "remove" | "update",
@@ -16,22 +28,31 @@ interface PathwayEditorViewProps {
     field?: keyof Course,
     value?: string | number | boolean
   ) => void;
-  onTotalCreditsChange: (value: number) => void;
+  onManageCoCurricular: (action: "add" | "remove" | "update", index?: number, value?: string) => void;
+  onCoCurricularRequiredChange: (required: boolean) => void;
   onElectiveCreditsChange: (value: number) => void;
 }
 
 export default function PathwayEditorView({
   editingPathway,
   isNewPathway,
+  computedTotalCredits,
   errorMessage,
+  isUploadingImage,
+  imagePreviewCandidates,
   onBack,
   onSave,
   onPathwayBasicChange,
+  onPathwayImageUpload,
   onProfLearningMethodChange,
   onManageCourse,
-  onTotalCreditsChange,
+  onManageCoCurricular,
+  onCoCurricularRequiredChange,
   onElectiveCreditsChange
 }: PathwayEditorViewProps) {
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [previewUnavailable, setPreviewUnavailable] = useState(false);
+
   const categoryOptions = [
     { value: "STEM", label: "STEM" },
     { value: "Business", label: "Financial Services" },
@@ -49,6 +70,25 @@ export default function PathwayEditorView({
     editingPathway.category !== "Other" &&
     !categoryOptionValues.includes(editingPathway.category);
   const selectedCategoryValue = isCustomCategory ? "Other" : editingPathway.category;
+
+  useEffect(() => {
+    setPreviewIndex(0);
+    setPreviewUnavailable(false);
+  }, [imagePreviewCandidates]);
+
+  const activePreviewUrl = useMemo(() => {
+    if (previewUnavailable) return "";
+    return imagePreviewCandidates[previewIndex] ?? "";
+  }, [imagePreviewCandidates, previewIndex, previewUnavailable]);
+
+  const handlePreviewError = () => {
+    if (previewIndex < imagePreviewCandidates.length - 1) {
+      setPreviewIndex((prev) => prev + 1);
+      return;
+    }
+
+    setPreviewUnavailable(true);
+  };
 
   return (
     <div className="space-y-7 text-[1.02rem] animate-in slide-in-from-right-4 duration-300">
@@ -128,6 +168,18 @@ export default function PathwayEditorView({
               )}
             </div>
 
+            <div className="space-y-1 md:col-span-2">
+              <label className="text-sm font-medium text-(--text-secondary)">Schoolinks Link</label>
+              <input
+                type="url"
+                name="link"
+                value={typeof editingPathway.link === "string" ? editingPathway.link : ""}
+                onChange={onPathwayBasicChange}
+                className="w-full px-4 py-2 rounded-lg border border-(--border-primary) focus:outline-none focus:ring-2 focus:ring-(--brand)/50"
+                placeholder="https://app.schoolinks.com/student-pathways/..."
+              />
+            </div>
+
             <div className="col-span-1 md:col-span-2 pt-2">
               <label className="flex items-center gap-3 cursor-pointer p-4 border border-(--border-primary) rounded-lg hover:bg-(--admin-soft-hover) transition-colors">
                 <input
@@ -142,6 +194,49 @@ export default function PathwayEditorView({
                   <p className="text-xs text-(--text-secondary)">Checking this removes the ability to add electives.</p>
                 </div>
               </label>
+            </div>
+
+            <div className="col-span-1 md:col-span-2 border border-(--border-primary) rounded-lg p-4 bg-(--admin-muted-bg)">
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div>
+                    <p className="font-bold text-(--text-primary)">Pathway Image</p>
+                  </div>
+                  <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity">
+                    <Upload size={16} /> {isUploadingImage ? "Uploading..." : "Upload Image"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={isUploadingImage}
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        onPathwayImageUpload(file);
+                        e.currentTarget.value = "";
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                  <div>
+                    <p className="text-sm font-medium text-(--text-secondary) mb-1">Preview</p>
+                    {activePreviewUrl ? (
+                      <img
+                        src={activePreviewUrl}
+                        alt={`${editingPathway.title || "Pathway"} preview`}
+                        onError={handlePreviewError}
+                        className="w-full max-w-sm aspect-video object-cover rounded-lg border border-(--border-primary) bg-(--bg-card)"
+                      />
+                    ) : (
+                      <div className="w-full max-w-sm aspect-video rounded-lg border border-dashed border-(--border-primary) bg-(--bg-card) text-(--text-secondary) text-sm flex items-center justify-center">
+                        No image preview available
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -158,8 +253,8 @@ export default function PathwayEditorView({
                 type="number"
                 step="0.5"
                 min="0"
-                value={editingPathway.requirements.courseCredits.totalCreditsRequired}
-                onChange={(e) => onTotalCreditsChange(Number(e.target.value))}
+                value={computedTotalCredits}
+                readOnly
                 className="w-20 px-3 py-1 rounded-md border border-(--border-primary) font-bold text-center"
               />
             </div>
@@ -178,17 +273,29 @@ export default function PathwayEditorView({
                 </button>
               </div>
 
+              {editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship" && (
+                <p className="text-xs text-(--text-secondary) mb-3">
+                  Blended Career Internship is auto-required when Professional Learning is set to Internship.
+                </p>
+              )}
+
               <div className="space-y-3">
                 {editingPathway.requirements.courseCredits.requiredCourses.length === 0 ? (
                   <p className="text-sm text-(--text-secondary) italic p-4 bg-(--admin-muted-bg) rounded-lg text-center border border-dashed border-(--border-primary)">No required courses added yet.</p>
                 ) : (
-                  editingPathway.requirements.courseCredits.requiredCourses.map((course, idx) => (
+                  editingPathway.requirements.courseCredits.requiredCourses.map((course, idx) => {
+                    const isLockedInternshipCourse =
+                      editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship" &&
+                      normalizeCourseName(course.name) === normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME);
+
+                    return (
                     <div key={idx} className="flex flex-wrap md:flex-nowrap items-center gap-4 bg-(--admin-muted-bg) p-3 rounded-lg border border-(--border-primary)">
                       <input
                         type="text"
                         placeholder="Course Name"
                         value={course.name}
                         onChange={(e) => onManageCourse("update", "required", idx, "name", e.target.value)}
+                        disabled={isLockedInternshipCourse}
                         className="flex-1 min-w-50 px-3 py-2 rounded border border-(--border-primary) text-sm"
                       />
                       <div className="flex items-center gap-2">
@@ -199,6 +306,7 @@ export default function PathwayEditorView({
                           min="0"
                           value={course.credits}
                           onChange={(e) => onManageCourse("update", "required", idx, "credits", Number(e.target.value))}
+                          disabled={isLockedInternshipCourse}
                           className="w-16 px-2 py-2 rounded border border-(--border-primary) text-sm text-center"
                         />
                       </div>
@@ -207,19 +315,26 @@ export default function PathwayEditorView({
                           type="checkbox"
                           checked={course.earlyCollegeCredit}
                           onChange={(e) => onManageCourse("update", "required", idx, "earlyCollegeCredit", e.target.checked)}
+                          disabled={isLockedInternshipCourse}
                           className="rounded text-(--brand)"
                         />
                         <span className="text-xs font-medium whitespace-nowrap">College Credit?</span>
                       </label>
+                      {isLockedInternshipCourse && (
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded bg-(--brand-soft) text-(--brand-text) border border-(--brand)/20">
+                          Auto-required
+                        </span>
+                      )}
                       <button
                         type="button"
                         onClick={() => onManageCourse("remove", "required", idx)}
+                        disabled={isLockedInternshipCourse}
                         className="p-2 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded transition-colors"
                       >
                         <Trash2 size={18} />
                       </button>
                     </div>
-                  ))
+                  )})
                 )}
               </div>
             </div>

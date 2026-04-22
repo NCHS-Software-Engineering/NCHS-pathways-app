@@ -1,45 +1,14 @@
 "use client";
 import React from "react";
-import { StaticImageData } from 'next/image';
+import { useSession } from "next-auth/react";
 import { Star } from "lucide-react";
-
-// Importing images
-import animalImage from "./images/animal-systems.jpg";
-import healthSciencesImage from "./images/health-sciences.jpg";
-import cosmetologyImage from "./images/cosmetology.jpg";
-import educationImage from "./images/education-training.jpg";
-import emtImage from "./images/emt.jpg";
-import entrepreneurshipImage from "./images/entrepreneurship.jpg";
-import financeImage from "./images/finance-accounting.jpg";
-import policyImage from "./images/global-domestic-policy.jpg";
-import marketingImage from "./images/marketing.jpg";
-import networkImage from "./images/network-systems.jpg";
-import nursingImage from "./images/nursing-assistant.jpg";
-import plantSystemsImage from "./images/plant-systems.jpg";
-import programmingImage from "./images/programming-software.jpg";
-
-const pathwayImages: Record<string, StaticImageData> = {
-  "animal-systems": animalImage,
-  "health-sciences": healthSciencesImage,
-  "cosmetology": cosmetologyImage,
-  "education-training": educationImage,
-  "emt": emtImage,
-  "entreprenuership": entrepreneurshipImage,
-  "finance-accounting": financeImage,
-  "global-domestic-policy": policyImage,
-  "marketing": marketingImage,
-  "network-systems-info-services": networkImage,
-  "nursing-assistant": nursingImage,
-  "plant-systems": plantSystemsImage,
-  "programming-software-dev": programmingImage,
-};
 
 interface PathwayCardProps {
   pathwayId: string;
   title: string;
   category: string;
   tcd: boolean;
-  image?: StaticImageData;
+  imageUrl?: string;
   link: string; //in jsons for each pathway, does not need to be hard-coded
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
@@ -51,6 +20,8 @@ interface EndorsementPathway {
   category: string;
   tcd: boolean;
   link: string;
+  imageFile?: string;
+  imagePath?: string;
 }
 
 // Card Component for Pathways
@@ -59,14 +30,17 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   title,
   category,
   tcd,
-  image,
+  imageUrl,
   link,
   isStarred,
   onToggle
 }) => {
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div
+      onClick={() => window.open(link, "_blank", "noopener,noreferrer")}
+      className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+    >
 
       <button
         onClick={(e) => {
@@ -85,13 +59,13 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         />
       </button>
 
-      {image ? (
+      {imageUrl ? (
         <div
-          className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
-          style={{ backgroundImage: `url(${image.src})` }}
+          className="aspect-video w-full rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
+          style={{ backgroundImage: `url(${imageUrl})` }}
         />
       ) : (
-        <div className="h-35 rounded-lg mb-3 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 transition-transform duration-300 group-hover:scale-105" />
+        <div className="aspect-video w-full rounded-lg mb-3 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 transition-transform duration-300 group-hover:scale-105" />
       )}
 
       <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
@@ -112,6 +86,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
 };
 
 export default function EndorsementsPage() {
+  const { data: session } = useSession();
   const [pathways, setPathways] = React.useState<EndorsementPathway[]>([]);
   const [isLoadingPathways, setIsLoadingPathways] = React.useState(true);
   //This paragraph can be replaced with const [starredPathways, setStarredPathways] = React.useState<number[]>([]);
@@ -125,6 +100,24 @@ export default function EndorsementsPage() {
 });*/
   const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
   const [mounted, setMounted] = React.useState(false);
+
+  const getPathwayImageUrl = React.useCallback((pathway: EndorsementPathway): string | undefined => {
+    const imageFile = typeof pathway.imageFile === "string" ? pathway.imageFile.trim() : "";
+    if (imageFile) {
+      return `/endorsements/images/${encodeURIComponent(imageFile)}`;
+    }
+
+    const imagePath = typeof pathway.imagePath === "string" ? pathway.imagePath.trim() : "";
+    if (imagePath) {
+      return imagePath;
+    }
+
+    if (pathway.id) {
+      return `/endorsements/images/${encodeURIComponent(pathway.id)}.jpg`;
+    }
+
+    return undefined;
+  }, []);
 
   React.useEffect(() => {
     let mountedRef = true;
@@ -228,7 +221,7 @@ export default function EndorsementsPage() {
             Click on a pathway card to open Schoolinks&apos;s page for it (you must be logged in).
           </h4>
 
-         <div className="flex flex-wrap gap-6">
+         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {pathways.map((pathway) => (
               <PathwayCard
                 key={pathway.id}
@@ -236,7 +229,7 @@ export default function EndorsementsPage() {
                 title={pathway.title}
                 category={pathway.category}
                 tcd={pathway.tcd}
-                image={pathwayImages[pathway.id]} 
+                imageUrl={getPathwayImageUrl(pathway)}
                 link={pathway.link || "https://app.schoolinks.com"}
                 isStarred={starredPathways.includes(pathway.id)}
                 onToggle={toggleStar}

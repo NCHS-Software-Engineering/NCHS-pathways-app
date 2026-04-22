@@ -1,36 +1,30 @@
 {
-    "id": "emt",
-    "title": "Emergency Medical Technician",
-    "category": "Public Service and Safety",
-
-    "link": "https://app.schoolinks.com/student-pathways/emergency-medical-technician/",
-    "tcd": true,
-
-    "requirements": {
-        "pathwayType": "TCD",
-        "courseCredits": {
-        "totalCreditsRequired": 3.0,
-
-        "requiredCourses": [
-            {
-            "name": "Emergency Medical Training",
-            "credits": 3.0,
-            "earlyCollegeCredit": true 
-            }
-        ],
-
-        "electiveCreditsRequired": 0,
-
-        "electiveCourseOptions": [
-            
-        ]
-        },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "hese hours are embedded within the required career-focused coursework"
+  "id": "emt",
+  "title": "Emergency Medical Technician",
+  "category": "Public Service and Safety",
+  "link": "https://app.schoolinks.com/student-pathways/emergency-medical-technician/",
+  "tcd": true,
+  "requirements": {
+    "pathwayType": "TCD",
+    "courseCredits": {
+      "totalCreditsRequired": 3,
+      "requiredCourses": [
+        {
+          "name": "Emergency Medical Training",
+          "credits": 3,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 0,
+      "electiveCourseOptions": []
+    },
+    "professionalLearning": {
+      "notes": "these hours are embedded within the required career-focused coursework",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "emt.jpg",
+  "imagePath": "/endorsements/images/emt.jpg"
 }

@@ -1,37 +1,30 @@
 {
-    "id": "nursing-assistant",
-    "title": "Nursing Assistant",
-    "category": "Healthcare & Human Services",
-
-    "link": "https://app.schoolinks.com/student-pathways/nursing-assistant/",
-    "tcd": true,
-
-    "requirements": {
-        "pathwayType": "TCD",
-        "courseCredits": {
-        "totalCreditsRequired": 3.0,
-
-        "requiredCourses": [
-            {
-            "name": "Nursing Assistant Training Program ",
-            "credits": 3.0,
-            "earlyCollegeCredit": true 
-            }
-            
-        ],
-
-        "electiveCreditsRequired": 0,
-
-        "electiveCourseOptions": [
-            
-        ]
-        },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "These hours are embedded within the required career-focused coursework"
+  "id": "nursing-assistant",
+  "title": "Nursing Assistant",
+  "category": "Healthcare & Human Services",
+  "link": "https://app.schoolinks.com/student-pathways/nursing-assistant/",
+  "tcd": true,
+  "requirements": {
+    "pathwayType": "TCD",
+    "courseCredits": {
+      "totalCreditsRequired": 3,
+      "requiredCourses": [
+        {
+          "name": "Nursing Assistant Training Program ",
+          "credits": 3,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 0,
+      "electiveCourseOptions": []
+    },
+    "professionalLearning": {
+      "notes": "these hours are embedded within the required career-focused coursework",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "nursing-assistant.jpg",
+  "imagePath": "/endorsements/images/nursing-assistant.jpg"
 }
