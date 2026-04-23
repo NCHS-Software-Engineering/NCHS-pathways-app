@@ -11,7 +11,45 @@ export default function SettingsPage() {
   const [displayName, setDisplayName] = useState("");
   const [gradYear, setGradYear] = useState("2026");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [dbUsername, setDbUsername] = useState<string>("");
 
+  async function handleSave() {
+    if (!session?.user?.email) return;
+
+    await fetch("/api/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        User_Email: session.user.email,
+        Username: displayName,
+      }),
+
+    });
+    if (typeof window !== "undefined") {  
+      window.dispatchEvent(new Event("usernameUpdated"));
+    }
+  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (session?.user?.image) {
+        setImagePreview(session.user.image);
+      }
+
+      if (session?.user?.email) {
+        const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
+        if (res.ok) {
+          const data = await res.json();
+          const user = data[0];
+          if (user?.Username) {
+            setDbUsername(user.Username);
+            setDisplayName(user.Username);
+          }
+        }
+      }
+    };
+
+    fetchUser();
+  }, [session]);
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setDark(isDark);
@@ -36,7 +74,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
-      
+
       <div className="flex">
 
         <main className="flex-1 p-8 space-y-8">
@@ -53,16 +91,14 @@ export default function SettingsPage() {
 
               <button
                 onClick={toggleDark}
-                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-                  dark
-                    ? "bg-(--brand)"
-                    : "bg-(--border-primary)"
-                }`}
+                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${dark
+                  ? "bg-(--brand)"
+                  : "bg-(--border-primary)"
+                  }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                    dark ? "translate-x-7" : ""
-                  }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${dark ? "translate-x-7" : ""
+                    }`}
                 />
               </button>
             </div>
@@ -132,7 +168,10 @@ export default function SettingsPage() {
               </select>
             </div>
 
-            <button className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition">
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+            >
               Save Changes
             </button>
           </div>

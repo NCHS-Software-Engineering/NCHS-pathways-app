@@ -245,23 +245,34 @@ export async function PUT(req) {
 
     const body = await req.json();
 
-    const { User_Email, Stored_Pathways, Pathway_Progress } = body;
+    const { User_Email, Stored_Pathways, Pathway_Progress, Username } = body;
 
     if (!User_Email) {
       return Response.json({ error: "User_Email required" }, { status: 400 });
     }
 
+    const fields = [];
+    const values = [];
+
+    if (Stored_Pathways !== undefined) {
+      fields.push("Stored_Pathways = ?");
+      values.push(stringifyField(Stored_Pathways));
+    }
+    if (Pathway_Progress !== undefined) {
+      fields.push("Pathway_Progress = ?");
+      values.push(stringifyField(Pathway_Progress));
+    }
+    if (Username !== undefined) {
+      fields.push("Username = ?");
+      values.push(Username);
+    }
+
+    fields.push("UpdatedAt = NOW()");
+    values.push(User_Email);
+
     await db.query(
-      `UPDATE User_Data 
-       SET Stored_Pathways = ?, 
-           Pathway_Progress = ?, 
-           UpdatedAt = NOW()
-       WHERE User_Email = ?`,
-      [
-        stringifyField(Stored_Pathways),
-        stringifyField(Pathway_Progress),
-        User_Email,
-      ]
+      `UPDATE User_Data SET ${fields.join(", ")} WHERE User_Email = ?`,
+      values
     );
 
     return Response.json({ success: true });

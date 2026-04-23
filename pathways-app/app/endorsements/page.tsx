@@ -2,6 +2,8 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import { Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { pathways } from "../data/pathways";
 
 interface PathwayCardProps {
   pathwayId: string;
@@ -176,7 +178,6 @@ export default function EndorsementsPage() {
         body: JSON.stringify({
           User_Email: session.user.email,
           Stored_Pathways: starredPathways,
-          Pathway_Progress: [],
         }),
       }).catch(() => { });
     }
