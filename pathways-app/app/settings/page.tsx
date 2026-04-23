@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const [gradYear, setGradYear] = useState("2026");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dbUsername, setDbUsername] = useState<string>("");
+  const DEFAULT_AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxMDAiIGZpbGw9IiNkMWQ1ZGIiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMzUiIGZpbGw9IiM5Y2EzYWYiLz4KICA8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTcwIiByeD0iNTUiIHJ5PSI0MCIgZmlsbD0iIzljYTNhZiIvPgo8L3N2Zz4=";
 
   async function handleSave() {
     if (!session?.user?.email) return;
@@ -22,19 +23,17 @@ export default function SettingsPage() {
       body: JSON.stringify({
         User_Email: session.user.email,
         Username: displayName,
+        Profile_Picture: imagePreview,
+
       }),
 
     });
-    if (typeof window !== "undefined") {  
+    if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("usernameUpdated"));
     }
   }
   useEffect(() => {
     const fetchUser = async () => {
-      if (session?.user?.image) {
-        setImagePreview(session.user.image);
-      }
-
       if (session?.user?.email) {
         const res = await fetch(`/api/users?email=${encodeURIComponent(session.user.email)}`);
         if (res.ok) {
@@ -43,6 +42,11 @@ export default function SettingsPage() {
           if (user?.Username) {
             setDbUsername(user.Username);
             setDisplayName(user.Username);
+          }
+          if (user?.Profile_Picture) {
+            setImagePreview(user.Profile_Picture);
+          } else if (session?.user?.image) {
+            setImagePreview(session.user.image);
           }
         }
       }
@@ -113,7 +117,7 @@ export default function SettingsPage() {
             {/* Profile Picture */}
             <div className="flex items-center gap-6">
               <img
-                src={imagePreview || "/default-avatar.png"}
+                src={imagePreview || DEFAULT_AVATAR}
                 className="w-20 h-20 rounded-full object-cover border"
                 alt="Profile"
               />

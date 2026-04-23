@@ -223,7 +223,7 @@ export async function PUT(req) {
   try {
     const body = await req.json();
 
-    const { User_Email, Stored_Pathways, Pathway_Progress, Username, Reading_Competency, Math_Competency } = body;
+    const { User_Email, Stored_Pathways, Pathway_Progress, Username, Reading_Competency, Math_Competency, Profile_Picture } = body;
     if (!User_Email) {
       return Response.json({ error: "User_Email required" }, { status: 400 });
     }
@@ -238,6 +238,10 @@ export async function PUT(req) {
     if (Pathway_Progress !== undefined) {
       fields.push("Pathway_Progress = ?");
       values.push(stringifyField(Pathway_Progress));
+    }
+    if (Profile_Picture !== undefined) {
+      fields.push("Profile_Picture = ?");
+      values.push(Profile_Picture);
     }
     if (Username !== undefined) {
       fields.push("Username = ?");

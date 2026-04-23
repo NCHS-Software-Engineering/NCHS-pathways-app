@@ -8,6 +8,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dbUsername, setDbUsername] = useState<string>("");
+  const [dbAvatar, setDbAvatar] = useState<string>("");
+  const DEFAULT_AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxMDAiIGZpbGw9IiNkMWQ1ZGIiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMzUiIGZpbGw9IiM5Y2EzYWYiLz4KICA8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTcwIiByeD0iNTUiIHJ5PSI0MCIgZmlsbD0iIzljYTNhZiIvPgo8L3N2Zz4=";
 
   useEffect(() => {
     const fetchUsername = () => {
@@ -16,7 +18,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         .then(res => res.json())
         .then(data => {
           if (data[0]?.Username) setDbUsername(data[0].Username);
+          if (data[0]?.Profile_Picture) setDbAvatar(data[0].Profile_Picture);
+
         })
+
         .catch(() => { });
     };
     fetchUsername();
@@ -57,7 +62,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         ) : (
           <div className="flex gap-3">
             <img
-              src={session.user?.image || "/default-avatar.png"}
+              src={dbAvatar || DEFAULT_AVATAR} 
               className="w-9 h-9 rounded-full"
               alt="User avatar"
             />
