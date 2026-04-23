@@ -71,6 +71,15 @@ export default function Dashboard() {
             if (user?.Username) {
               setDbUsername(user.Username);
             }
+            if (typeof user?.Reading_Competency === "number" || typeof user?.Math_Competency === "number") {
+              const status = {
+                reading: user.Reading_Competency === 1,
+                math: user.Math_Competency === 1,
+              };
+              setAcademicStatus(status);
+              localStorage.setItem(ACADEMIC_STATUS_STORAGE_KEY, JSON.stringify(status));
+            }
+
             console.log(user.Pathway_Progress);
             if (user && Array.isArray(user.Stored_Pathways)) {
               const validPathways = Array.from(
@@ -185,20 +194,43 @@ export default function Dashboard() {
   }, [session, normalizePathwayKey]);
 
   // Save to localStorage whenever state changes
+  const prevAcademicStatus = React.useRef<AcademicStatus | null>(null);
+
   useEffect(() => {
-
     if (!isHydrated) return;
-    console.log("first run");
+    if (!session?.user?.email) return;
 
-    localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(pathways));
-    localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(starredPathways));
-    localStorage.setItem(ACADEMIC_STATUS_STORAGE_KEY, JSON.stringify(academicStatus));
-    console.log("first run");
-    if (session?.user?.email) {
+    if (
+      prevAcademicStatus.current?.reading === academicStatus.reading &&
+      prevAcademicStatus.current?.math === academicStatus.math
+    ) return;
 
-    }
-  }, [pathways, starredPathways, academicStatus, isHydrated, session]);
+    prevAcademicStatus.current = academicStatus;
 
+    fetch("/api/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        User_Email: session.user.email,
+        Reading_Competency: academicStatus.reading ? 1 : 0,
+        Math_Competency: academicStatus.math ? 1 : 0,
+      }),
+    }).catch(() => { });
+  }, [academicStatus, isHydrated, session]);
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!session?.user?.email) return;
+
+    fetch("/api/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        User_Email: session.user.email,
+        Reading_Competency: academicStatus.reading ? 1 : 0,
+        Math_Competency: academicStatus.math ? 1 : 0,
+      }),
+    }).catch(() => { });
+  }, [academicStatus, isHydrated, session]);
   function openPathway(pathwayKey: string) {
     const normalizedPathwayKey = normalizePathwayKey(pathwayKey);
     if (!normalizedPathwayKey) return;
@@ -296,6 +328,8 @@ export default function Dashboard() {
             User_Email: session.user.email,
             Stored_Pathways: starredPathways,
             Pathway_Progress: extractProgress(syncedPathways),
+            Reading_Competency: academicStatus.reading ? 1 : 0,
+            Math_Competency: academicStatus.math ? 1 : 0,
           }),
         }).catch(() => { });
       }
