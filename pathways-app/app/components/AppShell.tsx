@@ -55,6 +55,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               src="https://developers.google.com/identity/images/g-logo.png"
               className="w-4 h-4"
               alt="Google logo"
+              aria-label="Sign in"
             />
             <span className="hidden sm:inline">Sign in with Google</span>
             <span className="sm:hidden">Sign in</span>
@@ -65,6 +66,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               src={dbAvatar || DEFAULT_AVATAR} 
               className="w-9 h-9 rounded-full"
               alt="User avatar"
+              aria-label="Sign out"
             />
 
             <span className="font-medium text-base hidden sm:block self-center">

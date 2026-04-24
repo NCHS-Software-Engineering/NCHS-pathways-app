@@ -42,6 +42,7 @@ export function AcademicSuccessActionItem({
                 <input
                   type="checkbox"
                   className="hidden"
+                  aria-label="Check/uncheck academic success in reading"
                   checked={academicStatus.reading}
                   onChange={(e) =>
                     setAcademicStatus((prev) => ({
@@ -70,6 +71,7 @@ export function AcademicSuccessActionItem({
             <button
               onClick={() => setShowReadingDetails(!showReadingDetails)}
               className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              aria-label="Show/close academic success in reading details"
               style={{
                 transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
               }}
@@ -103,6 +105,7 @@ export function AcademicSuccessActionItem({
                     className={`transition-transform ${
                       showReadingCourses ? "rotate-90" : ""
                     }`}
+                    aria-label="Show/close approved coursework for academic success in reading"
                   />
                 </button>
                 {showReadingCourses && (
@@ -157,6 +160,7 @@ export function AcademicSuccessActionItem({
                 <input
                   type="checkbox"
                   className="hidden"
+                  aria-label="Check/uncheck academic success in math"
                   checked={academicStatus.math}
                   onChange={(e) =>
                     setAcademicStatus((prev) => ({
@@ -183,6 +187,7 @@ export function AcademicSuccessActionItem({
             <button
               onClick={() => setShowMathDetails(!showMathDetails)}
               className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              aria-label="Show/close academic success in math details"
               style={{
                 transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
               }}
@@ -202,6 +207,7 @@ export function AcademicSuccessActionItem({
                 <button
                   onClick={() => setShowMathCourses(!showMathCourses)}
                   className="w-full flex items-center justify-between p-3 text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
+                  aria-label="Show/close approved courses for academic success in math"
                 >
                   <span className="flex items-center gap-2">
                     <BookOpen
