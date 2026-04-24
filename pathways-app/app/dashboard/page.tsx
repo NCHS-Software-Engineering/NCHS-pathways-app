@@ -22,7 +22,11 @@ import {
 export default function Dashboard() {
   const [dbUsername, setDbUsername] = useState<string>("");
 
-  const [pathways, setPathways] = useState(pathwaysData);
+  const basePathways = useMemo(
+    () => pathwaysData as unknown as Record<string, Pathway>,
+    []
+  );
+  const [pathways, setPathways] = useState<Record<string, Pathway>>(basePathways);
   const [academicStatus, setAcademicStatus] = useState<AcademicStatus>({
     reading: false,
     math: false,
@@ -36,7 +40,7 @@ export default function Dashboard() {
   const { data: session } = useSession();
 
   const pathwayKeyById = useMemo(() => {
-    return Object.entries(pathwaysData).reduce<Record<string, string>>(
+    return Object.entries(basePathways).reduce<Record<string, string>>(
       (acc, [key, value]) => {
         acc[key] = key;
         if (value && typeof value === "object" && "id" in value) {
@@ -49,7 +53,7 @@ export default function Dashboard() {
       },
       {}
     );
-  }, []);
+  }, [basePathways]);
 
   const normalizePathwayKey = useCallback(
     (keyOrId: string): string | null => pathwayKeyById[keyOrId] ?? null,
@@ -98,7 +102,7 @@ export default function Dashboard() {
               const completedCourses = new Set<string>(user.Pathway_Progress);
 
               const updatedPathways = Object.fromEntries(
-                Object.entries(pathwaysData).map(([key, pathway]) => [
+                Object.entries(basePathways).map(([key, pathway]) => [
                   key,
                   {
                     ...pathway,
@@ -118,7 +122,7 @@ export default function Dashboard() {
                     },
                   },
                 ])
-              ) as unknown as typeof pathwaysData;
+              ) as Record<string, Pathway>;
 
               setPathways(updatedPathways);
               localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
@@ -160,10 +164,18 @@ export default function Dashboard() {
             const validProgressEntries = Object.entries(parsedProgress)
               .map(([key, value]) => [normalizePathwayKey(key), value] as const)
               .filter(
-                (entry): entry is readonly [string, Record<string, unknown>] =>
-                  entry[0] !== null &&
-                  entry[1] !== null &&
-                  typeof entry[1] === "object"
+                (entry): entry is readonly [string, Pathway] => {
+                  const [normalizedKey, value] = entry;
+                  if (!normalizedKey || !value || typeof value !== "object") return false;
+
+                  const pathwayCandidate = value as Partial<Pathway>;
+                  return (
+                    !!pathwayCandidate.requirements &&
+                    !!pathwayCandidate.requirements.courseCredits &&
+                    Array.isArray(pathwayCandidate.requirements.courseCredits.requiredCourses) &&
+                    Array.isArray(pathwayCandidate.requirements.courseCredits.electiveCourseOptions)
+                  );
+                }
               );
             if (validProgressEntries.length > 0) {
               setPathways((prevPathways) => ({

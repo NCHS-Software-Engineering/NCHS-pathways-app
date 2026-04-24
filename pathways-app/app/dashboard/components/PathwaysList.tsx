@@ -9,26 +9,12 @@ import {
   AlertCircle,
   Award,
 } from "lucide-react";
-import { Pathway, PathwayStats } from "../types";
+import { Pathway } from "../types";
 import { getPathwayStats } from "../utils";
-import { pathways as canonicalPathways } from "../../data/pathways";
-
-const canonicalPathwayKeyById = Object.entries(canonicalPathways).reduce<
-  Record<string, string>
->((acc, [key, value]) => {
-  acc[key] = key;
-  if (value && typeof value === "object" && "id" in value) {
-    const id = (value as { id?: unknown }).id;
-    if (typeof id === "string") {
-      acc[id] = key;
-    }
-  }
-  return acc;
-}, {});
 
 interface PathwaysListProps {
   starredPathways: string[];
-  pathways: Record<string, any>;
+  pathways: Record<string, Pathway>;
   onPathwayClick: (pathwayKey: string) => void;
   globalReqsMet: boolean;
 }
@@ -69,7 +55,7 @@ export function PathwaysList({
               No Pathways Selected
             </h4>
             <p className="text-(--text-secondary) mt-1 max-w-sm mx-auto">
-              You haven't added any pathway endorsements yet. Explore available
+              You haven&apos;t added any pathway endorsements yet. Explore available
               pathways to start tracking.
             </p>
           </div>
@@ -108,11 +94,7 @@ export function PathwaysList({
           const pathwayData = pathways[key as keyof typeof pathways];
           if (!pathwayData) return null;
 
-          const canonicalKey = canonicalPathwayKeyById[key] ?? null;
-          const canonicalPathway = canonicalKey
-            ? canonicalPathways[canonicalKey as keyof typeof canonicalPathways]
-            : null;
-          const isTCDPathway = Boolean(canonicalPathway?.tcd ?? pathwayData.tcd);
+          const isTCDPathway = Boolean(pathwayData?.tcd);
 
           const stats = getPathwayStats(pathwayData as Pathway);
           const allCoursesComplete = stats.progress === 100;

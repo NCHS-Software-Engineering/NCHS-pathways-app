@@ -28,7 +28,7 @@ export default function SideBar({ open, setOpen }) {
       {/* Dark overlay (mobile only) */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
@@ -36,14 +36,14 @@ export default function SideBar({ open, setOpen }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:sticky top-0 md:top-4 left-0 z-50
-          h-screen md:h-[calc(100vh-2rem)] md:overflow-y-auto w-64
-          bg-(--bg-secondary) md:bg-transparent
-          border-r border-(--border-primary) md:border-r-0
+          fixed lg:sticky top-0 lg:top-4 left-0 z-50
+          h-screen lg:h-[calc(100vh-2rem)] lg:overflow-y-auto w-64
+          bg-(--bg-secondary) lg:bg-transparent
+          border-r border-(--border-primary) lg:border-r-0
           p-4
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
+          lg:translate-x-0
         `}
       >
         <nav className="flex flex-col gap-2 mt-6">

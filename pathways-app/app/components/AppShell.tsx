@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import SideBar from "./sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dbUsername, setDbUsername] = useState<string>("");
   const [dbAvatar, setDbAvatar] = useState<string>("");
@@ -28,20 +30,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("usernameUpdated", fetchUsername);
     return () => window.removeEventListener("usernameUpdated", fetchUsername);
   }, [session]);
+
+  if (pathname?.startsWith("/admin")) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0 z-40 h-14 md:h-16 flex items-center justify-between px-4 md:px-6 border-b border-(--border-primary) bg-(--bg-secondary)">
+      <header className="fixed top-0 left-0 right-0 z-40 h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 border-b border-(--border-primary) bg-(--bg-secondary)">
         <div className="flex items-center gap-3">
 
           <button
             onClick={() => setMenuOpen(true)}
-            className="md:hidden p-2.5 text-2xl leading-none rounded-lg hover:bg-(--bg-card)"
+            className="lg:hidden p-2.5 text-2xl leading-none rounded-lg hover:bg-(--bg-card)"
           >
             ☰
           </button>
 
-          <h1 className="text-lg md:text-xl font-semibold tracking-tight">
+          <h1 className="text-lg lg:text-xl font-semibold tracking-tight">
             Pathways Portal
           </h1>
         </div>
@@ -49,7 +56,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {!session ? (
           <button
             onClick={() => signIn("google")}
-            className="flex items-center gap-2 h-11 px-3 text-sm md:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
+            className="flex items-center gap-2 h-11 px-3 text-sm lg:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
           >
             <img
               src="https://developers.google.com/identity/images/g-logo.png"
@@ -68,13 +75,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             />
 
             <span className="font-medium text-base hidden sm:block self-center">
-              {dbUsername || session.user?.name}
+              {session.user?.name}
             </span>
 
             <button
               onClick={() => signOut()}
-              className="flex items-center gap-2 h-11 px-3 text-sm md:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
-            >
+              className="flex items-center gap-2 h-11 px-3 text-sm lg:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
+          >
               Sign Out
             </button>
           </div>
@@ -83,29 +90,29 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* MOBILE SIDEBAR */}
       {menuOpen && (
-        <div className="fixed inset-x-0 top-14 bottom-0 z-50 flex md:hidden">
+        <div className="fixed inset-x-0 top-14 bottom-0 z-50 flex lg:hidden">
 
-          {/* dark overlay */}
-          <div
+            {/* dark overlay */}
+            <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setMenuOpen(false)}
-          />
+            />
 
-          {/* sidebar */}
-          <div className="relative w-72 h-full bg-(--bg-secondary) text-xl">
+            {/* sidebar */}
+            <div className="relative w-72 h-full bg-(--bg-secondary) text-xl">
             <SideBar open={menuOpen} setOpen={setMenuOpen} />
-          </div>
+            </div>
 
         </div>
-      )}
+        )}
 
       {/* MAIN LAYOUT */}
-      <div className="flex min-h-screen pt-14 md:pt-16">
-        <div className="hidden md:block md:self-stretch md:sticky md:top-16 md:h-[calc(100vh-4rem)] bg-(--bg-secondary) border-r border-(--border-primary)">
+      <div className="flex min-h-screen pt-14 lg:pt-16">
+        <div className="hidden lg:block lg:self-stretch lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] bg-(--bg-secondary) border-r border-(--border-primary)">
           <SideBar open={menuOpen} setOpen={setMenuOpen} />
         </div>
 
-        <main className="flex-1 w-full min-w-0">
+        <main className="flex-1 w-full min-w-0 p-4 md:p-6 lg:p-8">
           {children}
         </main>
       </div>

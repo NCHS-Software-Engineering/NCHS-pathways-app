@@ -1,96 +1,86 @@
 {
-    "id": "finance-accounting",
-    "title": "Fincance/Accounting",
-    "category": "Financial Services",
-
-    "link": "https://app.schoolinks.com/student-pathways/financeaccounting/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 3.0,
-
-        "requiredCourses": [
-            {
-            "name": "Accounting 1",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Honors Accounting 2",
-            "credits": 1.0,
-            "earlyCollegeCredit": false 
-            },
-            {
-                "name": "Blended Career Internship",
-                "credits": 0.5,
-                "earlyCollegeCredit": true
-            }
-        ],
-
-        "electiveCreditsRequired": 0.5,
-
-        "electiveCourseOptions": [
-            {
-                "name":"Business INCubatoredu",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name":"Marketing",
-                "credits": 0.5,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Calculus AB",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Calculus BC",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Microeconomics",
-                "credits": 0.5,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Precalculus AB",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Precalculus BC",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "AP Statistics",
-                "credits": 1.0,
-                "earlyCollegeCredit": true
-            },
-            {
-                "name": "Computer Programming 2",
-                "credits": 0.5,
-                "earlyCollegeCredit": true
-            }
-        ]
+  "id": "finance-accounting",
+  "title": "Finance/Accounting",
+  "category": "Financial Services",
+  "link": "https://app.schoolinks.com/student-pathways/financeaccounting/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 3,
+      "requiredCourses": [
+        {
+          "name": "Accounting 1",
+          "credits": 1,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "Hours may be completed through the Blended Career Internship."
+        {
+          "name": "Honors Accounting 2",
+          "credits": 1,
+          "earlyCollegeCredit": false
         },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-        ]
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 0.5,
+      "electiveCourseOptions": [
+        {
+          "name": "Business INCubatoredu",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Marketing",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Calculus AB",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Calculus BC",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Microeconomics",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Precalculus AB",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Precalculus BC",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Statistics",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Computer Programming 2",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "Requires student to take the Blended Career Internship course to fulfill hours",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "finance-accounting.jpg",
+  "imagePath": "/endorsements/images/finance-accounting.jpg"
 }

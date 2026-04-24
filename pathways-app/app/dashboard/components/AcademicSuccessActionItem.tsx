@@ -32,49 +32,41 @@ export function AcademicSuccessActionItem({
       <div className="space-y-4">
         {/* Reading Section */}
         <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
-          <div className="p-4 flex items-center justify-between gap-4">
-            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
-              <div
-                className={`mt-0.5 ${
-                  academicStatus.reading ? "text-(--success)" : "text-gray-300"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="hidden"
-                  checked={academicStatus.reading}
-                  onChange={(e) =>
-                    setAcademicStatus((prev) => ({
-                      ...prev,
-                      reading: e.target.checked,
-                    }))
-                  }
-                />
-                {academicStatus.reading ? (
-                  <CheckSquare size={24} />
-                ) : (
-                  <Square size={24} />
-                )}
-              </div>
-              <div className="flex-1">
-                <p className="text-base font-medium text-(--text-primary)">
-                  Reading Competency
-                </p>
-                <p className="text-sm text-(--text-secondary) mt-0.5">
-                  {academicStatus.reading
-                    ? "Requirement verified"
-                    : "Pending completion"}
-                </p>
-              </div>
-            </label>
+          <div className="p-4 flex items-center gap-4">
             <button
-              onClick={() => setShowReadingDetails(!showReadingDetails)}
-              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
-              style={{
-                transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
-              }}
+              type="button"
+              onClick={() =>
+                setAcademicStatus((prev) => ({
+                  ...prev,
+                  reading: !prev.reading,
+                }))
+              }
+              aria-label="Toggle reading competency"
+              className={`mt-0.5 ${
+                academicStatus.reading ? "text-(--success)" : "text-gray-300"
+              }`}
             >
-              <ChevronRight size={20} />
+              {academicStatus.reading ? <CheckSquare size={24} /> : <Square size={24} />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowReadingDetails(!showReadingDetails)}
+              className="flex-1 flex items-center justify-between gap-4 text-left"
+            >
+              <div className="flex-1">
+                <p className="text-base font-medium text-(--text-primary)">Reading Competency</p>
+                <p className="text-sm text-(--text-secondary) mt-0.5">
+                  {academicStatus.reading ? "Requirement verified" : "Pending completion"}
+                </p>
+              </div>
+              <span
+                className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+                style={{
+                  transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+              >
+                <ChevronRight size={20} />
+              </span>
             </button>
           </div>
 
@@ -147,47 +139,41 @@ export function AcademicSuccessActionItem({
 
         {/* Math Section */}
         <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
-          <div className="p-4 flex items-center justify-between gap-4">
-            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
-              <div
-                className={`mt-0.5 ${
-                  academicStatus.math ? "text-(--success)" : "text-gray-300"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="hidden"
-                  checked={academicStatus.math}
-                  onChange={(e) =>
-                    setAcademicStatus((prev) => ({
-                      ...prev,
-                      math: e.target.checked,
-                    }))
-                  }
-                />
-                {academicStatus.math ? (
-                  <CheckSquare size={24} />
-                ) : (
-                  <Square size={24} />
-                )}
-              </div>
+          <div className="p-4 flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() =>
+                setAcademicStatus((prev) => ({
+                  ...prev,
+                  math: !prev.math,
+                }))
+              }
+              aria-label="Toggle math competency"
+              className={`mt-0.5 ${
+                academicStatus.math ? "text-(--success)" : "text-gray-300"
+              }`}
+            >
+              {academicStatus.math ? <CheckSquare size={24} /> : <Square size={24} />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMathDetails(!showMathDetails)}
+              className="flex-1 flex items-center justify-between gap-4 text-left"
+            >
               <div className="flex-1">
-                <p className="text-base font-medium text-(--text-primary)">
-                  Math Competency
-                </p>
+                <p className="text-base font-medium text-(--text-primary)">Math Competency</p>
                 <p className="text-sm text-(--text-secondary) mt-0.5">
                   {academicStatus.math ? "Requirement verified" : "Pending completion"}
                 </p>
               </div>
-            </label>
-            <button
-              onClick={() => setShowMathDetails(!showMathDetails)}
-              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
-              style={{
-                transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
-              }}
-            >
-              <ChevronRight size={20} />
+              <span
+                className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+                style={{
+                  transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+              >
+                <ChevronRight size={20} />
+              </span>
             </button>
           </div>
 

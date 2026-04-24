@@ -78,7 +78,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
-
+      
       <div className="flex">
 
         <main className="flex-1 p-8 space-y-8">
@@ -95,14 +95,16 @@ export default function SettingsPage() {
 
               <button
                 onClick={toggleDark}
-                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${dark
-                  ? "bg-(--brand)"
-                  : "bg-(--border-primary)"
-                  }`}
+                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                  dark
+                    ? "bg-(--brand)"
+                    : "bg-(--border-primary)"
+                }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${dark ? "translate-x-7" : ""
-                    }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                    dark ? "translate-x-7" : ""
+                  }`}
                 />
               </button>
             </div>
@@ -172,10 +174,7 @@ export default function SettingsPage() {
               </select>
             </div>
 
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
-            >
+            <button className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition">
               Save Changes
             </button>
           </div>
