@@ -53,24 +53,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggle(pathwayId);
-        }}
-        className="absolute bottom-5 right-5"
-      >
-        <Star
-          size={35}
-          className={`
-            transition-colors duration-200
-            text-gray-400 hover:text-yellow-600
-            ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
-          `}
-        />
-      </button>
+    <div onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-full transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <img
         src={imageUrl}
@@ -85,11 +68,30 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         {title}
       </h3>
 
-      <div className="flex flex-wrap gap-1.5">
-        <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
-          {category}
+      <div className="mt-1 flex items-start justify-between gap-3">
+        <div className="flex flex-col items-start gap-1.5">
+          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
+            {category}
+          </div>
+          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
         </div>
-        {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(pathwayId);
+          }}
+          className="shrink-0 self-start"
+        >
+          <Star
+            size={35}
+            className={`
+              transition-colors duration-200
+              text-gray-400 hover:text-yellow-600
+              ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
+            `}
+          />
+        </button>
       </div>
       
 
@@ -227,7 +229,7 @@ export default function EndorsementsPage() {
             Click on a pathway card to open Schoolinks's page for it (you must be logged in).
           </h4>
 
-         <div className="flex flex-wrap gap-6">
+         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {pathways.map((pathway) => (
               <PathwayCard
                 key={pathway.id}
