@@ -1,6 +1,4 @@
 import { db } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import { authOptions, isAllowedDistrictEmail } from "@/lib/auth";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -37,17 +35,6 @@ function stringifyField(arr) {
   if (!arr) return null;
   if (Array.isArray(arr)) return arr.join(";");
   return arr;
-}
-
-async function authorizeRequest() {
-  const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
-
-  if (!isAllowedDistrictEmail(email)) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -113,9 +100,6 @@ async function authorizeRequest() {
  */
 export async function GET(req) {
   try {
-    const authError = await authorizeRequest();
-    if (authError) return authError;
-
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username");
     const email = searchParams.get("email");
@@ -176,9 +160,6 @@ export async function GET(req) {
  */
 export async function POST(req) {
   try {
-    const authError = await authorizeRequest();
-    if (authError) return authError;
-
     const body = await req.json();
 
     const { Username, User_Email, Stored_Pathways, Pathway_Progress } = body;
@@ -240,28 +221,49 @@ export async function POST(req) {
  */
 export async function PUT(req) {
   try {
-    const authError = await authorizeRequest();
-    if (authError) return authError;
-
     const body = await req.json();
 
-    const { User_Email, Stored_Pathways, Pathway_Progress } = body;
-
+    const { User_Email, Stored_Pathways, Pathway_Progress, Username, Reading_Competency, Math_Competency, Profile_Picture } = body;
     if (!User_Email) {
       return Response.json({ error: "User_Email required" }, { status: 400 });
     }
 
+    const fields = [];
+    const values = [];
+
+    if (Stored_Pathways !== undefined) {
+      fields.push("Stored_Pathways = ?");
+      values.push(stringifyField(Stored_Pathways));
+    }
+    if (Pathway_Progress !== undefined) {
+      fields.push("Pathway_Progress = ?");
+      values.push(stringifyField(Pathway_Progress));
+    }
+    if (Profile_Picture !== undefined) {
+      fields.push("Profile_Picture = ?");
+      values.push(Profile_Picture);
+    }
+    if (Username !== undefined) {
+      fields.push("Username = ?");
+      values.push(Username);
+    }
+    if (Reading_Competency !== undefined) {
+      fields.push("Reading_Competency = ?");
+      values.push(Reading_Competency);
+    }
+    if (Math_Competency !== undefined) {
+      fields.push("Math_Competency = ?");
+      values.push(Math_Competency);
+    }
+
+    fields.push("UpdatedAt = NOW()");
+
+    fields.push("UpdatedAt = NOW()");
+    values.push(User_Email);
+
     await db.query(
-      `UPDATE User_Data 
-       SET Stored_Pathways = ?, 
-           Pathway_Progress = ?, 
-           UpdatedAt = NOW()
-       WHERE User_Email = ?`,
-      [
-        stringifyField(Stored_Pathways),
-        stringifyField(Pathway_Progress),
-        User_Email,
-      ]
+      `UPDATE User_Data SET ${fields.join(", ")} WHERE User_Email = ?`,
+      values
     );
 
     return Response.json({ success: true });
@@ -294,9 +296,6 @@ export async function PUT(req) {
  */
 export async function DELETE(req) {
   try {
-    const authError = await authorizeRequest();
-    if (authError) return authError;
-
     const body = await req.json();
     const { Username } = body;
 
