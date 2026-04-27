@@ -55,6 +55,16 @@ export default function SettingsPage() {
     fetchUser();
   }, [session]);
   useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      setDark(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDark(false);
+    }
+  }, []);
+  useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setDark(isDark);
 

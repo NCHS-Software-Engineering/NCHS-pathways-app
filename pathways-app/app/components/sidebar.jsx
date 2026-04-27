@@ -3,10 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Award, Info, Settings } from "lucide-react";
+import { useEffect } from 'react';
 
 export default function SideBar({ open, setOpen }) {
   const pathname = usePathname();
-
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
   const linkClasses = (path) => {
     const isActive = pathname === path;
 
@@ -15,10 +23,9 @@ export default function SideBar({ open, setOpen }) {
       transition-colors duration-200
       max-h-100%
       
-      ${
-        isActive
-          ? "bg-(--brand) text-white"
-          : "text-(--text-primary) hover:bg-(--bg-soft)"
+      ${isActive
+        ? "bg-(--brand) text-white"
+        : "text-(--text-primary) hover:bg-(--bg-soft)"
       }
     `;
   };
