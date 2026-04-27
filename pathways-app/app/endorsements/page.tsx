@@ -67,7 +67,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div onClick={() => window.open(link)} aria-label="Click on pathway endorsement, open corresponding Schoolinks page" className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <button
         onClick={(e) => {
@@ -75,6 +75,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
           onToggle(pathwayId);
         }}
         className="absolute bottom-5 right-5"
+        aria-label="Select/unselect pathway endorsement"
       >
         <Star
           size={35}

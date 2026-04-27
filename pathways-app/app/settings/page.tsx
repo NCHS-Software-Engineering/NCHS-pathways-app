@@ -99,6 +99,7 @@ export default function SettingsPage() {
                   ? "bg-(--brand)"
                   : "bg-(--border-primary)"
                   }`}
+                  aria-label="Toggle dark mode"
               >
                 <div
                   className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${dark ? "translate-x-7" : ""
@@ -128,6 +129,7 @@ export default function SettingsPage() {
                   type="file"
                   accept="image/*"
                   className="hidden"
+                  aria-label="Change photo"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -175,6 +177,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSave}
               className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+              aria-label="Save changes"
             >
               Save Changes
             </button>

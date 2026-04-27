@@ -54,6 +54,7 @@ export function PathwaysList({
             <a
               href="/endorsements"
               className="text-base font-medium text-(--link) hover:underline hidden sm:block"
+              aria-label="Browse more endorsements"
             >
               Browse More Endorsements &rarr;
             </a>
@@ -74,7 +75,7 @@ export function PathwaysList({
             </p>
           </div>
           <button aria-label="Explore endorsements" className="mt-4 px-6 py-2.5 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm">
-            <a href="/endorsements" className="flex items-center gap-2">
+            <a aria-label="Explore endorsements" href="/endorsements" className="flex items-center gap-2">
               Explore Endorsements
             </a>
           </button>
@@ -97,6 +98,7 @@ export function PathwaysList({
           <a
             href="/endorsements"
             className="text-base font-medium text-(--link) hover:underline hidden sm:block"
+            aria-label="Go to endorsements"
           >
             Browse More Endorsements &rarr;
           </a>

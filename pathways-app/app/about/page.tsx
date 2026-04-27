@@ -91,7 +91,9 @@ export default function AboutPage() {
                 href="https://app.schoolinks.com/student-pathways"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline">
+                className="text-blue-600 underline"
+                aria-label="Go to Schoolink's website on pathway endorsements"
+              >
                 Schoolinks's website
               </Link>.
             </p>
