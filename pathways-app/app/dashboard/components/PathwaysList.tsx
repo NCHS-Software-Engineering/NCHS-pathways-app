@@ -73,7 +73,7 @@ export function PathwaysList({
               pathways to start tracking.
             </p>
           </div>
-          <button className="mt-4 px-6 py-2.5 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm">
+          <button aria-label="Explore endorsements" className="mt-4 px-6 py-2.5 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm">
             <a href="/endorsements" className="flex items-center gap-2">
               Explore Endorsements
             </a>

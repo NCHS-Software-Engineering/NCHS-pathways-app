@@ -74,6 +74,7 @@ export function PathwayDetailsModal({
             <button
               onClick={onClose}
               className="text-(--text-secondary) hover:text-(--text-primary) bg-(--bg-soft) hover:opacity-90 rounded-full p-2 transition-colors"
+              aria-label="Close button"
             >
               ✕
             </button>
@@ -113,7 +114,7 @@ export function PathwayDetailsModal({
                   This endorsement requires coursework at the <strong>Technical College of DuPage (TCD)</strong>. 
                   Participation requires a separate application and will take up 4 periods of your daily high school schedule.
                 </p>
-                <a href="https://app.schoolinks.com/course-catalog/naperville-community-unit-school-district-203/overview/technology-center-of-dupage" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-3 px-3 py-1.5 bg-white text-(--tcd-dash-text) rounded-md border border-(--tcd-dash-border) text-xs font-medium hover:bg-gray-50 transition-colors">
+                <a aria-label="View information in Schoolinks button" href="https://app.schoolinks.com/course-catalog/naperville-community-unit-school-district-203/overview/technology-center-of-dupage" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-3 px-3 py-1.5 bg-white text-(--tcd-dash-text) rounded-md border border-(--tcd-dash-border) text-xs font-medium hover:bg-gray-50 transition-colors">
                     View More Information <ExternalLink size={12} />
                   </a>
               </div>
@@ -171,6 +172,7 @@ export function PathwayDetailsModal({
                         onCourseToggle("required", idx, e.target.checked)
                       }
                       className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                      aria-label="Check/uncheck class requirement"
                     />
                     <div className="flex-1 flex justify-between items-center gap-3">
                       <span className="text-base text-(--text-primary) flex items-center gap-2 leading-tight">
@@ -254,12 +256,14 @@ export function PathwayDetailsModal({
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:opacity-90 transition-colors"
+            aria-label="Cancel button"
           >
             Cancel
           </button>
           <button
             onClick={onSave}
             className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
+              aria-label="Save changes button"
           >
             <Save size={18} />
             Save Changes
