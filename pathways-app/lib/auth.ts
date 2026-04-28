@@ -4,12 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 const STAFF_DOMAIN = "naperville203.org";
 const STUDENT_SUBDOMAIN = "stu.naperville203.org";
 
-function isDevBypassEnabled() {
-  return process.env.NODE_ENV !== "production";
-}
-
 export function isAllowedDistrictEmail(email?: string | null) {
-  if (isDevBypassEnabled()) return true;
   if (!email) return false;
 
   const normalized = email.trim().toLowerCase();
