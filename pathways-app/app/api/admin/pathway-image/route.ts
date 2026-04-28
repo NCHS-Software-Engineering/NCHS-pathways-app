@@ -1,4 +1,4 @@
-import { authOptions, isAllowedDistrictEmail } from "@/lib/auth";
+import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
 import { mkdir, readFile, stat, writeFile } from "fs/promises";
 import { getServerSession } from "next-auth";
 import path from "path";
@@ -18,7 +18,7 @@ async function authorizeRequest() {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
-  if (!isAllowedDistrictEmail(email)) {
+  if (!isAllowedAdminEmail(email)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

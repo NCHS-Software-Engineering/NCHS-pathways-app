@@ -9,10 +9,15 @@ export function isAllowedDistrictEmail(email?: string | null) {
 
   const normalized = email.trim().toLowerCase();
 
-  return (
-    normalized.endsWith(`@${STAFF_DOMAIN}`) &&
-    !normalized.endsWith(`@${STUDENT_SUBDOMAIN}`)
-  );
+  return normalized.endsWith(`@${STAFF_DOMAIN}`) || normalized.endsWith(`@${STUDENT_SUBDOMAIN}`);
+}
+
+export function isAllowedAdminEmail(email?: string | null) {
+  if (!email) return false;
+
+  const normalized = email.trim().toLowerCase();
+
+  return normalized.endsWith(`@${STAFF_DOMAIN}`) && !normalized.endsWith(`@${STUDENT_SUBDOMAIN}`);
 }
 
 export const authOptions: NextAuthOptions = {

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions, isAllowedDistrictEmail } from "@/lib/auth";
+import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
 import AdminPageClient from "./AdminPageClient";
 
 export default async function AdminPage() {
@@ -11,7 +11,7 @@ export default async function AdminPage() {
     redirect("/api/auth/signin?callbackUrl=/admin");
   }
 
-  if (!isAllowedDistrictEmail(email)) {
+  if (!isAllowedAdminEmail(email)) {
     redirect("/dashboard");
   }
 
