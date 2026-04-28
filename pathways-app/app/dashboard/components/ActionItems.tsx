@@ -92,11 +92,11 @@ export function ActionItems({
       <div className="bg-(--chip-bg) rounded-xl p-5 border border-(--border-primary) flex gap-3 text-(--chip-text)">
         <Info size={20} className="shrink-0 mt-0.5" />
         <div>
-          <h4 className="font-medium text-base mb-1">A link to Schoollinks's surveys</h4>
+          <h4 className="font-medium text-base mb-1">A link to Schoolinks's assessment survey</h4>
           <p className="text-sm leading-relaxed opacity-90">
             Take your surveys at{" "}
             <a href="https://app.schoolinks.com/assessments" className="underline">
-              app.schoollinks.com/assessments
+              app.schoolinks.com/assessments
             </a>
           </p>
         </div>
