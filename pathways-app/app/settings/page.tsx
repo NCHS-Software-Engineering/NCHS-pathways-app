@@ -123,7 +123,7 @@ export default function SettingsPage() {
                 alt="Profile"
               />
 
-              <label className="cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm hover:opacity-90 transition">
+              <label tabIndex={0} className="cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm hover:opacity-90 transition">
                 Change Photo
                 <input
                   type="file"
