@@ -1,51 +1,40 @@
 {
-    "id": "programming-software-dev",
-    "title": "Programming & Software Development",
-    "category": "Digital Technology",
-
-    "link": "https://app.schoolinks.com/student-pathways/programming-software-development/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 2.5,
-
-        "requiredCourses": [
-            {
-            "name": "Computer Programming 2",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "AP Computer Science A",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Blended Software Engineering",
-            "credits": 1.0,
-            "earlyCollegeCredit": false 
-            }
-        ],
-
-        "electiveCreditsRequired": 0,
-
-        "electiveCourseOptions": [
-        ]
+  "id": "programming-software-dev",
+  "title": "Programming & Software Development",
+  "category": "Digital Technology",
+  "link": "https://app.schoolinks.com/student-pathways/programming-software-development/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 2.5,
+      "requiredCourses": [
+        {
+          "name": "Computer Programming 2",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "These hours can be met through the Software Engineering course."
+        {
+          "name": "AP Computer Science A",
+          "credits": 1,
+          "earlyCollegeCredit": true
         },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-        ]
+        {
+          "name": "Blended Software Engineering",
+          "credits": 1,
+          "earlyCollegeCredit": false
         }
+      ],
+      "electiveCreditsRequired": 0,
+      "electiveCourseOptions": []
+    },
+    "professionalLearning": {
+      "notes": "these hours are embedded within the required career-focused coursework",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "programming-software-dev.jpg",
+  "imagePath": "/endorsements/images/programming-software-dev.jpg"
 }

@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { isAllowedDistrictEmail } from "@/lib/auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
@@ -18,11 +19,14 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user }) {
-
       const email = user.email;
       const name = user.name;
-      console.log(email, name) ;
+
       if (!email) {
+        return false;
+      }
+
+      if (!isAllowedDistrictEmail(email)) {
         return false;
       }
 
@@ -32,7 +36,6 @@ const handler = NextAuth({
         if (!res.ok) return false;
 
         const existing = await res.json();
-        console.log("Existing user check:", existing);
         const userExists = existing.some(
           (u: { User_Email: string }) => u.User_Email === email
         );

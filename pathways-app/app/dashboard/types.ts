@@ -1,7 +1,7 @@
 export interface Course {
   name: string;
   credits: number;
-  earlyCollegeCredit: boolean;
+  earlyCollegeCredit: boolean | number;
   completed?: boolean;
 }
 

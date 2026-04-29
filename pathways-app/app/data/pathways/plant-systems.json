@@ -1,56 +1,46 @@
 {
-    "id": "plant-systems",
-    "title": "Plant Systems",
-    "category": "Agriculture",
-
-    "link": "https://app.schoolinks.com/student-pathways/plant-systems/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 2.5,
-
-        "requiredCourses": [
-            {
-            "name": "Introduction to Plant Systems",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Floral and Plant Industries",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Blended Career Internship",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            }
-        ],
-
-        "electiveCreditsRequired": 1.0,
-
-        "electiveCourseOptions": [
-            {
-            "name": "AP Environmental Scienc",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            }
-        ]
+  "id": "plant-systems",
+  "title": "Plant Systems",
+  "category": "Agriculture",
+  "link": "https://app.schoolinks.com/student-pathways/plant-systems/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 2.5,
+      "requiredCourses": [
+        {
+          "name": "Introduction to Plant Systems",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "These hours can be met through the Blended Career Internship course"
+        {
+          "name": "Floral and Plant Industries",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-        ]
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 1,
+      "electiveCourseOptions": [
+        {
+          "name": "AP Environmental Scienc",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "Requires student to take the Blended Career Internship course to fulfill hours",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "plant-systems.jpg",
+  "imagePath": "/endorsements/images/plant-systems.jpg"
 }

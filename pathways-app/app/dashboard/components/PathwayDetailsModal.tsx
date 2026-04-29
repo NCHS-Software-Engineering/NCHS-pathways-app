@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink } from "lucide-react";
 import { Pathway, Course } from "../types";
 import { getPathwayStats } from "../utils";
@@ -28,6 +28,25 @@ export function PathwayDetailsModal({
   onSave,
   onCourseToggle,
 }: PathwayDetailsModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+    };
+  }, [isOpen]);
+
   if (!isOpen || !pathway) return null;
 
   const stats = getPathwayStats(pathway);

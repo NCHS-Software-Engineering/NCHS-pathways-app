@@ -1,47 +1,35 @@
 {
-    "id": "cosmetology",
-    "title": "Cosmetology",
-    "category": "Healthcare & Human Services",
-
-    "link": "https://app.schoolinks.com/student-pathways/cosmetology/",
-    "tcd": true,
-
-    "requirements": {
-        "pathwayType": "TCD",
-        "courseCredits": {
-        "totalCreditsRequired": 6.0,
-
-        "requiredCourses": [
-            {
-            "name": "Cosmetology 1",
-            "credits":3.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name": "Cosmetology 2",
-            "credits":3.0,
-            "earlyCollegeCredit": true 
-            }
-        ],
-
-        "electiveCreditsRequired": 0,
-
-        "electiveCourseOptions": [
-            
-        ]
+  "id": "cosmetology",
+  "title": "Cosmetology",
+  "category": "Healthcare & Human Services",
+  "link": "https://app.schoolinks.com/student-pathways/cosmetology/",
+  "tcd": true,
+  "requirements": {
+    "pathwayType": "TCD",
+    "courseCredits": {
+      "totalCreditsRequired": 6,
+      "requiredCourses": [
+        {
+          "name": "Cosmetology 1",
+          "credits": 3,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "these hours are embedded within the required career-focused coursework"
-        },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-        ]
+        {
+          "name": "Cosmetology 2",
+          "credits": 3,
+          "earlyCollegeCredit": true
         }
-        }
+      ],
+      "electiveCreditsRequired": 0,
+      "electiveCourseOptions": []
+    },
+    "professionalLearning": {
+      "notes": "these hours are embedded within the required career-focused coursework",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "cosmetology.jpg",
+  "imagePath": "/endorsements/images/cosmetology.jpg"
+}

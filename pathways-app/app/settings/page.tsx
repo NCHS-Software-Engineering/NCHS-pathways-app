@@ -6,30 +6,65 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function SettingsPage() {
   const { data: session } = useSession();
+  const currentYear = new Date().getFullYear();
+  const graduationYearOptions = Array.from({ length: 4 }, (_, index) => String(currentYear + index));
 
   const [dark, setDark] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  const [gradYear, setGradYear] = useState("2026");
+  const [gradYear, setGradYear] = useState(String(currentYear));
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dbUsername, setDbUsername] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const DEFAULT_AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxMDAiIGZpbGw9IiNkMWQ1ZGIiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMzUiIGZpbGw9IiM5Y2EzYWYiLz4KICA8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTcwIiByeD0iNTUiIHJ5PSI0MCIgZmlsbD0iIzljYTNhZiIvPgo8L3N2Zz4=";
 
   async function handleSave() {
-    if (!session?.user?.email) return;
+    if (!session?.user?.email) {
+      setSaveError("Sign in to save profile changes.");
+      setSaveMessage(null);
+      return;
+    }
 
-    await fetch("/api/users", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        User_Email: session.user.email,
-        Username: displayName,
-        Profile_Picture: imagePreview,
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveMessage(null);
 
-      }),
+    try {
+      const response = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          User_Email: session.user.email,
+          Username: displayName,
+          Profile_Picture: imagePreview,
+        }),
+      });
 
-    });
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("usernameUpdated"));
+      if (!response.ok) {
+        let message = "Could not save your profile changes.";
+        try {
+          const errorBody = await response.json();
+          if (errorBody?.error) {
+            message = errorBody.error;
+          }
+        } catch {
+          // Keep generic message if response is not JSON.
+        }
+        throw new Error(message);
+      }
+
+      setSaveMessage("Saved. Your profile was updated.");
+      setSaveError(null);
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("usernameUpdated"));
+      }
+    } catch (error) {
+      setSaveMessage(null);
+      setSaveError(error instanceof Error ? error.message : "Could not save your profile changes.");
+    } finally {
+      setIsSaving(false);
     }
   }
   useEffect(() => {
@@ -67,15 +102,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setDark(isDark);
-
-    if (session?.user?.name) {
-      setDisplayName(session.user.name);
-    }
-
-    if (session?.user?.image) {
-      setImagePreview(session.user.image);
-    }
-  }, [session]);
+  }, []);
 
   function toggleDark() {
     const html = document.documentElement;
@@ -88,7 +115,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-(--bg-page) text-(--text-primary)">
-
+      
       <div className="flex">
 
         <main className="flex-1 p-8 space-y-8">
@@ -105,14 +132,16 @@ export default function SettingsPage() {
 
               <button
                 onClick={toggleDark}
-                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${dark
-                  ? "bg-(--brand)"
-                  : "bg-(--border-primary)"
-                  }`}
+                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                  dark
+                    ? "bg-(--brand)"
+                    : "bg-(--border-primary)"
+                }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${dark ? "translate-x-7" : ""
-                    }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                    dark ? "translate-x-7" : ""
+                  }`}
                 />
               </button>
             </div>
@@ -175,18 +204,27 @@ export default function SettingsPage() {
                 onChange={(e) => setGradYear(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page)"
               >
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
+                {graduationYearOptions.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
             </div>
 
+            {saveMessage ? (
+              <p className="text-sm text-(--status-complete)">{saveMessage}</p>
+            ) : null}
+            {saveError ? (
+              <p className="text-sm text-(--status-warning)">{saveError}</p>
+            ) : null}
+
             <button
               onClick={handleSave}
-              className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition"
+              disabled={isSaving}
+              className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Save Changes
+              {isSaving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </main>

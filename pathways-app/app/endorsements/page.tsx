@@ -1,51 +1,39 @@
 "use client";
 import React from "react";
-import Link from "next/link";
-import { StaticImageData } from 'next/image';
-import SideBar from "@/app/components/sidebar";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Star } from "lucide-react";
-import { useRouter } from "next/navigation";
+ 
+interface EndorsementPathway {
+  id: string;
+  title: string;
+  category: string;
+  tcd?: boolean;
+  link?: string;
+  imageFile?: string;
+  imagePath?: string;
+}
 
-import { pathways } from "../data/pathways";
+const FALLBACK_IMAGE = "/images/icon.png";
 
-// Importing images
-import animalImage from "./images/animal-systems.jpg";
-import healthSciencesImage from "./images/health-sciences.jpg";
-import cosmetologyImage from "./images/cosmetology.jpg";
-import educationImage from "./images/education-training.jpg";
-import emtImage from "./images/emt.jpg";
-import entrepreneurshipImage from "./images/entrepreneurship.jpg";
-import financeImage from "./images/finance-accounting.jpg";
-import policyImage from "./images/global-domestic-policy.jpg";
-import marketingImage from "./images/marketing.jpg";
-import networkImage from "./images/network-systems.jpg";
-import nursingImage from "./images/nursing-assistant.jpg";
-import plantSystemsImage from "./images/plant-systems.jpg";
-import programmingImage from "./images/programming-software.jpg";
+function resolvePathwayImage(pathway: EndorsementPathway): string {
+  if (typeof pathway.imageFile === "string" && pathway.imageFile.trim().length > 0) {
+    const fileName = pathway.imageFile.split("/").pop() ?? pathway.imageFile;
+    return `/endorsements/images/${fileName}`;
+  }
 
-const pathwayImages: Record<string, StaticImageData> = {
-  "animal-systems": animalImage,
-  "health-sciences": healthSciencesImage,
-  "cosmetology": cosmetologyImage,
-  "education-training": educationImage,
-  "emt": emtImage,
-  "entrepreneurship": entrepreneurshipImage,
-  "finance-accounting": financeImage,
-  "global-domestic-policy": policyImage,
-  "marketing": marketingImage,
-  "network-systems-info-services": networkImage,
-  "nursing-assistant": nursingImage,
-  "plant-systems": plantSystemsImage,
-  "programming-software-dev": programmingImage,
-};
+  if (typeof pathway.imagePath === "string" && pathway.imagePath.trim().length > 0) {
+    return pathway.imagePath;
+  }
+
+  return FALLBACK_IMAGE;
+}
 
 interface PathwayCardProps {
   pathwayId: string;
   title: string;
   category: string;
   tcd: boolean;
-  image: StaticImageData;
+  imageUrl: string;
   link: string; //in jsons for each pathway, does not need to be hard-coded
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
@@ -57,49 +45,53 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   title,
   category,
   tcd,
-  image,
+  imageUrl,
   link,
   isStarred,
   onToggle
 }) => {
-
-  const router = useRouter();
   
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div onClick={() => window.open(link)}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-full transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggle(pathwayId);
+      <img
+        src={imageUrl}
+        alt={`${title} pathway`}
+        onError={(e) => {
+          e.currentTarget.src = FALLBACK_IMAGE;
         }}
-        className="absolute bottom-5 right-5"
-      >
-        <Star
-          size={35}
-          className={`
-            transition-colors duration-200
-            text-gray-400 hover:text-yellow-600
-            ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
-          `}
-        />
-      </button>
-
-      <div
-        className="h-35 rounded-lg bg-cover bg-center mb-3 transition-transform duration-300 group-hover:scale-105"
-        style={{ backgroundImage: `url(${image.src})` }}
+        className="h-35 w-full rounded-lg object-cover mb-3 transition-transform duration-300 group-hover:scale-105"
       />
 
       <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
         {title}
       </h3>
 
-      <div className="flex flex-wrap gap-1.5">
-        <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
-          {category}
+      <div className="mt-1 flex items-start justify-between gap-3">
+        <div className="flex flex-col items-start gap-1.5">
+          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
+            {category}
+          </div>
+          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
         </div>
-        {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(pathwayId);
+          }}
+          className="shrink-0 self-start"
+        >
+          <Star
+            size={35}
+            className={`
+              transition-colors duration-200
+              text-gray-400 hover:text-yellow-600
+              ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
+            `}
+          />
+        </button>
       </div>
       
 
@@ -120,6 +112,7 @@ export default function EndorsementsPage() {
   return saved ? JSON.parse(saved) : [];
 });*/
   const [starredPathways, setStarredPathways] = React.useState<string[]>([]);
+  const [pathways, setPathways] = React.useState<EndorsementPathway[]>([]);
   const [mounted, setMounted] = React.useState(false);
 
   //Load from localStorage on mount
@@ -127,9 +120,55 @@ export default function EndorsementsPage() {
   React.useEffect(() => {
     const saved = localStorage.getItem("starredPathways");
     if (saved) {
-      setStarredPathways(JSON.parse(saved));
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setStarredPathways(parsed.filter((id): id is string => typeof id === "string"));
+        }
+      } catch {
+        // Ignore malformed localStorage values.
+      }
     }
     setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadPathways = async () => {
+      try {
+        const response = await fetch("/api/pathways", { cache: "no-store" });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const records = Array.isArray(data)
+          ? data
+          : data && typeof data === "object"
+            ? Object.values(data)
+            : [];
+
+        const normalized = records.filter(
+          (pathway): pathway is EndorsementPathway =>
+            !!pathway &&
+            typeof pathway === "object" &&
+            typeof (pathway as EndorsementPathway).id === "string" &&
+            typeof (pathway as EndorsementPathway).title === "string" &&
+            typeof (pathway as EndorsementPathway).category === "string"
+        );
+
+        if (isMounted) {
+          setPathways(normalized);
+        }
+      } catch {
+        // Keep page usable even if pathways fetch fails.
+      }
+    };
+
+    loadPathways();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   //Save to localStorage when updated
@@ -150,7 +189,7 @@ export default function EndorsementsPage() {
       }).catch(() => { });
     }
     }
-  }, [starredPathways, mounted]);
+  }, [starredPathways, mounted, session]);
 
   //Prevent rendering before localStorage loads
   if (!mounted) return null;
@@ -190,16 +229,16 @@ export default function EndorsementsPage() {
             Click on a pathway card to open Schoolinks's page for it (you must be logged in).
           </h4>
 
-         <div className="flex flex-wrap gap-6">
-            {Object.values(pathways).map((pathway) => (
+         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {pathways.map((pathway) => (
               <PathwayCard
                 key={pathway.id}
                 pathwayId={pathway.id}
                 title={pathway.title}
                 category={pathway.category}
-                tcd={pathway.tcd}
-                image={pathwayImages[pathway.id]} 
-                link={pathway.link}
+                tcd={Boolean(pathway.tcd)}
+                imageUrl={resolvePathwayImage(pathway)}
+                link={typeof pathway.link === "string" ? pathway.link : ""}
                 isStarred={starredPathways.includes(pathway.id)}
                 onToggle={toggleStar}
               />
