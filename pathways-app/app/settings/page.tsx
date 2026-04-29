@@ -194,7 +194,23 @@ export default function SettingsPage() {
               />
             </div>
 
-            
+            {/* Graduation Year */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Graduation Year
+              </label>
+              <select
+                value={gradYear}
+                onChange={(e) => setGradYear(e.target.value)}
+                className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page)"
+              >
+                {graduationYearOptions.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {saveMessage ? (
               <p className="text-sm text-(--status-complete)">{saveMessage}</p>
