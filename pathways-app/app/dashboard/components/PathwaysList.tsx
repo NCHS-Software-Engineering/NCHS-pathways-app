@@ -120,10 +120,20 @@ export function PathwaysList({
           const allCoursesComplete = stats.progress === 100;
 
           return (
+
             <div
               key={key}
-              className="group bg-(--bg-card) rounded-xl border border-(--border-primary) p-5 md:p-6 hover:shadow-md hover:border-(--brand) transition-all duration-200 cursor-pointer shadow-sm"
+              tabIndex={0}
+              aria-label="Open endorsement"
+              className="group bg-(--bg-card) rounded-xl border border-(--border-primary) p-5 md:p-6 hover:shadow-md hover:border-(--brand) transition-all duration-200 cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-(--brand)"
               onClick={() => onPathwayClick(key)}
+              
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onPathwayClick(key);
+                }
+              }}
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
