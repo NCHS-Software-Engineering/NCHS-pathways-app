@@ -67,7 +67,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               alt="User avatar"
             />
 
-            <span className="font-medium text-base hidden sm:block self-center">
+            <span  className="font-medium text-base hidden sm:block self-center">
               {dbUsername || session.user?.name}
             </span>
 
