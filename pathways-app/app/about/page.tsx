@@ -79,9 +79,9 @@ export default function AboutPage() {
 
           {/* WHAT ARE PATHWAYS SECTION */}
           <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 lg:p-8 space-y-8">
-            <h3 className="text-3xl font-semibold  text-(--brand-text)">
+            <h2 className="text-3xl font-semibold  text-(--brand-text)">
               What are pathways?
-            </h3>
+            </h2>
 
             <p className="bg-(--bg-card) rounded-xl p-5 text-sm  ">
               Pathway endorsements are a set of academic requirements that give
