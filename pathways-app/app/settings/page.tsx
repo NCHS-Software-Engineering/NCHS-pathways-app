@@ -123,12 +123,17 @@ export default function SettingsPage() {
                 alt="Profile"
               />
 
-              <label tabIndex={0} className="cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm hover:opacity-90 transition">
+              <label className="
+                cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm 
+                hover:opacity-90 transition-all duration-200
+                focus-within:ring-2 
+                focus-within:ring-black
+              ">
                 Change Photo
                 <input
                   type="file"
                   accept="image/*"
-                  className="hidden"
+                  className="sr-only"
                   aria-label="Change photo"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
