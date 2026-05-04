@@ -89,9 +89,9 @@ export default function SettingsPage() {
           {/* Appearance */}
           <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <span className="font-medium">
+              <h3 className="text-lg font-semibold">
                 Dark Mode
-              </span>
+              </h3>
 
               <button
                 onClick={toggleDark}
