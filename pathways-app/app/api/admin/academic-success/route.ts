@@ -1,5 +1,5 @@
 import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
-import { fileSystemPathwaysRepository } from "@/lib/pathwaysStore";
+import { getPathwaysRepository } from "@/lib/pathwaysStore";
 import { getServerSession } from "next-auth";
 
 async function authorizeRequest() {
@@ -18,7 +18,7 @@ export async function GET() {
     const authError = await authorizeRequest();
     if (authError) return authError;
 
-    const academicSuccess = await fileSystemPathwaysRepository.getAcademicSuccess();
+    const academicSuccess = await getPathwaysRepository().getAcademicSuccess();
     return Response.json(academicSuccess);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to load academic requirements.";
@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
       return Response.json({ error: "Invalid academic requirements payload." }, { status: 400 });
     }
 
-    await fileSystemPathwaysRepository.updateAcademicSuccess(academicSuccess);
+    await getPathwaysRepository().updateAcademicSuccess(academicSuccess);
     return Response.json({ success: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to save academic requirements.";
