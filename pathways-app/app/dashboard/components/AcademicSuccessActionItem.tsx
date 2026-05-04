@@ -80,15 +80,14 @@ export function AcademicSuccessActionItem({
               <div className="bg-(--bg-card) rounded-lg border border-(--competency-reading-border) overflow-hidden shadow-sm">
                 <button
                   onClick={() => setShowReadingCourses(!showReadingCourses)}
-                  className="w-full flex items-center justify-between p-3 text-base font-medium text-(--text-primary) hover:bg-(--competency-reading-soft) transition-colors"
+                  className="w-full flex items-center justify-between gap-4 p-3 text-left text-base font-medium text-(--text-primary) hover:bg-(--competency-reading-soft) transition-colors"
                 >
-                  <span className="flex items-center gap-2">
-                    <BookOpen
-                      size={18}
-                      className="text-(--competency-reading-accent)"
-                    />
-                    Approved Coursework ({requirements.reading.courseOptions.length}{" "}
-                    options)
+                  <span className="flex min-w-0 items-start gap-2">
+                    <BookOpen size={18} className="mt-0.5 shrink-0 text-(--competency-reading-accent)" />
+                    <span className="flex min-w-0 flex-col leading-tight">
+                      <span>Approved Coursework ({requirements.reading.courseOptions.length} options)</span>
+                      <span className="text-xs font-normal text-(--competency-reading-text)">Must be completed with a C or higher.</span>
+                    </span>
                   </span>
                   <ChevronRight
                     size={18}
@@ -187,15 +186,14 @@ export function AcademicSuccessActionItem({
               <div className="bg-(--bg-card) rounded-lg border border-(--competency-math-border) overflow-hidden shadow-sm">
                 <button
                   onClick={() => setShowMathCourses(!showMathCourses)}
-                  className="w-full flex items-center justify-between p-3 text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
+                  className="w-full flex items-center justify-between gap-4 p-3 text-left text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
                 >
-                  <span className="flex items-center gap-2">
-                    <BookOpen
-                      size={18}
-                      className="text-(--competency-math-accent)"
-                    />
-                    Approved Coursework ({requirements.math.courseOptions.length}{" "}
-                    options)
+                  <span className="flex min-w-0 items-start gap-2">
+                    <BookOpen size={18} className="mt-0.5 shrink-0 text-(--competency-math-accent)" />
+                    <span className="flex min-w-0 flex-col leading-tight">
+                      <span>Approved Coursework ({requirements.math.courseOptions.length} options)</span>
+                      <span className="text-xs font-normal text-(--competency-math-text)">Must be completed with a C or higher.</span>
+                    </span>
                   </span>
                   <ChevronRight
                     size={18}

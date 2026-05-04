@@ -190,7 +190,7 @@ export default function PathwayEditorView({
                   className="w-5 h-5 rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                 />
                 <div>
-                  <p className="font-bold text-(--text-primary)">TCD (Technical College of DuPage) Program</p>
+                  <p className="font-bold text-(--text-primary)">TCD (Technology Center of DuPage) Program</p>
                   <p className="text-xs text-(--text-secondary)">Checking this removes the ability to add electives.</p>
                 </div>
               </label>
@@ -201,6 +201,7 @@ export default function PathwayEditorView({
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                   <div>
                     <p className="font-bold text-(--text-primary)">Pathway Image</p>
+                    <p className="text-xs text-(--text-secondary) mt-1">Recommended size: 1280 x 720 pixels (16:9 aspect ratio)</p>
                   </div>
                   <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity">
                     <Upload size={16} /> {isUploadingImage ? "Uploading..." : "Upload Image"}

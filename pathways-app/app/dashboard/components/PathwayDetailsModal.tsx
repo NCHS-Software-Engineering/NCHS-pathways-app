@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink } from "lucide-react";
 import { Pathway, Course } from "../types";
 import { getPathwayStats } from "../utils";
@@ -28,6 +28,8 @@ export function PathwayDetailsModal({
   onSave,
   onCourseToggle,
 }: PathwayDetailsModalProps) {
+  const [showCounselorPopup, setShowCounselorPopup] = useState(false);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -50,6 +52,15 @@ export function PathwayDetailsModal({
   if (!isOpen || !pathway) return null;
 
   const stats = getPathwayStats(pathway);
+
+  const handleSaveClick = () => {
+    if (stats.progress === 100 && !globalReqsMet) {
+      setShowCounselorPopup(true);
+      return;
+    }
+
+    onSave();
+  };
 
   return (
     <div
@@ -110,7 +121,7 @@ export function PathwayDetailsModal({
               <div>
                 <h4 className="font-semibold text-sm">TCD Program Requirements</h4>
                 <p className="text-xs mt-1 opacity-90">
-                  This endorsement requires coursework at the <strong>Technical College of DuPage (TCD)</strong>. 
+                  This endorsement requires coursework at the <strong>Technology Center of DuPage (TCD)</strong>. 
                   Participation requires a separate application and will take up 4 periods of your daily high school schedule.
                 </p>
                 <a href="https://app.schoolinks.com/course-catalog/naperville-community-unit-school-district-203/overview/technology-center-of-dupage" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-3 px-3 py-1.5 bg-white text-(--tcd-dash-text) rounded-md border border-(--tcd-dash-border) text-xs font-medium hover:bg-gray-50 transition-colors">
@@ -125,13 +136,13 @@ export function PathwayDetailsModal({
               <AlertCircle size={20} className="mt-0.5 shrink-0" />
               <div>
                 <h4 className="font-semibold text-base">
-                  Pathway Credits Completed!
+                  Check in with your counselor
                 </h4>
                 <p className="text-sm mt-1 opacity-90">
-                  You have finished all required courses for this pathway, but
-                  you still need to complete your{" "}
-                  <strong>Academic Success Requirements</strong> on the
-                  dashboard to officially earn this endorsement.
+                  You have finished the pathway coursework, but this website does
+                  not automatically apply you for the endorsement. Check in with
+                  your counselor to confirm your progress on the pathway and make
+                  sure you are done.
                 </p>
               </div>
             </div>
@@ -147,6 +158,9 @@ export function PathwayDetailsModal({
                 </h4>
                 <p className="text-sm text-(--text-secondary) mt-1">
                   Check off classes you have completed.
+                </p>
+                <p className="text-xs text-(--text-secondary) mt-1">
+                  <span className="font-semibold">All courses must be completed with a C or higher.</span>
                 </p>
               </div>
               <span className="text-base font-semibold text-(--text-secondary)">
@@ -211,6 +225,9 @@ export function PathwayDetailsModal({
                        <p className="text-xs text-(--text-secondary) mt-1">
                          {pathway.requirements.courseCredits.electiveCreditsRequired} elective credits required.
                        </p>
+                       <p className="text-xs text-(--text-secondary) mt-0.5">
+                         <span className="font-semibold">All electives must be completed with a C or higher.</span>
+                       </p>
                      </div>
                      <span className="text-sm font-semibold text-(--text-secondary)">
                        {pathway.requirements.courseCredits.electiveCourseOptions.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0)} / {pathway.requirements.courseCredits.electiveCreditsRequired} cr
@@ -258,7 +275,7 @@ export function PathwayDetailsModal({
             Cancel
           </button>
           <button
-            onClick={onSave}
+            onClick={handleSaveClick}
             className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
           >
             <Save size={18} />
@@ -266,6 +283,51 @@ export function PathwayDetailsModal({
           </button>
         </div>
       </div>
+
+      {showCounselorPopup && (
+        <div
+          className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowCounselorPopup(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-(--bg-card) shadow-2xl border border-(--border-primary) p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3">
+              <AlertCircle size={22} className="mt-0.5 shrink-0 text-(--status-warning)" />
+              <div>
+                <h3 className="text-lg font-semibold text-(--text-primary)">
+                  Check in with your counselor
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
+                  Check in with your counselor to confirm your progress on the pathway. This website does not automatically apply you for the endorsement, so confirm with your counselor that you are done.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCounselorPopup(false)}
+                className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:bg-(--bg-soft) transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCounselorPopup(false);
+                  onSave();
+                }}
+                className="px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }
