@@ -369,7 +369,7 @@ export default function Dashboard() {
   }, 0);
 
   const activeCanonicalPathway = activePathwayKey
-    ? pathwaysData[activePathwayKey as keyof typeof pathwaysData]
+    ? (pathwaysData as Record<string, Pathway>)[activePathwayKey]
     : null;
   const isActivePathwayTCD = Boolean(activeCanonicalPathway?.tcd ?? activePathway?.tcd);
 
