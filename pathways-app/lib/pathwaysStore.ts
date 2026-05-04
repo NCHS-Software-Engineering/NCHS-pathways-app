@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { s3DeleteFile, s3DownloadFile, s3ListFiles, s3UploadFile, S3_PATHWAYS_PREFIX, S3_IMAGES_PREFIX } from "./s3Storage";
 
 export interface AdminCourse {
   name: string;
@@ -211,6 +212,120 @@ async function deletePathwayImages(pathway: PathwayRaw): Promise<void> {
       safeUnlink(path.join(PUBLIC_ENDORSEMENT_IMAGES_DIR, fileName)),
     ])
   );
+}
+
+const S3_ACADEMIC_SUCCESS_KEY = "pathways/academic-success.json";
+
+function makeS3PathwayKey(fileName: string): string {
+  return `${S3_PATHWAYS_PREFIX}${fileName}`;
+}
+
+function makeS3ImageKey(fileName: string): string {
+  return `${S3_IMAGES_PREFIX}${fileName}`;
+}
+
+async function s3ReadJsonFile<T>(key: string): Promise<T> {
+  const buffer = await s3DownloadFile(key);
+  return JSON.parse(buffer.toString("utf-8")) as T;
+}
+
+async function s3WriteJsonFile(key: string, data: unknown): Promise<void> {
+  const content = `${JSON.stringify(data, null, 2)}\n`;
+  await s3UploadFile(key, Buffer.from(content, "utf-8"), "application/json");
+}
+
+async function s3ListPathwayFiles(): Promise<string[]> {
+  const keys = await s3ListFiles(S3_PATHWAYS_PREFIX);
+  return keys.filter((key) => {
+    const fileName = key.slice(S3_PATHWAYS_PREFIX.length);
+    if (!fileName.endsWith(".json")) return false;
+    return fileName !== "academic-success.json" && fileName !== "template.json";
+  });
+}
+
+function makeNewS3PathwayKey(id: string): string {
+  const safeId = id
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
+  return makeS3PathwayKey(`${safeId || `pathway-${Date.now()}`}.json`);
+}
+
+async function resolveS3PathwayKeyById(id: string): Promise<string | null> {
+  const keys = await s3ListPathwayFiles();
+
+  for (const key of keys) {
+    const pathway = await s3ReadJsonFile<{ id?: string }>(key);
+    if (pathway.id === id) return key;
+  }
+
+  return null;
+}
+
+async function deleteS3PathwayImages(pathway: PathwayRaw): Promise<void> {
+  const pathwayId = typeof pathway.id === "string" ? pathway.id.trim().toLowerCase() : "";
+  const explicitImageFile =
+    typeof pathway.imageFile === "string" && pathway.imageFile.trim().length > 0
+      ? path.basename(pathway.imageFile.trim())
+      : "";
+  const imagePathFile =
+    typeof pathway.imagePath === "string" && pathway.imagePath.trim().length > 0
+      ? path.basename(pathway.imagePath.trim())
+      : "";
+
+  const candidateFiles = new Set<string>();
+  if (explicitImageFile) candidateFiles.add(explicitImageFile);
+  if (imagePathFile) candidateFiles.add(imagePathFile);
+  if (pathwayId) {
+    for (const extension of IMAGE_EXTENSIONS) {
+      candidateFiles.add(`${pathwayId}${extension}`);
+    }
+  }
+
+  await Promise.all(
+    Array.from(candidateFiles).map((fileName) =>
+      s3DeleteFile(makeS3ImageKey(fileName)).catch(() => undefined)
+    )
+  );
+}
+
+export const s3PathwaysRepository: PathwaysRepository = {
+  async getAllPathwaysForAdmin() {
+    const keys = await s3ListPathwayFiles();
+    const pathways = await Promise.all(keys.map((key) => s3ReadJsonFile<PathwayRaw>(key)));
+    return pathways.map(normalizePathwayForAdmin).sort((a, b) => a.title.localeCompare(b.title));
+  },
+
+  async upsertPathwayFromAdmin(pathway) {
+    const existingKey = await resolveS3PathwayKeyById(pathway.id);
+    const outputKey = existingKey ?? makeNewS3PathwayKey(pathway.id);
+    const pathwayForStorage = denormalizePathwayForStorage(pathway);
+    await s3WriteJsonFile(outputKey, pathwayForStorage);
+  },
+
+  async deletePathwayById(id) {
+    const existingKey = await resolveS3PathwayKeyById(id);
+    if (!existingKey) return;
+
+    const existingPathway = await s3ReadJsonFile<PathwayRaw>(existingKey);
+    await deleteS3PathwayImages(existingPathway);
+    await s3DeleteFile(existingKey);
+  },
+
+  async getAcademicSuccess() {
+    return s3ReadJsonFile<AcademicSuccessData>(S3_ACADEMIC_SUCCESS_KEY);
+  },
+
+  async updateAcademicSuccess(academicSuccess) {
+    await s3WriteJsonFile(S3_ACADEMIC_SUCCESS_KEY, academicSuccess);
+  },
+};
+
+export function getPathwaysRepository(): PathwaysRepository {
+  if (process.env.USE_S3 === "true") return s3PathwaysRepository;
+  return fileSystemPathwaysRepository;
 }
 
 export const fileSystemPathwaysRepository: PathwaysRepository = {

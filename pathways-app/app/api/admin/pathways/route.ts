@@ -1,5 +1,5 @@
 import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
-import { fileSystemPathwaysRepository } from "@/lib/pathwaysStore";
+import { getPathwaysRepository } from "@/lib/pathwaysStore";
 import { getServerSession } from "next-auth";
 
 async function authorizeRequest() {
@@ -18,7 +18,7 @@ export async function GET() {
     const authError = await authorizeRequest();
     if (authError) return authError;
 
-    const pathways = await fileSystemPathwaysRepository.getAllPathwaysForAdmin();
+    const pathways = await getPathwaysRepository().getAllPathwaysForAdmin();
     return Response.json(pathways);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to load pathways.";
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Pathway id and title are required." }, { status: 400 });
     }
 
-    await fileSystemPathwaysRepository.upsertPathwayFromAdmin(pathway);
+    await getPathwaysRepository().upsertPathwayFromAdmin(pathway);
     return Response.json({ success: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to save pathway.";
