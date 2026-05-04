@@ -1,5 +1,5 @@
 import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
-import { fileSystemPathwaysRepository } from "@/lib/pathwaysStore";
+import { getPathwaysRepository } from "@/lib/pathwaysStore";
 import { getServerSession } from "next-auth";
 
 async function authorizeRequest() {
@@ -27,7 +27,7 @@ export async function DELETE(_: Request, context: RouteContext) {
       return Response.json({ error: "Pathway id is required." }, { status: 400 });
     }
 
-    await fileSystemPathwaysRepository.deletePathwayById(id);
+    await getPathwaysRepository().deletePathwayById(id);
     return Response.json({ success: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to delete pathway.";

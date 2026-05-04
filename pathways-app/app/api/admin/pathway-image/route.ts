@@ -1,7 +1,10 @@
 import { authOptions, isAllowedAdminEmail } from "@/lib/auth";
+import { s3DeleteFile, s3DownloadFile, s3FileExists, s3UploadFile, S3_IMAGES_PREFIX } from "@/lib/s3Storage";
 import { mkdir, readFile, stat, writeFile } from "fs/promises";
 import { getServerSession } from "next-auth";
 import path from "path";
+
+const USE_S3 = process.env.USE_S3 === "true";
 
 const APP_IMAGE_DIR = path.join(process.cwd(), "app", "endorsements", "images");
 const PUBLIC_IMAGE_DIR = path.join(process.cwd(), "public", "endorsements", "images");
@@ -90,6 +93,28 @@ async function resolvePreviewFilePath(pathwayId: string, imageFile?: string): Pr
   return null;
 }
 
+async function resolveS3ImageKey(pathwayId: string, imageFile?: string): Promise<string | null> {
+  const sanitizedPathwayId = sanitizePathwayId(pathwayId);
+  const candidateNames: string[] = [];
+
+  if (imageFile && imageFile.trim().length > 0) {
+    candidateNames.push(path.basename(imageFile.trim()));
+  }
+
+  for (const extension of PREVIEW_EXTENSIONS) {
+    candidateNames.push(`${sanitizedPathwayId}${extension}`);
+  }
+
+  const uniqueNames = Array.from(new Set(candidateNames));
+
+  for (const fileName of uniqueNames) {
+    const key = `${S3_IMAGES_PREFIX}${fileName}`;
+    if (await s3FileExists(key)) return key;
+  }
+
+  return null;
+}
+
 export async function GET(request: Request) {
   try {
     const authError = await authorizeRequest();
@@ -101,6 +126,21 @@ export async function GET(request: Request) {
 
     if (!pathwayId) {
       return Response.json({ error: "Pathway id is required." }, { status: 400 });
+    }
+
+    if (USE_S3) {
+      const s3Key = await resolveS3ImageKey(pathwayId, imageFile);
+      if (!s3Key) {
+        return Response.json({ error: "Pathway image not found." }, { status: 404 });
+      }
+
+      const bytes = await s3DownloadFile(s3Key);
+      return new Response(new Uint8Array(bytes), {
+        headers: {
+          "Content-Type": getMimeTypeFromExtension(s3Key),
+          "Cache-Control": "no-store",
+        },
+      });
     }
 
     const resolvedPath = await resolvePreviewFilePath(pathwayId, imageFile);
@@ -145,16 +185,22 @@ export async function POST(request: Request) {
 
     const extension = determineExtension(image);
     const imageFile = `${pathwayId}${extension}`;
-    const appOutputPath = path.join(APP_IMAGE_DIR, imageFile);
-    const publicOutputPath = path.join(PUBLIC_IMAGE_DIR, imageFile);
 
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    await mkdir(APP_IMAGE_DIR, { recursive: true });
-    await mkdir(PUBLIC_IMAGE_DIR, { recursive: true });
-    await writeFile(appOutputPath, buffer);
-    await writeFile(publicOutputPath, buffer);
+    if (USE_S3) {
+      const s3Key = `${S3_IMAGES_PREFIX}${imageFile}`;
+      await s3UploadFile(s3Key, buffer, image.type);
+    } else {
+      const appOutputPath = path.join(APP_IMAGE_DIR, imageFile);
+      const publicOutputPath = path.join(PUBLIC_IMAGE_DIR, imageFile);
+
+      await mkdir(APP_IMAGE_DIR, { recursive: true });
+      await mkdir(PUBLIC_IMAGE_DIR, { recursive: true });
+      await writeFile(appOutputPath, buffer);
+      await writeFile(publicOutputPath, buffer);
+    }
 
     return Response.json({
       success: true,
@@ -163,6 +209,41 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to upload pathway image.";
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const authError = await authorizeRequest();
+    if (authError) return authError;
+
+    const { searchParams } = new URL(request.url);
+    const pathwayId = sanitizePathwayId(searchParams.get("pathwayId") ?? "");
+    const imageFile = searchParams.get("imageFile") ?? "";
+
+    if (!pathwayId) {
+      return Response.json({ error: "Pathway id is required." }, { status: 400 });
+    }
+
+    if (USE_S3) {
+      const s3Key = await resolveS3ImageKey(pathwayId, imageFile);
+      if (s3Key) await s3DeleteFile(s3Key);
+    } else {
+      const resolvedPath = await resolvePreviewFilePath(pathwayId, imageFile);
+      if (resolvedPath) {
+        try {
+          const { unlink } = await import("fs/promises");
+          await unlink(resolvedPath);
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    return Response.json({ success: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to delete pathway image.";
     return Response.json({ error: message }, { status: 500 });
   }
 }
