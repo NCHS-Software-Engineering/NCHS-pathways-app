@@ -5,6 +5,7 @@ import {
   ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
+  S3ServiceException,
 } from "@aws-sdk/client-s3";
 
 export const S3_PATHWAYS_PREFIX = "pathways/";
@@ -76,11 +77,7 @@ export async function s3FileExists(key: string): Promise<boolean> {
     await client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
     return true;
   } catch (error) {
-    const httpStatus =
-      error instanceof Error && "$metadata" in error
-        ? (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode
-        : undefined;
-    if (httpStatus === 404 || (error instanceof Error && error.name === "NotFound")) return false;
+    if (error instanceof S3ServiceException && error.$metadata.httpStatusCode === 404) return false;
     throw error;
   }
 }
