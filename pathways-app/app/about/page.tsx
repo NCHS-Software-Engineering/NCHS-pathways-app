@@ -109,6 +109,57 @@ export default function AboutPage() {
             </div>
           </section>
 
+          {/* ACADEMIC SUCCESS SECTION */}
+          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
+            <h2 className="text-2xl font-semibold text-(--brand-text)">
+              Academic Success
+            </h2>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3">
+                Why does academic success matter?
+              </h3>
+
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed">
+                Academic success is part of the endorsement process. In addition to
+                completing pathway coursework, students must also meet the reading
+                and math expectations tied to their endorsement.
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed space-y-3">
+                <h4 className="text-base font-semibold">Reading</h4>
+                <p>
+                  Students can satisfy the reading requirement through eligible
+                  courses, AP exam scores, or qualifying test scores.
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Composition &amp; Reflection</li>
+                  <li>English Composition 1 or 2</li>
+                  <li>AP Literature &amp; Composition or AP Language &amp; Composition</li>
+                  <li>ACT English 18 + Reading 22</li>
+                  <li>SAT EBRW 540</li>
+                </ul>
+              </div>
+
+              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed space-y-3">
+                <h4 className="text-base font-semibold">Math</h4>
+                <p>
+                  Students can satisfy the math requirement through approved math
+                  coursework, AP exam scores, or qualifying test scores.
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Quantitative Literacy and Statistics</li>
+                  <li>Algebra 2 or higher-level math options</li>
+                  <li>AP Calculus AB, AP Calculus BC, or AP Statistics</li>
+                  <li>ACT Math 22 + Enrollment in Senior Math</li>
+                  <li>SAT Math 540 + Enrollment in Senior Math</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
         </div>
       </div>
     </div>

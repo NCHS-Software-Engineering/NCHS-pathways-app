@@ -21,7 +21,7 @@ export function AcademicSuccessActionItem({
   const [showMathCourses, setShowMathCourses] = useState(false);
 
   return (
-    <div className="mt-6">
+    <div className="mt-0">
       <h4 className="font-semibold text-(--text-primary) text-lg mb-1">
         {requirements.title}
       </h4>
@@ -71,8 +71,8 @@ export function AcademicSuccessActionItem({
           </div>
 
           {showReadingDetails && (
-            <div className="p-4 border-t border-(--border-primary) bg-(--competency-reading-soft) space-y-4">
-              <p className="text-sm text-(--competency-reading-text)">
+            <div className="p-4 md:px-6 border-t border-(--border-primary) bg-(--competency-reading-soft) space-y-4">
+              <p className="text-base font-medium text-(--competency-reading-text)">
                 Complete one of the following to fulfill this requirement:
               </p>
 
@@ -177,8 +177,8 @@ export function AcademicSuccessActionItem({
           </div>
 
           {showMathDetails && (
-            <div className="p-4 border-t border-(--border-primary) bg-(--competency-math-soft) space-y-4">
-              <p className="text-sm text-(--competency-math-text)">
+            <div className="p-4 md:px-6 border-t border-(--border-primary) bg-(--competency-math-soft) space-y-4">
+              <p className="text-base font-medium text-(--competency-math-text)">
                 Complete one of the following to fulfill this requirement:
               </p>
 

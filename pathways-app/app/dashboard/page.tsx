@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { AlertCircle, CheckCircle2, GraduationCap, X } from "lucide-react";
 import academicSuccessData from "../data/pathways/academic-success.json";
 import { pathways as pathwaysData } from "../data/pathways";
 
@@ -9,15 +10,103 @@ import { DashboardHeader } from "./components/DashboardHeader";
 import { QuickStats } from "./components/QuickStats";
 import { PathwaysList } from "./components/PathwaysList";
 import { ActionItems } from "./components/ActionItems";
-import { PathwayDetailsModal } from "./components/PathwayDetailsModal";
+import { PathwayDetailsModal } from "@/app/dashboard/components/PathwayDetailsModal";
 
 import { Pathway, AcademicStatus } from "./types";
 import {
   STARRED_PATHWAYS_STORAGE_KEY,
   PATHWAY_PROGRESS_STORAGE_KEY,
   ACADEMIC_STATUS_STORAGE_KEY,
+  applyCourseProgress,
+  collectCompletedCourseNames,
   getPathwayStats,
+  isCourseGroupRequirement,
 } from "./utils";
+
+// ─── Counselor Check-In Modal ────────────────────────────────────────────────
+function CounselorCheckInModal({
+  isOpen,
+  pathwayName,
+  onClose,
+}: {
+  isOpen: boolean;
+  pathwayName: string;
+  onClose: () => void;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-(--overlay-backdrop) backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-(--border-primary) bg-(--bg-card) p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="absolute inset-x-0 top-0 h-1 bg-(--accent)" />
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full p-2 text-(--text-secondary) transition-colors hover:bg-(--bg-soft) hover:text-(--text-primary)"
+          aria-label="Close confirmation dialog"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* Icon */}
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-(--accent-soft) text-(--accent)">
+          <GraduationCap className="h-8 w-8" />
+        </div>
+
+        {/* Heading */}
+        <h2 className="mb-2 text-center text-xl font-bold text-(--text-primary)">
+          Check In With Your Counselor
+        </h2>
+
+        {/* Subheading */}
+        {pathwayName && (
+          <p className="mb-1 text-center text-sm font-semibold text-(--accent)">
+            {pathwayName}
+          </p>
+        )}
+
+        {/* Body */}
+        <div className="mb-6 space-y-4 text-sm leading-relaxed text-(--text-secondary)">
+          <div className="rounded-xl border border-(--border-primary) bg-(--bg-soft) p-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-(--success)" />
+              <p>
+                It looks like you have completed all the requirements for this pathway.
+                <span className="block font-semibold text-(--text-primary)">
+                  This site does not automatically submit your endorsement.
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-xl border border-(--border-primary) bg-(--bg-card) p-4">
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-(--accent)" />
+            <p>
+              Please schedule a meeting with your counselor to confirm your progress and
+              officially complete the endorsement.
+            </p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={onClose}
+          className="w-full rounded-xl bg-(--accent) px-4 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 active:opacity-80"
+        >
+          Got it — I'll contact my counselor
+        </button>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const [dbUsername, setDbUsername] = useState<string>("");
@@ -36,6 +125,10 @@ export default function Dashboard() {
   const [activePathwayKey, setActivePathwayKey] = useState<string | null>(null);
   const [starredPathways, setStarredPathways] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+
+  // Counselor check-in state
+  const [showCounselorAlert, setShowCounselorAlert] = useState(false);
+  const [completedPathwayName, setCompletedPathwayName] = useState<string>("");
 
   const { data: session } = useSession();
 
@@ -104,23 +197,7 @@ export default function Dashboard() {
               const updatedPathways = Object.fromEntries(
                 Object.entries(basePathways).map(([key, pathway]) => [
                   key,
-                  {
-                    ...pathway,
-                    requirements: {
-                      ...pathway.requirements,
-                      courseCredits: {
-                        ...pathway.requirements.courseCredits,
-                        requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
-                          ...c,
-                          completed: completedCourses.has(c.name ?? ""),
-                        })),
-                        electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
-                          ...c,
-                          completed: completedCourses.has(c.name ?? ""),
-                        })),
-                      },
-                    },
-                  },
+                  applyCourseProgress(pathway, completedCourses),
                 ])
               ) as Record<string, Pathway>;
 
@@ -178,10 +255,19 @@ export default function Dashboard() {
                 }
               );
             if (validProgressEntries.length > 0) {
-              setPathways((prevPathways) => ({
-                ...prevPathways,
-                ...Object.fromEntries(validProgressEntries),
-              }));
+              setPathways((prevPathways) => {
+                const mergedPathways = {
+                  ...prevPathways,
+                  ...Object.fromEntries(validProgressEntries),
+                };
+
+                return Object.fromEntries(
+                  Object.entries(mergedPathways).map(([key, pathway]) => [
+                    key,
+                    applyCourseProgress(pathway, new Set(collectCompletedCourseNames(pathway))),
+                  ])
+                ) as Record<string, Pathway>;
+              });
             }
           }
         }
@@ -229,20 +315,7 @@ export default function Dashboard() {
       }),
     }).catch(() => { });
   }, [academicStatus, isHydrated, session]);
-  useEffect(() => {
-    if (!isHydrated) return;
-    if (!session?.user?.email) return;
 
-    fetch("/api/users", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        User_Email: session.user.email,
-        Reading_Competency: academicStatus.reading ? 1 : 0,
-        Math_Competency: academicStatus.math ? 1 : 0,
-      }),
-    }).catch(() => { });
-  }, [academicStatus, isHydrated, session]);
   function openPathway(pathwayKey: string) {
     const normalizedPathwayKey = normalizePathwayKey(pathwayKey);
     if (!normalizedPathwayKey) return;
@@ -267,7 +340,13 @@ export default function Dashboard() {
       const creditsData = updated.requirements.courseCredits;
 
       if (courseType === "required") {
-        creditsData.requiredCourses[index].completed = checked;
+        const requirement = creditsData.requiredCourses[index];
+
+        if (isCourseGroupRequirement(requirement)) {
+          return prev;
+        } else {
+          requirement.completed = checked;
+        }
       } else {
         creditsData.electiveCourseOptions[index].completed = checked;
       }
@@ -275,62 +354,45 @@ export default function Dashboard() {
       return updated;
     });
   }
-  function extractProgress(pathwaysState: typeof pathways) {
-    return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
-      ...pathway.requirements.courseCredits.requiredCourses
-        .filter((c: any) => c.completed)
-        .map((c: any) => c.name as string),
-      ...pathway.requirements.courseCredits.electiveCourseOptions
-        .filter((c: any) => c.completed)
-        .map((c: any) => c.name as string),
-    ]).join(";");
+
+  function handleGroupOptionToggle(groupIndex: number, optionIndex: number, checked: boolean) {
+    setActivePathway((prev) => {
+      if (!prev) return prev;
+
+      const updated = { ...prev };
+      const requirement = updated.requirements.courseCredits.requiredCourses[groupIndex];
+
+      if (!isCourseGroupRequirement(requirement)) return prev;
+
+      requirement.options = requirement.options.map((option, currentOptionIndex) => ({
+        ...option,
+        completed: checked && currentOptionIndex === optionIndex,
+      }));
+
+      return updated;
+    });
   }
+
+  function extractProgress(pathwaysState: typeof pathways) {
+    return Array.from(
+      new Set(
+        Object.values(pathwaysState).flatMap((pathway) => collectCompletedCourseNames(pathway))
+      )
+    ).join(";");
+  }
+
   function handleSave() {
     if (activePathway && activePathwayKey) {
-      const completedNames = new Set([
-        ...activePathway.requirements.courseCredits.requiredCourses
-          .filter(c => c.completed).map(c => c.name),
-        ...activePathway.requirements.courseCredits.electiveCourseOptions
-          .filter(c => c.completed).map(c => c.name),
-      ]);
+      const completedNames = new Set(collectCompletedCourseNames(activePathway));
 
-      const uncompletedNames = new Set([
-        ...activePathway.requirements.courseCredits.requiredCourses
-          .filter(c => !c.completed).map(c => c.name),
-        ...activePathway.requirements.courseCredits.electiveCourseOptions
-          .filter(c => !c.completed).map(c => c.name),
-      ]);
-
-      const syncedPathways = Object.fromEntries(
-        Object.entries({ ...pathways, [activePathwayKey]: activePathway }).map(
-          ([key, pathway]) => [
-            key,
-            {
-              ...pathway,
-              requirements: {
-                ...pathway.requirements,
-                courseCredits: {
-                  ...pathway.requirements.courseCredits,
-                  requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
-                    ...c,
-                    completed: completedNames.has(c.name ?? "") ? true
-                      : uncompletedNames.has(c.name ?? "") ? false
-                        : (c as any).completed,
-                  })),
-                  electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
-                    ...c,
-                    completed: completedNames.has(c.name ?? "") ? true
-                      : uncompletedNames.has(c.name ?? "") ? false
-                        : (c as any).completed,
-                  })),
-                },
-              },
-            },
-          ]
-        )
-      ) as unknown as typeof pathways;
+      const syncedActivePathway = applyCourseProgress(activePathway, completedNames);
+      const syncedPathways = {
+        ...pathways,
+        [activePathwayKey]: syncedActivePathway,
+      } as typeof pathways;
 
       setPathways(syncedPathways);
+      setActivePathway(syncedActivePathway);
 
       if (session?.user?.email) {
         fetch("/api/users", {
@@ -346,7 +408,19 @@ export default function Dashboard() {
         }).catch(() => { });
       }
 
+      // ── Check if this pathway just became 100% complete ──────────────────
+      const stats = getPathwayStats(activePathway);
+      const isNowComplete = stats.progress === 100;
+
       setShowModal(false);
+
+      if (isNowComplete) {
+        setCompletedPathwayName(
+          (activePathway as any).title ?? (activePathway as any).name ?? activePathwayKey ?? ""
+        );
+        setShowCounselorAlert(true);
+      }
+      // ─────────────────────────────────────────────────────────────────────
     }
   }
 
@@ -410,6 +484,14 @@ export default function Dashboard() {
         onClose={() => setShowModal(false)}
         onSave={handleSave}
         onCourseToggle={handleCourseToggle}
+        onGroupOptionToggle={handleGroupOptionToggle}
+      />
+
+      {/* Counselor Check-In Alert */}
+      <CounselorCheckInModal
+        isOpen={showCounselorAlert}
+        pathwayName={completedPathwayName}
+        onClose={() => setShowCounselorAlert(false)}
       />
     </div>
   );

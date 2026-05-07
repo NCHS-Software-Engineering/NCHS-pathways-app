@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSession } from "next-auth/react";
-import { Star } from "lucide-react";
+import { Star, ExternalLink } from "lucide-react";
  
 interface EndorsementPathway {
   id: string;
@@ -16,16 +16,17 @@ interface EndorsementPathway {
 const FALLBACK_IMAGE = "/images/icon.png";
 
 function resolvePathwayImage(pathway: EndorsementPathway): string {
+  const params = new URLSearchParams({ pathwayId: pathway.id });
+
   if (typeof pathway.imageFile === "string" && pathway.imageFile.trim().length > 0) {
-    const fileName = pathway.imageFile.split("/").pop() ?? pathway.imageFile;
-    return `/endorsements/images/${fileName}`;
+    params.set("imageFile", pathway.imageFile.trim());
   }
 
   if (typeof pathway.imagePath === "string" && pathway.imagePath.trim().length > 0) {
-    return pathway.imagePath;
+    params.set("imagePath", pathway.imagePath.trim());
   }
 
-  return FALLBACK_IMAGE;
+  return `/api/endorsements-image?${params.toString()}`;
 }
 
 interface PathwayCardProps {
@@ -50,30 +51,33 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   isStarred,
   onToggle
 }) => {
-  
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-full transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-5 w-full min-h-96 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
       <img
         src={imageUrl}
         alt={`${title} pathway`}
-        onError={(e) => {
-          e.currentTarget.src = FALLBACK_IMAGE;
+        onError={(event) => {
+          event.currentTarget.src = FALLBACK_IMAGE;
         }}
-        className="h-35 w-full rounded-lg object-cover mb-3 transition-transform duration-300 group-hover:scale-105"
+        className="h-56 w-full rounded-lg object-cover mb-4 transition-transform duration-300 group-hover:scale-105"
       />
 
-      <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
+      <button
+        onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}
+        className="text-lg font-semibold text-(--text-primary) mb-2 flex items-center gap-2 hover:text-(--brand) transition-colors cursor-pointer group/link"
+      >
         {title}
-      </h3>
+        <ExternalLink size={16} className="text-(--text-secondary) group-hover/link:text-(--brand) transition-colors" />
+      </button>
 
       <div className="mt-1 flex items-start justify-between gap-3">
         <div className="flex flex-col items-start gap-1.5">
-          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
+          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text) text-left whitespace-normal">
             {category}
           </div>
-          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
+          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text) text-left whitespace-normal">TCD</div> : null}
         </div>
 
         <button
@@ -81,6 +85,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
             e.stopPropagation();
             onToggle(pathwayId);
           }}
+          title="Select"
           className="shrink-0 self-start"
         >
           <Star
