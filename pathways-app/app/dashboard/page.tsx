@@ -37,14 +37,15 @@ function CounselorCheckInModal({
 
   return (
     <div
-      className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-(--overlay-backdrop) backdrop-blur-sm"
+      className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-(--overlay-backdrop) backdrop-blur-sm transition-all"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-(--border-primary) bg-(--bg-card) p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-(--border-primary) bg-(--bg-card) shadow-2xl animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-(--accent)" />
+        {/* Decorative Top Gradient Bar */}
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-blue-400 via-indigo-500 to-purple-500" />
 
         <button
           type="button"
@@ -52,60 +53,62 @@ function CounselorCheckInModal({
           className="absolute right-4 top-4 rounded-full p-2 text-(--text-secondary) transition-colors hover:bg-(--bg-soft) hover:text-(--text-primary)"
           aria-label="Close confirmation dialog"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
 
-        {/* Icon */}
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-(--accent-soft) text-(--accent)">
-          <GraduationCap className="h-8 w-8" />
-        </div>
+        <div className="p-8">
+          {/* Icon with soft glow effect */}
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-(--competency-reading-soft) text-(--modal-accent-text) ring-8 ring-(--competency-reading-accent)/50">
+            <GraduationCap className="h-8 w-8" />
+          </div>
 
-        {/* Heading */}
-        <h2 className="mb-2 text-center text-xl font-bold text-(--text-primary)">
-          Check In With Your Counselor
-        </h2>
+          {/* Heading */}
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-serif font-bold text-(--text-primary) tracking-tight">
+              Check In With Your Counselor
+            </h2>
+            {pathwayName && (
+              <p className="mt-2 text-sm font-semibold text-(--modal-accent-text) uppercase tracking-wider">
+                {pathwayName}
+              </p>
+            )}
+          </div>
 
-        {/* Subheading */}
-        {pathwayName && (
-          <p className="mb-1 text-center text-sm font-semibold text-(--accent)">
-            {pathwayName}
-          </p>
-        )}
-
-        {/* Body */}
-        <div className="mb-6 space-y-4 text-sm leading-relaxed text-(--text-secondary)">
-          <div className="rounded-xl border border-(--border-primary) bg-(--bg-soft) p-4">
-            <div className="flex items-start gap-3">
+          {/* Body Callouts */}
+          <div className="mb-8 space-y-3">
+            {/* Success Callout */}
+            <div className="flex items-start gap-3 rounded-xl border border-(--badge-success-border) bg-(--badge-success-bg) p-4 shadow-sm">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-(--success)" />
-              <p>
-                It looks like you have completed all the requirements for this pathway.
-                <span className="block font-semibold text-(--text-primary)">
+              <p className="text-sm leading-relaxed text-(--status-complete)">
+                It looks like you have completed all the requirements for this pathway. 
+                <span className="block font-bold mt-1 text-(--action-soft-text)">
                   This site does not automatically submit your endorsement.
                 </span>
               </p>
             </div>
+
+            {/* Action Required Callout */}
+            <div className="flex items-start gap-3 rounded-xl border border-(--status-warning-border) bg-(--status-warning-light) p-4 shadow-sm">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-(--status-warning-icon)" />
+              <p className="text-sm leading-relaxed text-(--status-warning-text) font-medium">
+                Please schedule a meeting with your counselor to confirm your progress and officially complete the endorsement.
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-start gap-3 rounded-xl border border-(--border-primary) bg-(--bg-card) p-4">
-            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-(--accent)" />
-            <p>
-              Please schedule a meeting with your counselor to confirm your progress and
-              officially complete the endorsement.
-            </p>
-          </div>
+          {/* CTA Button */}
+          <button
+            onClick={onClose}
+            className="w-full rounded-xl bg-(--modal-accent-text) hover:bg-(--credits-icon-text) px-4 py-3.5 text-sm font-bold text-(--bg-card) shadow-md shadow-blue-500/20 transition-all active:scale-[0.98]"
+          >
+            Got it — I'll contact my counselor
+          </button>
         </div>
-
-        {/* CTA */}
-        <button
-          onClick={onClose}
-          className="w-full rounded-xl bg-(--accent) px-4 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 active:opacity-80"
-        >
-          Got it — I'll contact my counselor
-        </button>
       </div>
     </div>
   );
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {

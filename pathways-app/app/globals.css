@@ -306,12 +306,14 @@ footer {
   --danger-soft: #fef2f2;
   --danger-border: #fecaca;
   --status-warning: #F59E0B;
+  --status-warning-border: #fcd34d;
   --status-warning-icon: #F59E0B;
   --status-warning-light: #FFFBEB;
   --status-warning-text: #92400E;
   
   --status-complete: #15803d;
   --badge-success-bg: #dcfce7;
+  --badge-success-border: #bbf7d0;
   --badge-success-text: #166534;
   --badge-college-bg: #dbeafe;
   --badge-college-text: #1e40af;

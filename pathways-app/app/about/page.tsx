@@ -117,45 +117,25 @@ export default function AboutPage() {
 
             <div>
               <h3 className="text-lg font-semibold mb-3">
-                Why does academic success matter?
+                What does academic success mean?
               </h3>
 
-              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed">
-                Academic success is part of the endorsement process. In addition to
-                completing pathway coursework, students must also meet the reading
-                and math expectations tied to their endorsement.
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
               <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed space-y-3">
-                <h4 className="text-base font-semibold">Reading</h4>
                 <p>
-                  Students can satisfy the reading requirement through eligible
-                  courses, AP exam scores, or qualifying test scores.
+                  Students must demonstrate academic success in both reading and math to
+                  show that they have the strong foundational skills needed to succeed
+                  in school and beyond.
                 </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Composition &amp; Reflection</li>
-                  <li>English Composition 1 or 2</li>
-                  <li>AP Literature &amp; Composition or AP Language &amp; Composition</li>
-                  <li>ACT English 18 + Reading 22</li>
-                  <li>SAT EBRW 540</li>
-                </ul>
-              </div>
-
-              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed space-y-3">
-                <h4 className="text-base font-semibold">Math</h4>
                 <p>
-                  Students can satisfy the math requirement through approved math
-                  coursework, AP exam scores, or qualifying test scores.
+                  This means they are prepared for college-level reading and math
+                  coursework, and it also shows that they are becoming a well-rounded
+                  student who can keep growing in their pathway and future goals.
                 </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Quantitative Literacy and Statistics</li>
-                  <li>Algebra 2 or higher-level math options</li>
-                  <li>AP Calculus AB, AP Calculus BC, or AP Statistics</li>
-                  <li>ACT Math 22 + Enrollment in Senior Math</li>
-                  <li>SAT Math 540 + Enrollment in Senior Math</li>
-                </ul>
+                <p>
+                  Academic success is an important part of earning an endorsement because
+                  it helps confirm that a student is ready for more advanced learning and
+                  can handle the expectations that come with their chosen pathway.
+                </p>
               </div>
             </div>
           </section>
