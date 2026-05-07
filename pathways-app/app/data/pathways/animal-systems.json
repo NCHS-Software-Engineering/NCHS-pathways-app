@@ -1,77 +1,72 @@
 {
-    "id": "animal-systems",
-    "title": "Animal Systems",
-    "category": "Agriculture",
-    
-    "link": "https://app.schoolinks.com/student-pathways/animal-systems/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 4.5,
-
-        "requiredCourses": [
-            {
-            "name": "Companion Animal Science 1",
-            "credits": 0.5,
-            "earlyCollegeCredit": false
-            },
-            {
-            "name": "Companion Animal Science 2",
-            "credits": 0.5,
-            "earlyCollegeCredit": false
-            },
-            {
-            "name": "Veterinary Science",
-            "credits": 1.0,
-            "earlyCollegeCredit": false
-            },
-            {
-            "name": "Blended Career Internship",
-            "credits": 0.5,
-            "earlyCollegeCredit": true
-            }
-        ],
-
-        "electiveCreditsRequired": 2.0,
-
-        "electiveCourseOptions": [
-            {
-            "name": "AP Biology",
-            "credits": 1.0,
-            "earlyCollegeCredit": true
-            },
-            {
-            "name": "AP Environmental Science",
-            "credits": 1.0,
-            "earlyCollegeCredit": true
-            },
-            {
-            "name": "AP Chemistry",
-            "credits": 1.0,
-            "earlyCollegeCredit": true
-            },
-            {
-            "name": "AP Psychology",
-            "credits": 1.0,
-            "earlyCollegeCredit": true
-            }
-        ]
+  "id": "animal-systems",
+  "title": "Animal Systems",
+  "category": "Agriculture",
+  "link": "https://app.schoolinks.com/student-pathways/animal-systems/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 4.5,
+      "requiredCourses": [
+        {
+          "name": "Companion Animal Science 1",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "Hours may be completed through the Blended Career Internship."
+        {
+          "name": "Companion Animal Science 2",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
         },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-            "FFA"
-        ]
+        {
+          "name": "Veterinary Science",
+          "credits": 1,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 2,
+      "electiveCourseOptions": [
+        {
+          "name": "AP Biology",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Environmental Science",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Chemistry",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Psychology",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "Requires student to take the Blended Career Internship course to fulfill hours",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
+    },
+    "coCurricular": {
+      "required": false,
+      "examples": [
+        "FFA"
+      ]
     }
+  },
+  "imageFile": "animal-systems.jpg",
+  "imagePath": "/endorsements/images/animal-systems.jpg"
 }

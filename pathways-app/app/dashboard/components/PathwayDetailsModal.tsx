@@ -29,6 +29,8 @@ export function PathwayDetailsModal({
   onSave,
   onCourseToggle,
 }: PathwayDetailsModalProps) {
+  const [showCounselorPopup, setShowCounselorPopup] = useState(false);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -51,6 +53,15 @@ export function PathwayDetailsModal({
   if (!isOpen || !pathway) return null;
 
   const stats = getPathwayStats(pathway);
+
+  const handleSaveClick = () => {
+    if (stats.progress === 100 && !globalReqsMet) {
+      setShowCounselorPopup(true);
+      return;
+    }
+
+    onSave();
+  };
 
   return (
     <FocusTrap>
@@ -272,7 +283,244 @@ export function PathwayDetailsModal({
             </button>
           </div>
         </div>
+
+        {/* Modal Body */}
+        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+          {/* Overall Progress */}
+          <div>
+            <div className="flex justify-between text-base mb-2">
+              <span className="font-semibold text-(--text-primary)">
+                Pathway Coursework Completion
+              </span>
+              <span className="font-bold text-(--modal-accent-text)">
+                {stats.progress}%
+              </span>
+            </div>
+            <div className="w-full bg-(--bg-soft) h-3 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${
+                  stats.progress === 100
+                    ? "bg-(--success)"
+                    : "bg-(--modal-progress-incomplete)"
+                }`}
+                style={{ width: `${stats.progress}%` }}
+              />
+            </div>
+          </div>
+          {/* Special TCD Alert */}
+          {isTCD && (
+            <div className="bg-(--tcd-dash-bg) border border-(--tcd-dash-border) text-(--tcd-dash-text) p-4 rounded-xl flex items-start gap-3 shadow-sm">
+              <Info size={20} className="mt-0.5 shrink-0" />
+              <div>
+                <h4 className="font-semibold text-sm">TCD Program Requirements</h4>
+                <p className="text-xs mt-1 opacity-90">
+                  This endorsement requires coursework at the <strong>Technology Center of DuPage (TCD)</strong>. 
+                  Participation requires a separate application and will take up 4 periods of your daily high school schedule.
+                </p>
+                <a href="https://app.schoolinks.com/course-catalog/naperville-community-unit-school-district-203/overview/technology-center-of-dupage" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-3 px-3 py-1.5 bg-white text-(--tcd-dash-text) rounded-md border border-(--tcd-dash-border) text-xs font-medium hover:bg-gray-50 transition-colors">
+                    View More Information <ExternalLink size={12} />
+                  </a>
+              </div>
+            </div>
+          )}
+          {/* Warning if credits are met but academic success isn't */}
+          {stats.progress === 100 && !globalReqsMet && (
+            <div className="bg-(--status-warning-light) border border-(--status-warning)/30 text-(--status-warning-text) p-4 rounded-xl flex items-start gap-3 shadow-sm">
+              <AlertCircle size={20} className="mt-0.5 shrink-0" />
+              <div>
+                <h4 className="font-semibold text-base">
+                  Check in with your counselor
+                </h4>
+                <p className="text-sm mt-1 opacity-90">
+                  You have finished the pathway coursework, but this website does
+                  not automatically apply you for the endorsement. Check in with
+                  your counselor to confirm your progress on the pathway and make
+                  sure you are done.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Required Courses */}
+          <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
+            <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
+              <div>
+                <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
+                  <BookOpen size={18} className="text-(--brand)" />
+                  Required Courses
+                </h4>
+                <p className="text-sm text-(--text-secondary) mt-1">
+                  Check off classes you have completed.
+                </p>
+                <p className="text-xs text-(--text-secondary) mt-1">
+                  <span className="font-semibold">All courses must be completed with a C or higher.</span>
+                </p>
+              </div>
+              <span className="text-base font-semibold text-(--text-secondary)">
+                {pathway.requirements.courseCredits.requiredCourses.reduce(
+                  (sum: number, c: Course) => sum + (c.completed ? c.credits : 0),
+                  0
+                )}{" "}
+                credits earned
+              </span>
+            </div>
+            <div className="p-2 space-y-1">
+              {pathway.requirements.courseCredits.requiredCourses.map(
+                (course: any, idx: number) => (
+                  <label
+                    key={`req-${idx}`}
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={course.completed ?? false}
+                      onChange={(e) =>
+                        onCourseToggle("required", idx, e.target.checked)
+                      }
+                      className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                    />
+                    <div className="flex-1 flex justify-between items-center gap-3">
+                      <span className="text-base text-(--text-primary) flex items-center gap-2 leading-tight">
+                        <span
+                          className={
+                            course.completed
+                              ? "line-through text-(--text-secondary) decoration-1"
+                              : "text-(--text-primary)"
+                          }
+                        >
+                          {course.name}
+                        </span>
+                        {course.earlyCollegeCredit && (
+                          <span className="text-xs bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">
+                            College Credit
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-sm font-medium text-(--text-secondary)">
+                        {course.credits} cr
+                      </span>
+                    </div>
+                  </label>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Elective Courses (Hidden for TCD Pathways) */}
+              {!isTCD && (
+                <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
+                  <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
+                     <div>
+                       <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
+                         <GraduationCap size={18} className="text-(--brand)" />
+                         Elective Options
+                       </h4>
+                       <p className="text-xs text-(--text-secondary) mt-1">
+                         {pathway.requirements.courseCredits.electiveCreditsRequired} elective credits required.
+                       </p>
+                       <p className="text-xs text-(--text-secondary) mt-0.5">
+                         <span className="font-semibold">All electives must be completed with a C or higher.</span>
+                       </p>
+                     </div>
+                     <span className="text-sm font-semibold text-(--text-secondary)">
+                       {pathway.requirements.courseCredits.electiveCourseOptions.reduce((sum: number, c: Course) => sum + (c.completed ? c.credits : 0), 0)} / {pathway.requirements.courseCredits.electiveCreditsRequired} cr
+                     </span>
+                  </div>
+                  
+                  {pathway.requirements.courseCredits.electiveCourseOptions.length > 0 ? (
+                    <div className="p-2 space-y-1">
+                      {pathway.requirements.courseCredits.electiveCourseOptions.map((course: any, idx: number) => (
+                        <label
+                          key={`elec-${idx}`}
+                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={course.completed ?? false}
+                            onChange={(e) => onCourseToggle('elective', idx, e.target.checked)}
+                            className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                          />
+                          <div className="flex-1 flex justify-between items-center">
+                            <span className={`text-sm ${course.completed ? 'line-through text-(--text-secondary)' : 'text-(--text-primary)'}`}>
+                              {course.name}
+                              {course.earlyCollegeCredit && <span className="ml-2 text-[10px] bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">College Credit</span>}
+                            </span>
+                            <span className="text-xs font-medium text-(--text-secondary)">{course.credits} cr</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-5 text-center bg-gray-50/50">
+                      <p className="text-sm text-(--text-secondary) italic">No elective credits required for this pathway.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-6 py-4 border-t border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:opacity-90 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSaveClick}
+            className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
+          >
+            <Save size={18} />
+            Save Changes
+          </button>
+        </div>
       </div>
+
+      {showCounselorPopup && (
+        <div
+          className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowCounselorPopup(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-(--bg-card) shadow-2xl border border-(--border-primary) p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3">
+              <AlertCircle size={22} className="mt-0.5 shrink-0 text-(--status-warning)" />
+              <div>
+                <h3 className="text-lg font-semibold text-(--text-primary)">
+                  Check in with your counselor
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
+                  Check in with your counselor to confirm your progress on the pathway. This website does not automatically apply you for the endorsement, so confirm with your counselor that you are done.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCounselorPopup(false)}
+                className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:bg-(--bg-soft) transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCounselorPopup(false);
+                  onSave();
+                }}
+                className="px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    
     </FocusTrap>
   );
 }

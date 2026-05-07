@@ -1,40 +1,30 @@
-import { NextResponse, NextRequest } from "next/server";
-import mysql from "mysql2/promise";
-
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+import { fileSystemPathwaysRepository } from "@/lib/pathwaysStore";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const name = req.nextUrl.searchParams.get("name");
+  const name = req.nextUrl.searchParams.get("name")?.trim().toLowerCase();
 
   try {
-    if (name) {
-      const [rows] = await db.execute(
-        "SELECT course_json FROM courses WHERE course_name = ?",
-        [name]
-      ) as any[];
+    const pathways = await fileSystemPathwaysRepository.getAllPathwaysForAdmin();
 
-      if (rows.length === 0) {
+    if (name) {
+      const match = pathways.find((pathway) => {
+        const pathwayId = pathway.id?.trim().toLowerCase();
+        const pathwayTitle = pathway.title?.trim().toLowerCase();
+        return pathwayId === name || pathwayTitle === name;
+      });
+
+      if (!match) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
 
-      return NextResponse.json(rows[0].course_json);
+      return NextResponse.json(match);
     }
 
-    const [rows] = await db.execute(
-      "SELECT course_name, course_json FROM courses"
-    ) as any[];
-
-    const result = Object.fromEntries(
-      rows.map((r: any) => [r.course_name, r.course_json]));
-
+    const result = Object.fromEntries(pathways.map((pathway) => [pathway.id, pathway]));
     return NextResponse.json(result);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Database error" }, { status: 500 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to load pathways" }, { status: 500 });
   }
 }

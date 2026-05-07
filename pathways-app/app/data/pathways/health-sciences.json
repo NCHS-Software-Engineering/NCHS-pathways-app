@@ -1,73 +1,61 @@
 {
-    "id": "health-sciences",
-    "title": "Health Sciences",
-    "category": "Healthcare & Human Services",
-
-    "link": "https://app.schoolinks.com/student-pathways/biotechnology-research-development/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 2.5,
-
-        "requiredCourses": [
-            {
-            "name": "Introduction to Health Occupations",
-            "credits": 0.5,
-            "earlyCollegeCredit":true
-            },
-            {
-            "name": "Health Occupations",
-            "credits": 1.0,
-            "earlyCollegeCredit":true
-            },
-            {
-            "name": "Blended Career Internship",
-            "credits": 0.5,
-            "earlyCollegeCredit":true
-            }
-        ],
-
-        "electiveCreditsRequired": 0.5,
-
-        "electiveCourseOptions": [
-            {
-            "name":"Cooking for Wellness",
-            "credits": 0.5,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name":"AP Biology",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name":"AP Chemistry",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-            "name":"AP Psychology",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            }
-        ]
+  "id": "health-sciences",
+  "title": "Health Sciences",
+  "category": "Healthcare & Human Services",
+  "link": "https://app.schoolinks.com/student-pathways/biotechnology-research-development/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 2.5,
+      "requiredCourses": [
+        {
+          "name": "Introduction to Health Occupations",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "Hours may be completed through the Blended Career Internship."
+        {
+          "name": "Health Occupations",
+          "credits": 1,
+          "earlyCollegeCredit": true
         },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-            "HOSA",
-            "Red Cross"
-        ]
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 0.5,
+      "electiveCourseOptions": [
+        {
+          "name": "Cooking for Wellness",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Biology",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Chemistry",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "AP Psychology",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "Requires student to take the Blended Career Internship course to fulfill hours",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "health-sciences.jpg",
+  "imagePath": "/endorsements/images/health-sciences.jpg"
 }

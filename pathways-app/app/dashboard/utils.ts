@@ -4,14 +4,19 @@ export const STARRED_PATHWAYS_STORAGE_KEY = "starredPathways";
 export const PATHWAY_PROGRESS_STORAGE_KEY = "pathwayProgress";
 export const ACADEMIC_STATUS_STORAGE_KEY = "academicStatusProgress";
 
+function safeCredits(course: Partial<Course>): number {
+  const credits = course.credits;
+  return typeof credits === "number" && Number.isFinite(credits) ? credits : 0;
+}
+
 export function getPathwayStats(pathway: Pathway): PathwayStats {
   const req = pathway.requirements.courseCredits;
   const earnedReq = req.requiredCourses.reduce(
-    (sum: number, c: Course) => sum + (c.completed ? c.credits : 0),
+    (sum: number, c: Course) => sum + (c.completed ? safeCredits(c) : 0),
     0
   );
   const earnedElec = req.electiveCourseOptions.reduce(
-    (sum: number, c: Course) => sum + (c.completed ? c.credits : 0),
+    (sum: number, c: Course) => sum + (c.completed ? safeCredits(c) : 0),
     0
   );
 

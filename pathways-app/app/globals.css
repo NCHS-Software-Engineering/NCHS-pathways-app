@@ -302,6 +302,9 @@ footer {
   --credits-icon-text: #1e40af;
 
   --success: #22c55e;
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --danger-border: #fecaca;
   --status-warning: #F59E0B;
   --status-warning-icon: #F59E0B;
   --status-warning-light: #FFFBEB;
@@ -314,8 +317,8 @@ footer {
   --badge-college-text: #1e40af;
 
   /* KEEP THIS*/
-  --chip-bg: #245eff;
-  --chip-text: #d7e1ff;
+  --chip-text: #011e6e;
+  --chip-bg: #d7e1ff;
   --tcd-chip-bg: #1e3a8a;
   --tcd-chip-text: #dbebff;
   --tcd-dash-bg: #f5f3ff;
@@ -328,6 +331,14 @@ footer {
   --overlay-backdrop: rgba(0, 0, 0, 0.5);
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
   
+
+  /*Admin variables*/
+  --admin-field-bg: #f8fafc;
+  --admin-muted-bg: #f8fafc;
+  --admin-soft-hover: #dbeafe;
+  --admin-accent-soft: #eef2ff;
+  --admin-accent-border: #c7d2fe;
+  --admin-accent-text: #4338ca;
 }
 
 .dark {
@@ -360,6 +371,9 @@ footer {
   --credits-icon-text: #dbeafe;
   --color: #d9e2f7;
   --success: #22c55e;
+  --danger: #f87171;
+  --danger-soft: #3f1d1d;
+  --danger-border: #7f1d1d;
   --status-warning: #413893;
   --status-warning-icon: #fbbf24;
   --status-warning-light: #1e2642;
@@ -384,6 +398,13 @@ footer {
   --action-soft-text: #99f6e4;
   --overlay-backdrop: rgba(2, 6, 23, 0.72);
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  --admin-field-bg: #22384d;
+  --admin-muted-bg: #21384d;
+  --admin-soft-hover: #395573;
+  --admin-accent-soft: #1e2642;
+  --admin-accent-border: #334155;
+  --admin-accent-text: #c7d2fe;
 }
 
 .pageTitle {

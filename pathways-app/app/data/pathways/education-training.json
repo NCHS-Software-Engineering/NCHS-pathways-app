@@ -1,92 +1,81 @@
 {
-    "id": "education-training",
-    "title": "Education & Training",
-    "category": "Healthcare & Human Services",
-
-    "link": "https://app.schoolinks.com/student-pathways/education-teaching-training/",
-    "tcd": false,
-
-    "requirements": {
-        "pathwayType": "Regular",
-        "courseCredits": {
-        "totalCreditsRequired": 2.0,
-
-        "requiredCourses": [
-            {
-            "name": "Intro to Teaching 1",
-            "credits": 0.5,
-            "earlyCollegeCredit":true
-            },
-            {
-            "name": "Intro to Teaching 2",
-            "credits": 1.0,
-            "earlyCollegeCredit":true
-            }
-        ],
-
-        "electiveCreditsRequired": 0.5,
-
-        "electiveCourseOptions": [
-            {
-            "name":"Early Childhood Education 1",
-            "credits": 0.5,
-            "earlyCollegeCredit": false 
-            },
-            {
-            "name":"Early Childhood Education 2",
-            "credits": 1.0,
-            "earlyCollegeCredit": false 
-            },
-            {
-            "name":"Intro to Psych",
-            "credits": 0.5,
-            "earlyCollegeCredit": false 
-            },
-            {
-            "name":"AP Psychology",
-            "credits": 1.0,
-            "earlyCollegeCredit": true 
-            },
-            {
-                "name": "Human Growth & Development",
-                "credits": 1.0,
-                "earlyCollegeCredit": false
-            },
-            {
-                "name":"Adapted PE Leaders",
-                "credits": 0.5,
-                "earlyCollegeCredit": false
-            },
-            {
-                "name": "Adapted Art & Design Leaders",
-                "credits": 0.5,
-                "earlyCollegeCredit": false
-            },
-            {
-                "name": "Adapted Music for Leaders",
-                "credits": 0.5,
-                "earlyCollegeCredit": 0.5
-            },
-            {
-                "name": "Sociology",
-                "credits": 0.5,
-                "earlyCollegeCredit": false
-            }
-        ]
+  "id": "education-training",
+  "title": "Education & Training",
+  "category": "Healthcare & Human Services",
+  "link": "https://app.schoolinks.com/student-pathways/education-teaching-training/",
+  "tcd": false,
+  "requirements": {
+    "pathwayType": "Regular",
+    "courseCredits": {
+      "totalCreditsRequired": 2,
+      "requiredCourses": [
+        {
+          "name": "Intro to Teaching 1",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         },
-
-        "professionalLearning": {
-        "careerExplorationActivities": 2,
-        "teamChallenges": 2,
-        "workExperienceHours": 60,
-        "notes": "These hours can be met through the Introduction to Teaching 2 course."
-        },
-
-        "coCurricular": {
-        "required": false,
-        "examples": [
-            
-        ]
+        {
+          "name": "Intro to Teaching 2",
+          "credits": 1,
+          "earlyCollegeCredit": true
         }
+      ],
+      "electiveCreditsRequired": 0.5,
+      "electiveCourseOptions": [
+        {
+          "name": "Early Childhood Education 1",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Early Childhood Education 2",
+          "credits": 1,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Intro to Psych",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "AP Psychology",
+          "credits": 1,
+          "earlyCollegeCredit": true
+        },
+        {
+          "name": "Human Growth & Development",
+          "credits": 1,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Adapted PE Leaders",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Adapted Art & Design Leaders",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        },
+        {
+          "name": "Adapted Music for Leaders",
+          "credits": 0.5,
+          "earlyCollegeCredit": 0.5
+        },
+        {
+          "name": "Sociology",
+          "credits": 0.5,
+          "earlyCollegeCredit": false
+        }
+      ]
+    },
+    "professionalLearning": {
+      "notes": "these hours are embedded within the required career-focused coursework",
+      "careerExplorationActivities": 2,
+      "teamChallenges": 2,
+      "workExperienceHours": 60
     }
+  },
+  "imageFile": "education-training.jpg",
+  "imagePath": "/endorsements/images/education-training.jpg"
 }
