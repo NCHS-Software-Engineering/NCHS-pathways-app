@@ -72,13 +72,13 @@ export function PathwayDetailsModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="px-6 pt-5 bg-(--bg-card)">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <span className="text-sm font-bold tracking-wider uppercase text-(--modal-accent-text) mb-1 block">
+        <div className="px-6 pt-5 pb-1 bg-(--bg-card)">
+          <div className="flex justify-between items-start gap-4 mb-4">
+            <div className="space-y-1.5 pb-1">
+              <span className="text-sm font-bold tracking-wider uppercase text-(--modal-accent-text) block">
                 Endorsement Details
               </span>
-              <h2 className="text-2xl font-serif font-bold text-(--text-primary)">
+              <h2 className="text-2xl font-serif font-bold text-(--text-primary) leading-tight">
                 {pathway.title}
               </h2>
             </div>
@@ -219,7 +219,9 @@ export function PathwayDetailsModal({
                   <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
                      <div>
                        <h4 className="font-medium text-(--text-primary) flex items-center gap-2">
-                         <GraduationCap size={18} className="text-(--brand)" />
+                         <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-(--border-primary) bg-(--bg-primary)">
+                           <GraduationCap size={15} className="text-(--brand)" />
+                         </span>
                          Elective Options
                        </h4>
                        <p className="text-xs text-(--text-secondary) mt-1">
