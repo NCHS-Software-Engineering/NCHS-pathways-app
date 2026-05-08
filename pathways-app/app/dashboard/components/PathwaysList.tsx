@@ -130,14 +130,19 @@ export function PathwaysList({
                   </div>
                 </div>
                 <div className="flex items-center gap-1 ml-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUnstar(key);
-                    }}
-                    title="Remove pathway"
-                    className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
+                   <button
+                     type="button"
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       const shouldRemove = window.confirm(
+                         `Remove "${pathwayData.title}" from your selected pathways?`
+                       );
+                       if (shouldRemove) {
+                         onUnstar(key);
+                       }
+                     }}
+                     title="Remove pathway"
+                     className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
                     aria-label={`Remove ${pathwayData.title} from selected pathways`}
                   >
                     <X size={16} />
