@@ -38,8 +38,8 @@ export function PathwaysList({
 
   function closeRemovalModal() {
     setPendingRemoval(null);
-    if (removeTriggerRef.current && document.contains(removeTriggerRef.current)) {
-      removeTriggerRef.current.focus();
+    if (document.contains(removeTriggerRef.current)) {
+      removeTriggerRef.current?.focus();
     }
   }
 
@@ -59,7 +59,6 @@ export function PathwaysList({
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        event.preventDefault();
         closeRemovalModal();
         return;
       }
