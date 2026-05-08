@@ -38,8 +38,8 @@ export function PathwaysList({
 
   function closeRemovalModal() {
     setPendingRemoval(null);
-    if (document.contains(removeTriggerRef.current)) {
-      removeTriggerRef.current?.focus();
+    if (removeTriggerRef.current && document.contains(removeTriggerRef.current)) {
+      removeTriggerRef.current.focus();
     }
   }
 
