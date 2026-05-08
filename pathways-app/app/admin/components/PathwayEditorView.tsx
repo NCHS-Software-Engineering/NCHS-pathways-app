@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Plus, Save, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Plus, Save, Tag, Trash2, Upload, X } from "lucide-react";
 import { Course, Pathway } from "../types";
 
 const BLENDED_CAREER_INTERNSHIP_NAME = "Blended Career Internship";
@@ -31,6 +31,7 @@ interface PathwayEditorViewProps {
   onManageCoCurricular: (action: "add" | "remove" | "update", index?: number, value?: string) => void;
   onCoCurricularRequiredChange: (required: boolean) => void;
   onElectiveCreditsChange: (value: number) => void;
+  onManageTag: (action: "add" | "remove", index?: number, value?: string) => void;
 }
 
 export default function PathwayEditorView({
@@ -48,8 +49,10 @@ export default function PathwayEditorView({
   onManageCourse,
   onManageCoCurricular,
   onCoCurricularRequiredChange,
-  onElectiveCreditsChange
+  onElectiveCreditsChange,
+  onManageTag,
 }: PathwayEditorViewProps) {
+  const [newTagInput, setNewTagInput] = useState("");
   const [previewIndex, setPreviewIndex] = useState(0);
   const [previewUnavailable, setPreviewUnavailable] = useState(false);
 
@@ -470,6 +473,76 @@ export default function PathwayEditorView({
                 </p>
               </label>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-(--bg-card) rounded-xl border border-(--border-primary) shadow-sm overflow-hidden">
+          <div className="bg-(--bg-soft) px-6 py-4 border-b border-(--border-primary) flex items-center gap-2">
+            <Tag size={20} className="text-(--text-primary)" />
+            <h2 className="font-semibold text-xl">Tags</h2>
+          </div>
+          <div className="p-6 space-y-4">
+            <p className="text-sm text-(--text-secondary)">
+              Add descriptive tags to help students discover this pathway (e.g. &quot;health&quot;, &quot;coding&quot;, &quot;arts&quot;).
+            </p>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTagInput}
+                onChange={(e) => setNewTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const trimmed = newTagInput.trim();
+                    if (trimmed) {
+                      onManageTag("add", undefined, trimmed);
+                      setNewTagInput("");
+                    }
+                  }
+                }}
+                className="flex-1 px-3 py-2 rounded-lg border border-(--border-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--brand)/50"
+                placeholder="Type a tag and press Enter or click Add"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const trimmed = newTagInput.trim();
+                  if (trimmed) {
+                    onManageTag("add", undefined, trimmed);
+                    setNewTagInput("");
+                  }
+                }}
+                className="flex items-center gap-1 text-sm text-(--text-primary) font-medium bg-(--brand-soft) px-3 py-2 rounded-lg hover:opacity-90"
+              >
+                <Plus size={16} /> Add
+              </button>
+            </div>
+
+            {(editingPathway.tags ?? []).length === 0 ? (
+              <p className="text-sm text-(--text-secondary) italic p-4 bg-(--admin-muted-bg) rounded-lg text-center border border-dashed border-(--border-primary)">
+                No tags added yet.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {(editingPathway.tags ?? []).map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="flex items-center gap-1.5 bg-(--chip-bg) text-(--chip-text) text-sm px-3 py-1.5 rounded-full border border-(--border-primary)"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => onManageTag("remove", idx)}
+                      className="text-(--text-secondary) hover:text-(--danger) transition-colors"
+                      aria-label={`Remove tag ${tag}`}
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </div>

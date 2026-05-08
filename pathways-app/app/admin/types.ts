@@ -9,6 +9,7 @@ export interface Pathway {
   title: string;
   category: string;
   tcd: boolean;
+  tags?: string[];
   imageFile?: string;
   imagePath?: string;
   [key: string]: unknown;

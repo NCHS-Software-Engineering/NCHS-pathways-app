@@ -118,6 +118,7 @@ export default function Dashboard() {
     () => pathwaysData as unknown as Record<string, Pathway>,
     []
   );
+  const [apiPathways, setApiPathways] = useState<Record<string, Pathway>>({});
   const [pathways, setPathways] = useState<Record<string, Pathway>>(basePathways);
   const [academicStatus, setAcademicStatus] = useState<AcademicStatus>({
     reading: false,
@@ -136,7 +137,8 @@ export default function Dashboard() {
   const { data: session } = useSession();
 
   const pathwayKeyById = useMemo(() => {
-    return Object.entries(basePathways).reduce<Record<string, string>>(
+    const allPathways = { ...basePathways, ...apiPathways };
+    return Object.entries(allPathways).reduce<Record<string, string>>(
       (acc, [key, value]) => {
         acc[key] = key;
         if (value && typeof value === "object" && "id" in value) {
@@ -149,12 +151,44 @@ export default function Dashboard() {
       },
       {}
     );
-  }, [basePathways]);
+  }, [basePathways, apiPathways]);
 
   const normalizePathwayKey = useCallback(
     (keyOrId: string): string | null => pathwayKeyById[keyOrId] ?? null,
     [pathwayKeyById]
   );
+
+  // Load pathways from the API so that admin-added pathways are recognised
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchApiPathways() {
+      try {
+        const res = await fetch("/api/pathways", { cache: "no-store" });
+        if (!res.ok || !isMounted) return;
+
+        const data = await res.json();
+        if (data && typeof data === "object" && !Array.isArray(data)) {
+          setApiPathways(data as Record<string, Pathway>);
+          // Also seed pathway state with any new pathways not in the static bundle
+          setPathways((prev) => {
+            const merged = { ...prev };
+            for (const [key, value] of Object.entries(data as Record<string, Pathway>)) {
+              if (!(key in merged)) {
+                merged[key] = value;
+              }
+            }
+            return merged;
+          });
+        }
+      } catch {
+        // Keep working with static pathways if the API is unavailable
+      }
+    }
+
+    fetchApiPathways();
+    return () => { isMounted = false; };
+  }, []);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -197,15 +231,17 @@ export default function Dashboard() {
             if (user?.Pathway_Progress && Array.isArray(user.Pathway_Progress)) {
               const completedCourses = new Set<string>(user.Pathway_Progress);
 
-              const updatedPathways = Object.fromEntries(
-                Object.entries(basePathways).map(([key, pathway]) => [
-                  key,
-                  applyCourseProgress(pathway, completedCourses),
-                ])
-              ) as Record<string, Pathway>;
+              setPathways((prevPathways) => {
+                const updatedPathways = Object.fromEntries(
+                  Object.entries(prevPathways).map(([key, pathway]) => [
+                    key,
+                    applyCourseProgress(pathway, completedCourses),
+                  ])
+                ) as Record<string, Pathway>;
 
-              setPathways(updatedPathways);
-              localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
+                localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
+                return updatedPathways;
+              });
             }
           }
 
@@ -329,6 +365,23 @@ export default function Dashboard() {
       setActivePathway(JSON.parse(JSON.stringify(pathwayData)));
     }
     setShowModal(true);
+  }
+
+  function handleUnstarPathway(pathwayKey: string) {
+    const updated = starredPathways.filter((k) => k !== pathwayKey);
+    setStarredPathways(updated);
+    localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(updated));
+
+    if (session?.user?.email) {
+      fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          User_Email: session.user.email,
+          Stored_Pathways: updated,
+        }),
+      }).catch(() => {});
+    }
   }
 
   function handleCourseToggle(
@@ -468,6 +521,7 @@ export default function Dashboard() {
             pathways={pathways}
             onPathwayClick={openPathway}
             globalReqsMet={globalReqsMet}
+            onUnstar={handleUnstarPathway}
           />
 
           <ActionItems
