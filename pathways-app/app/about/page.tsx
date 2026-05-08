@@ -70,7 +70,7 @@ export default function AboutPage() {
               </h3>
 
               <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
-                We are a team of students — Cam, Connor Doyle, Dylan, and Trau —
+                We are a team of students — Cam, Connor Doyle, Dylan Santwani, and Taran Nathan —
                 working together to improve how students understand and navigate
                 graduation requirements.
               </div>
