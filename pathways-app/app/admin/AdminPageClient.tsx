@@ -388,7 +388,7 @@ export default function AdminPageClient() {
       const currentTags = Array.isArray(prev.tags) ? [...prev.tags] : [];
       if (action === "add" && value !== undefined) {
         const trimmed = value.trim();
-        if (trimmed && !currentTags.includes(trimmed)) {
+        if (trimmed && !currentTags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
           currentTags.push(trimmed);
         }
       }

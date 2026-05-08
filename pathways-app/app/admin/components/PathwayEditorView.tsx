@@ -483,7 +483,7 @@ export default function PathwayEditorView({
           </div>
           <div className="p-6 space-y-4">
             <p className="text-sm text-(--text-secondary)">
-              Add descriptive tags to help students discover this pathway (e.g. &quot;health&quot;, &quot;coding&quot;, &quot;arts&quot;).
+              Add descriptive tags to help students discover this pathway (e.g. "health", "coding", "arts").
             </p>
 
             <div className="flex gap-2">
