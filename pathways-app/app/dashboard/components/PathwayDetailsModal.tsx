@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FocusTrap from 'focus-trap-react';
 import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink } from "lucide-react";
 import { Pathway, Course } from "../types";
