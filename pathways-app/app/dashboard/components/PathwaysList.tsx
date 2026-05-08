@@ -34,14 +34,11 @@ export function PathwaysList({
   } | null>(null);
   const removeTriggerRef = useRef<HTMLButtonElement | null>(null);
   const cancelRemovalButtonRef = useRef<HTMLButtonElement | null>(null);
+  const confirmRemovalButtonRef = useRef<HTMLButtonElement | null>(null);
 
   function closeRemovalModal() {
     setPendingRemoval(null);
-    if (
-      removeTriggerRef.current &&
-      typeof document !== "undefined" &&
-      document.contains(removeTriggerRef.current)
-    ) {
+    if (removeTriggerRef.current && document.contains(removeTriggerRef.current)) {
       removeTriggerRef.current.focus();
     }
   }
@@ -64,6 +61,21 @@ export function PathwaysList({
       if (event.key === "Escape") {
         event.preventDefault();
         closeRemovalModal();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const firstFocusable = cancelRemovalButtonRef.current;
+        const lastFocusable = confirmRemovalButtonRef.current;
+        if (!firstFocusable || !lastFocusable) return;
+
+        if (event.shiftKey && document.activeElement === firstFocusable) {
+          event.preventDefault();
+          lastFocusable.focus();
+        } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+          event.preventDefault();
+          firstFocusable.focus();
+        }
       }
     }
 
@@ -281,6 +293,7 @@ export function PathwaysList({
                 type="button"
                 className="rounded-lg bg-(--danger) px-4 py-2 text-sm font-semibold text-(--text-on-brand) hover:opacity-90"
                 onClick={handleConfirmRemoval}
+                ref={confirmRemovalButtonRef}
               >
                 Remove
               </button>
