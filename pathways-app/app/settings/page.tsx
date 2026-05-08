@@ -192,8 +192,9 @@ export default function SettingsPage() {
               <label className="text-sm font-medium">
                 Display Name
               </label>
-              <input
-                type="text"
+              <input id="name-field" 
+                type="name"
+                name = "Enter name here:"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page) focus:outline-none focus:ring-2 focus:ring-(--brand)"

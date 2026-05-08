@@ -35,6 +35,7 @@ interface PathwayCardProps {
   tcd: boolean;
   imageUrl: string;
   link: string; //in jsons for each pathway, does not need to be hard-coded
+  ariaLabel: string;
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
 }
@@ -47,6 +48,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   tcd,
   imageUrl,
   link,
+  ariaLabel,
   isStarred,
   onToggle
 }) => {
@@ -62,11 +64,13 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
           window.open(link)
         }
       }}
-      aria-label="Click on pathway endorsement, open corresponding Schoolinks page" className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+      aria-label={ariaLabel}
+      className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <img
         src={imageUrl}
-        alt={`${title} pathway`}
+        alt=""
+        aria-hidden="true"
         onError={(e) => {
           e.currentTarget.src = FALLBACK_IMAGE;
         }}
@@ -247,6 +251,7 @@ export default function EndorsementsPage() {
                 title={pathway.title}
                 category={pathway.category}
                 tcd={Boolean(pathway.tcd)}
+                ariaLabel={pathway.title}
                 imageUrl={resolvePathwayImage(pathway)}
                 link={typeof pathway.link === "string" ? pathway.link : ""}
                 isStarred={starredPathways.includes(pathway.id)}
