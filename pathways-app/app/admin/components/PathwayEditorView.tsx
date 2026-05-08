@@ -55,11 +55,11 @@ export default function PathwayEditorView({
 
   const categoryOptions = [
     { value: "STEM", label: "STEM" },
-    { value: "Business", label: "Financial Services" },
-    { value: "Manufacturing", label: "Marketing & Sales" },
-    { value: "Construction", label: "Management & Entreprenuership" },
-    { value: "Arts", label: "Digital Technology" },
-    { value: "Public Services", label: "Public Service & Safety" },
+    { value: "Financial Services" , label: "Financial Services" },
+    { value: "Marketing & Sales", label: "Marketing & Sales" },
+    { value: "Management & Entreprenuership", label: "Management & Entreprenuership" },
+    { value: "Digital Technology", label: "Digital Technology" },
+    { value: "Public Service & Safety", label: "Public Service & Safety" },
     { value: "Healthcare & Human Services", label: "Healthcare & Human Services" },
     { value: "Agriculture", label: "Agriculture" }
   ];
