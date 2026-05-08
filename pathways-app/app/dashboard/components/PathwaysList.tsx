@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -28,6 +28,17 @@ export function PathwaysList({
   globalReqsMet,
   onUnstar,
 }: PathwaysListProps) {
+  const [pendingRemoval, setPendingRemoval] = useState<{
+    key: string;
+    title: string;
+  } | null>(null);
+
+  function handleConfirmRemoval() {
+    if (!pendingRemoval) return;
+    onUnstar(pendingRemoval.key);
+    setPendingRemoval(null);
+  }
+
   if (starredPathways.length === 0) {
     return (
       <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-6 self-start">
@@ -73,137 +84,174 @@ export function PathwaysList({
   }
 
   return (
-    <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-6 self-start">
-      <div className="flex justify-between items-end">
-        <div>
-          <h3 className="text-xl font-serif font-bold text-(--text-primary) flex items-center gap-2">
-            My Selected Pathways
-          </h3>
-          <p className="text-base text-(--text-secondary) mt-1">
-            Click on a pathway to view detailed requirements and log your
-            courses.
-          </p>
-          <a
-            href="/endorsements"
-            className="text-base font-medium text-(--link) hover:underline hidden sm:block"
-          >
-            Browse More Endorsements &rarr;
-          </a>
+    <>
+      <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-6 self-start">
+        <div className="flex justify-between items-end">
+          <div>
+            <h3 className="text-xl font-serif font-bold text-(--text-primary) flex items-center gap-2">
+              My Selected Pathways
+            </h3>
+            <p className="text-base text-(--text-secondary) mt-1">
+              Click on a pathway to view detailed requirements and log your
+              courses.
+            </p>
+            <a
+              href="/endorsements"
+              className="text-base font-medium text-(--link) hover:underline hidden sm:block"
+            >
+              Browse More Endorsements &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {starredPathways.map((key) => {
+            const pathwayData = pathways[key as keyof typeof pathways];
+            if (!pathwayData) return null;
+
+            const isTCDPathway = Boolean(pathwayData?.tcd);
+
+            const stats = getPathwayStats(pathwayData as Pathway);
+            const allCoursesComplete = stats.progress === 100;
+
+            return (
+              <div
+                key={key}
+                className="group bg-(--bg-card) rounded-xl border border-(--border-primary) p-5 md:p-6 hover:shadow-md hover:border-(--brand) transition-all duration-200 cursor-pointer shadow-sm"
+                onClick={() => onPathwayClick(key)}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h4 className="text-lg font-bold text-(--text-primary)">
+                        {pathwayData.title}
+                      </h4>
+                      {allCoursesComplete && globalReqsMet ? (
+                        <span className="bg-(--badge-success-bg) text-(--badge-success-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--status-complete)/20">
+                          <Award size={14} /> Endorsement Earned
+                        </span>
+                      ) : allCoursesComplete ? (
+                        <span className="bg-(--brand-soft) text-(--brand-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--brand)/20">
+                          <BookOpen size={14} /> Credits Met
+                        </span>
+                      ) : isTCDPathway ? (
+                        <span className="bg-(--tcd-dash-bg) text-(--tcd-dash-text) text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--tcd-dash-border)">
+                          <Award size={12} /> TCD Program
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 ml-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPendingRemoval({ key, title: pathwayData.title });
+                      }}
+                      title="Remove pathway"
+                      className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
+                      aria-label={`Remove ${pathwayData.title} from selected pathways`}
+                    >
+                      <X size={16} />
+                    </button>
+                    <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary)">
+                      <ChevronRight size={20} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mini Progress Indicator */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-base">
+                    <span className="text-(--status-warning-text) font-medium">
+                      Progress Overview
+                    </span>
+                    <span className="font-bold text-(--status-warning-text) ">{stats.progress}%</span>
+                  </div>
+                  <div className="w-full bg-(--bg-soft) h-2.5 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        stats.progress === 100
+                          ? "bg-(--success)"
+                          : "bg-(--modal-progress-incomplete)"
+                      }`}
+                      style={{ width: `${stats.progress}%` }}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-(--border-primary) text-base">
+                    <div className="flex items-center gap-1.5 text-(--status-warning-text) font-medium">
+                      {allCoursesComplete ? (
+                        <CheckCircle2 size={16} className="text-(--status-complete)" />
+                      ) : (
+                        <Clock size={16} className="text-(--status-warning-icon)" />
+                      )}
+                      <span>
+                        {stats.earnedCredits} / {stats.totalCredits} Pathway Credits
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-(--status-warning-text) font-medium">
+                      {globalReqsMet ? (
+                        <CheckCircle2 size={16} className="text-(--status-complete)" />
+                      ) : (
+                        <AlertCircle size={16} className="text-(--status-warning-icon)" />
+                      )}
+                      <span
+                        className={
+                          globalReqsMet ? "" : "text-(--status-warning-text) font-medium"
+                        }
+                      >
+                        {globalReqsMet
+                          ? "Academic Success Met"
+                          : "Missing Academic Success"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="space-y-4">
-        {starredPathways.map((key) => {
-          const pathwayData = pathways[key as keyof typeof pathways];
-          if (!pathwayData) return null;
-
-          const isTCDPathway = Boolean(pathwayData?.tcd);
-
-          const stats = getPathwayStats(pathwayData as Pathway);
-          const allCoursesComplete = stats.progress === 100;
-
-          return (
-            <div
-              key={key}
-              className="group bg-(--bg-card) rounded-xl border border-(--border-primary) p-5 md:p-6 hover:shadow-md hover:border-(--brand) transition-all duration-200 cursor-pointer shadow-sm"
-              onClick={() => onPathwayClick(key)}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-1">
-                    <h4 className="text-lg font-bold text-(--text-primary)">
-                      {pathwayData.title}
-                    </h4>
-                    {allCoursesComplete && globalReqsMet ? (
-                      <span className="bg-(--badge-success-bg) text-(--badge-success-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--status-complete)/20">
-                        <Award size={14} /> Endorsement Earned
-                      </span>
-                    ) : allCoursesComplete ? (
-                      <span className="bg-(--brand-soft) text-(--brand-text) text-sm px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--brand)/20">
-                        <BookOpen size={14} /> Credits Met
-                      </span>
-                    ) : isTCDPathway ? (
-                      <span className="bg-(--tcd-dash-bg) text-(--tcd-dash-text) text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 border border-(--tcd-dash-border)">
-                        <Award size={12} /> TCD Program
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 ml-2">
-                   <button
-                     type="button"
-                     onClick={(e) => {
-                       e.stopPropagation();
-                       const shouldRemove = window.confirm(
-                         `Remove "${pathwayData.title}" from your selected pathways?`
-                       );
-                       if (shouldRemove) {
-                         onUnstar(key);
-                       }
-                     }}
-                     title="Remove pathway"
-                     className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
-                    aria-label={`Remove ${pathwayData.title} from selected pathways`}
-                  >
-                    <X size={16} />
-                  </button>
-                  <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary)">
-                    <ChevronRight size={20} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Mini Progress Indicator */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-base">
-                  <span className="text-(--status-warning-text) font-medium">
-                    Progress Overview
-                  </span>
-                  <span className="font-bold text-(--status-warning-text) ">{stats.progress}%</span>
-                </div>
-                <div className="w-full bg-(--bg-soft) h-2.5 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      stats.progress === 100
-                        ? "bg-(--success)"
-                        : "bg-(--modal-progress-incomplete)"
-                    }`}
-                    style={{ width: `${stats.progress}%` }}
-                  />
-                </div>
-                <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-(--border-primary) text-base">
-                  <div className="flex items-center gap-1.5 text-(--status-warning-text) font-medium">
-                    {allCoursesComplete ? (
-                      <CheckCircle2 size={16} className="text-(--status-complete)" />
-                    ) : (
-                      <Clock size={16} className="text-(--status-warning-icon)" />
-                    )}
-                    <span>
-                      {stats.earnedCredits} / {stats.totalCredits} Pathway Credits
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-(--status-warning-text) font-medium">
-                    {globalReqsMet ? (
-                      <CheckCircle2 size={16} className="text-(--status-complete)" />
-                    ) : (
-                      <AlertCircle size={16} className="text-(--status-warning-icon)" />
-                    )}
-                    <span
-                      className={
-                        globalReqsMet ? "" : "text-(--status-warning-text) font-medium"
-                      }
-                    >
-                      {globalReqsMet
-                        ? "Academic Success Met"
-                        : "Missing Academic Success"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+      {pendingRemoval && (
+        <div
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-(--overlay-backdrop) backdrop-blur-sm p-4"
+          onClick={() => setPendingRemoval(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="remove-pathway-title"
+            className="w-full max-w-md rounded-2xl border border-(--border-primary) bg-(--bg-card) p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="remove-pathway-title" className="text-lg font-bold text-(--text-primary)">
+              Remove pathway?
+            </h3>
+            <p className="mt-2 text-sm text-(--text-secondary)">
+              Are you sure you want to remove{" "}
+              <span className="font-semibold text-(--text-primary)">{pendingRemoval.title}</span>
+              {" "}from your selected pathways?
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                className="rounded-lg border border-(--border-primary) px-4 py-2 text-sm font-medium text-(--text-primary) hover:bg-(--bg-soft)"
+                onClick={() => setPendingRemoval(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="rounded-lg bg-(--danger) px-4 py-2 text-sm font-semibold text-(--text-on-brand) hover:opacity-90"
+                onClick={handleConfirmRemoval}
+              >
+                Remove
+              </button>
             </div>
-          );
-        })}
-      </div>
-    </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
