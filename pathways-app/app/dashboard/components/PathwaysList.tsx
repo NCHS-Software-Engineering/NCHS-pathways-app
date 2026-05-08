@@ -8,6 +8,7 @@ import {
   Clock,
   AlertCircle,
   Award,
+  X,
 } from "lucide-react";
 import { Pathway } from "../types";
 import { getPathwayStats } from "../utils";
@@ -17,6 +18,7 @@ interface PathwaysListProps {
   pathways: Record<string, Pathway>;
   onPathwayClick: (pathwayKey: string) => void;
   globalReqsMet: boolean;
+  onUnstar: (pathwayKey: string) => void;
 }
 
 export function PathwaysList({
@@ -24,6 +26,7 @@ export function PathwaysList({
   pathways,
   onPathwayClick,
   globalReqsMet,
+  onUnstar,
 }: PathwaysListProps) {
   if (starredPathways.length === 0) {
     return (
@@ -126,8 +129,22 @@ export function PathwaysList({
                     ) : null}
                   </div>
                 </div>
-                <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary) ml-2">
-                  <ChevronRight size={20} />
+                <div className="flex items-center gap-1 ml-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUnstar(key);
+                    }}
+                    title="Remove pathway"
+                    className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
+                    aria-label={`Remove ${pathwayData.title} from selected pathways`}
+                  >
+                    <X size={16} />
+                  </button>
+                  <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary)">
+                    <ChevronRight size={20} />
+                  </div>
                 </div>
               </div>
 
