@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -32,12 +32,46 @@ export function PathwaysList({
     key: string;
     title: string;
   } | null>(null);
+  const removeTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const cancelRemovalButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  function closeRemovalModal() {
+    setPendingRemoval(null);
+    if (
+      removeTriggerRef.current &&
+      typeof document !== "undefined" &&
+      document.contains(removeTriggerRef.current)
+    ) {
+      removeTriggerRef.current.focus();
+    }
+  }
 
   function handleConfirmRemoval() {
     if (!pendingRemoval) return;
     onUnstar(pendingRemoval.key);
-    setPendingRemoval(null);
+    closeRemovalModal();
   }
+
+  useEffect(() => {
+    if (!pendingRemoval) return;
+    cancelRemovalButtonRef.current?.focus();
+  }, [pendingRemoval]);
+
+  useEffect(() => {
+    if (!pendingRemoval) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeRemovalModal();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [pendingRemoval]);
 
   if (starredPathways.length === 0) {
     return (
@@ -146,6 +180,7 @@ export function PathwaysList({
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
+                        removeTriggerRef.current = e.currentTarget;
                         setPendingRemoval({ key, title: pathwayData.title });
                       }}
                       title="Remove pathway"
@@ -215,8 +250,8 @@ export function PathwaysList({
 
       {pendingRemoval && (
         <div
-          className="fixed inset-0 z-9999 flex items-center justify-center bg-(--overlay-backdrop) backdrop-blur-sm p-4"
-          onClick={() => setPendingRemoval(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-(--overlay-backdrop) backdrop-blur-sm p-4"
+          onClick={closeRemovalModal}
         >
           <div
             role="dialog"
@@ -237,7 +272,8 @@ export function PathwaysList({
               <button
                 type="button"
                 className="rounded-lg border border-(--border-primary) px-4 py-2 text-sm font-medium text-(--text-primary) hover:bg-(--bg-soft)"
-                onClick={() => setPendingRemoval(null)}
+                onClick={closeRemovalModal}
+                ref={cancelRemovalButtonRef}
               >
                 Cancel
               </button>
