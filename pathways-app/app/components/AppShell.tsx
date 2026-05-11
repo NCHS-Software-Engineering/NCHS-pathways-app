@@ -90,23 +90,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
-      {/* MOBILE SIDEBAR */}
-      {menuOpen && (
-        <div className="fixed inset-x-0 top-14 bottom-0 z-50 flex lg:hidden">
-
-            {/* dark overlay */}
-            <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setMenuOpen(false)}
-            />
-
-            {/* sidebar */}
-            <div className="relative w-72 h-full bg-(--bg-secondary) text-xl">
-            <SideBar open={menuOpen} setOpen={setMenuOpen} />
-            </div>
-
-        </div>
-        )}
+      <div className="lg:hidden">
+        <SideBar open={menuOpen} setOpen={setMenuOpen} />
+      </div>
 
       {/* MAIN LAYOUT */}
       <div className="flex min-h-screen pt-14 lg:pt-16">

@@ -8,7 +8,7 @@ export default function AboutPage() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-(--brand-soft) md:bg-(--bg-primary) text-(--text-primary)">
+    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
       
       <div className="flex">
         <div className="flex-1 space-y-8 w-full md:space-y-12">
