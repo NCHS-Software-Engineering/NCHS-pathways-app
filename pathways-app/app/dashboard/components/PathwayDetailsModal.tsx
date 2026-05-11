@@ -81,7 +81,7 @@ export function PathwayDetailsModal({
   );
 
   const handleSaveClick = () => {
-    if (stats.progress === 100 && !globalReqsMet) {
+    if (stats.progress === 100 && globalReqsMet) {
       setShowCounselorPopup(true);
       return;
     }
@@ -163,19 +163,7 @@ export function PathwayDetailsModal({
             </div>
           )}
 
-          {stats.progress === 100 && !globalReqsMet && (
-            <div className="bg-(--status-warning-light) border border-(--status-warning)/30 text-(--status-warning-text) p-4 rounded-xl flex items-start gap-3 shadow-sm">
-              <span className="rounded-full bg-(--brand) p-2.5 mt-0.5 shrink-0">
-                <User size={18} className="text-(--text-on-brand)" />
-              </span>
-              <div>
-                <h4 className="font-semibold text-base">Check in with your counselor</h4>
-                <p className="text-sm mt-1 opacity-90">
-                  You have finished the pathway coursework, but this website does not automatically apply you for the endorsement. Check in with your counselor to confirm your progress on the pathway and make sure you are done.
-                </p>
-              </div>
-            </div>
-          )}
+          
 
           <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
             <div className="p-4 border-b border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">

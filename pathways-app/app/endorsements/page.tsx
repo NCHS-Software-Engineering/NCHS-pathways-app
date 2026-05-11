@@ -221,7 +221,7 @@ export default function EndorsementsPage() {
         <main className="p-6 flex-1 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
-          <p className="text-(--text-primary)/80 max-w-2xl mb-8">
+          <p className="text-(--text-primary)/80 max-w-4xl mb-8">
             Explore different career pathways to help you earn endorsements for
             your diploma. Each pathway endorsement guides you toward completing specific
             requirements to gain valuable skills and experience in a chosen field.
@@ -230,8 +230,8 @@ export default function EndorsementsPage() {
           <h3 className="text-xl font-semibold mb-2">
             Explore Your Career Pathways
           </h3>
-          <h4 className="text-(--text-primary)/80 max-w-2xl mb-3">
-            Click on a pathway card to open Schoolinks's page for it (you must be logged in).
+          <h4 className="text-(--text-primary)/80 max-w-4xl mb-3">
+            Star a pathway to save it for later! Click on a pathway title to open Schoolinks's page for it (you must be logged in).
           </h4>
 
          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
