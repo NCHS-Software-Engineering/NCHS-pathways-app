@@ -134,6 +134,10 @@ export default function Dashboard() {
   const [showCounselorAlert, setShowCounselorAlert] = useState(false);
   const [completedPathwayName, setCompletedPathwayName] = useState<string>("");
 
+  // Counselor warning (shows before saving when global reqs are not yet met)
+  const [showCounselorWarning, setShowCounselorWarning] = useState(false);
+  const [counselorWarningPathwayName, setCounselorWarningPathwayName] = useState<string>("");
+
   const { data: session } = useSession();
 
   const pathwayKeyById = useMemo(() => {
@@ -437,6 +441,11 @@ export default function Dashboard() {
     ).join(";");
   }
 
+  function handleCounselorPopupRequest(pathwayName: string) {
+    setCounselorWarningPathwayName(pathwayName);
+    setShowCounselorWarning(true);
+  }
+
   function handleSave() {
     if (activePathway && activePathwayKey) {
       const completedNames = new Set(collectCompletedCourseNames(activePathway));
@@ -540,6 +549,7 @@ export default function Dashboard() {
         isTCD={isActivePathwayTCD}
         onClose={() => setShowModal(false)}
         onSave={handleSave}
+        onCounselorPopupRequest={handleCounselorPopupRequest}
         onCourseToggle={handleCourseToggle}
         onGroupOptionToggle={handleGroupOptionToggle}
       />
@@ -550,6 +560,58 @@ export default function Dashboard() {
         pathwayName={completedPathwayName}
         onClose={() => setShowCounselorAlert(false)}
       />
+
+      {/* Counselor Warning — shown when pathway is 100% complete but global reqs are not yet met */}
+      {showCounselorWarning && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowCounselorWarning(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-(--bg-card) shadow-2xl border border-(--border-primary) p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3">
+              <span className="rounded-full bg-(--brand) p-2.5 mt-0.5 shrink-0">
+                <GraduationCap size={20} className="text-(--text-on-brand)" />
+              </span>
+              <div>
+                {counselorWarningPathwayName && (
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-(--modal-accent-text)">
+                    {counselorWarningPathwayName}
+                  </p>
+                )}
+                <h3 className="text-lg font-semibold text-(--text-primary)">
+                  Check in with your counselor
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
+                  Check in with your counselor to confirm your progress on the pathway. This website does not automatically apply you for the endorsement, so confirm with your counselor that you are done.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCounselorWarning(false)}
+                className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:bg-(--bg-soft) transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCounselorWarning(false);
+                  handleSave();
+                }}
+                className="px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
