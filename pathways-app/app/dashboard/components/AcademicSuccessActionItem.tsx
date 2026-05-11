@@ -72,6 +72,7 @@ export function AcademicSuccessActionItem({
               onClick={() => setShowReadingDetails(!showReadingDetails)}
               className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
               aria-label="Show/close academic success in reading details"
+              type="button"
               style={{
                 transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
               }}
@@ -109,6 +110,7 @@ export function AcademicSuccessActionItem({
               {/* Courses Toggle */}
               <div className="bg-(--bg-card) rounded-lg border border-(--competency-reading-border) overflow-hidden shadow-sm">
                 <button
+                  type="button"
                   onClick={() => setShowReadingCourses(!showReadingCourses)}
                   className="w-full flex items-center justify-between gap-4 p-3 text-left text-base font-medium text-(--text-primary) hover:bg-(--competency-reading-soft) transition-colors"
                 >
@@ -205,6 +207,7 @@ export function AcademicSuccessActionItem({
               onClick={() => setShowMathDetails(!showMathDetails)}
               className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
               aria-label="Show/close academic success in math details"
+              type="button"
               style={{
                 transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
               }}
@@ -225,6 +228,7 @@ export function AcademicSuccessActionItem({
                   onClick={() => setShowMathCourses(!showMathCourses)}
                   className="w-full flex items-center justify-between p-3 text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
                   aria-label="Show/close approved courses for academic success in math"
+                  type="button"
                 >
                   <span className="flex min-w-0 items-start gap-2">
                     <BookOpen size={18} className="mt-0.5 shrink-0 text-(--competency-math-accent)" />

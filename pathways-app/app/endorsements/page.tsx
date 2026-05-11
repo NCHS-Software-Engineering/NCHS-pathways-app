@@ -90,6 +90,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         </div>
 
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggle(pathwayId);

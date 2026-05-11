@@ -88,6 +88,7 @@ export function PathwayDetailsModal({
                 onClick={onClose}
                 className="text-(--text-secondary) hover:text-(--text-primary) bg-(--bg-soft) hover:opacity-90 rounded-full p-2 transition-colors"
                 aria-label="Close button"
+                type="button"
               >
                 ✕
               </button>
@@ -270,13 +271,15 @@ export function PathwayDetailsModal({
               onClick={onClose}
               className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:opacity-90 transition-colors"
               aria-label="Cancel button"
+              type="button"
             >
               Cancel
             </button>
             <button
               onClick={onSave}
               className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
-                aria-label="Save changes button"
+              aria-label="Save changes button"
+              type="button"
             >
               <Save size={18} />
               Save Changes
@@ -462,12 +465,16 @@ export function PathwayDetailsModal({
         {/* Modal Footer */}
         <div className="px-6 py-4 border-t border-(--border-primary) bg-(--bg-soft) flex justify-between items-center">
           <button
+            type="button"
+            aria-label="Close button"
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:opacity-90 transition-colors"
           >
             Cancel
           </button>
           <button
+            type="button"
+            aria-label="Save changes button"
             onClick={handleSaveClick}
             className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
           >

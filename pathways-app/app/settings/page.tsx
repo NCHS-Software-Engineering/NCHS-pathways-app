@@ -131,6 +131,7 @@ export default function SettingsPage() {
               </h3>
 
               <button
+                type="button"
                 onClick={toggleDark}
                 className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${dark
                   ? "bg-(--brand)"
@@ -211,6 +212,7 @@ export default function SettingsPage() {
             ) : null}
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={isSaving}
               aria-label="Save changes"
