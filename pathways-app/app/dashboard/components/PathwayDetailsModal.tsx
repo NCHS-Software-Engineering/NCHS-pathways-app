@@ -82,7 +82,7 @@ export function PathwayDetailsModal({
   );
 
   const handleSaveClick = () => {
-    if (stats.progress === 100 && !globalReqsMet) {
+    if (stats.progress === 100 && globalReqsMet) {
       onCounselorPopupRequest(pathway.title);
       return;
     }

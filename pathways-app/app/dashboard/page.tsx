@@ -11,7 +11,6 @@ import { QuickStats } from "./components/QuickStats";
 import { PathwaysList } from "./components/PathwaysList";
 import { ActionItems } from "./components/ActionItems";
 import { PathwayDetailsModal } from "@/app/dashboard/components/PathwayDetailsModal";
-import { CounselorCheckInModal } from "@/app/dashboard/components/CounselorCheckInModal";
 
 import { Pathway, AcademicStatus } from "./types";
 import {
@@ -471,12 +470,7 @@ export default function Dashboard() {
         onGroupOptionToggle={handleGroupOptionToggle}
       />
 
-      {/* Counselor Check-In Alert */}
-      <CounselorCheckInModal
-        isOpen={showCounselorAlert}
-        pathwayName={completedPathwayName}
-        onClose={() => setShowCounselorAlert(false)}
-      />
+      
 
       {/* Counselor Warning — shown when pathway is 100% complete but global reqs are not yet met */}
       {showCounselorWarning && (
