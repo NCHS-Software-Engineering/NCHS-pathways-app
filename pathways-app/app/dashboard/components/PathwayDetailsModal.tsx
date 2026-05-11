@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink, User } from "lucide-react";
 import { Pathway, Course } from "../types";
 import { getPathwayStats, isCourseGroupRequirement } from "../utils";
@@ -12,6 +12,7 @@ interface PathwayDetailsModalProps {
   isTCD: boolean;
   onClose: () => void;
   onSave: () => void;
+  onCounselorPopupRequest: (pathwayName: string) => void;
   onCourseToggle: (
     courseType: "required" | "elective",
     index: number,
@@ -31,10 +32,10 @@ export function PathwayDetailsModal({
   isTCD,
   onClose,
   onSave,
+  onCounselorPopupRequest,
   onCourseToggle,
   onGroupOptionToggle,
 }: PathwayDetailsModalProps) {
-  const [showCounselorPopup, setShowCounselorPopup] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -81,8 +82,8 @@ export function PathwayDetailsModal({
   );
 
   const handleSaveClick = () => {
-    if (stats.progress === 100 && globalReqsMet) {
-      setShowCounselorPopup(true);
+    if (stats.progress === 100 && !globalReqsMet) {
+      onCounselorPopupRequest(pathway.title);
       return;
     }
 
@@ -383,52 +384,6 @@ export function PathwayDetailsModal({
           </button>
         </div>
       </div>
-
-      {showCounselorPopup && (
-        <div
-          className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowCounselorPopup(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl bg-(--bg-card) shadow-2xl border border-(--border-primary) p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start gap-3">
-              <span className="rounded-full bg-(--brand) p-2.5 mt-0.5 shrink-0">
-                <User size={20} className="text-(--text-on-brand)" />
-              </span>
-              <div>
-                <h3 className="text-lg font-semibold text-(--text-primary)">
-                  Check in with your counselor
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
-                  Check in with your counselor to confirm your progress on the pathway. This website does not automatically apply you for the endorsement, so confirm with your counselor that you are done.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setShowCounselorPopup(false)}
-                className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:bg-(--bg-soft) transition-colors"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCounselorPopup(false);
-                  onSave();
-                }}
-                className="px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm"
-              >
-                I understand
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
