@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { AlertCircle, CheckCircle2, GraduationCap, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, GraduationCap, X, User } from "lucide-react";
 import academicSuccessData from "../data/pathways/academic-success.json";
 import { pathways as pathwaysData } from "../data/pathways";
 
@@ -573,7 +573,7 @@ export default function Dashboard() {
           >
             <div className="flex items-start gap-3">
               <span className="rounded-full bg-(--brand) p-2.5 mt-0.5 shrink-0">
-                <GraduationCap size={20} className="text-(--text-on-brand)" />
+                <User size={20} className="text-(--text-on-brand)" />
               </span>
               <div>
                 {counselorWarningPathwayName && (
