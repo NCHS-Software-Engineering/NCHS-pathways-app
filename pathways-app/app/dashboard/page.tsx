@@ -505,7 +505,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen w-full font-sans bg-(--bg-primary) text-(--text-primary)">
-      <div className="w-full min-h-screen px-0 py-4 md:px-14 md:py-8 space-y-8 flex flex-col max-w-412.5 mx-auto">
+      <div className="w-full min-h-screen p-6 md:px-14 md:py-8 space-y-8 flex flex-col max-w-412.5 mx-auto">
         <DashboardHeader userName={dbUsername || session?.user?.name || "Student"} isLoggedIn={!!session} />
 
         <QuickStats

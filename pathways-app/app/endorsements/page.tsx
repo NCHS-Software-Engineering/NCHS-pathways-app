@@ -218,7 +218,7 @@ export default function EndorsementsPage() {
   return (
     <>
       <div className = "container ">
-        <main className="flex-1 p-8 bg-(--bg-page) text-(--text-primary) min-h-screen">
+        <main className="p-6 flex-1 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
           <p className="text-(--text-primary)/80 max-w-2xl mb-8">

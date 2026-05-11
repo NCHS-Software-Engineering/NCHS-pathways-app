@@ -98,7 +98,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <SideBar open={menuOpen} setOpen={setMenuOpen} />
         </div>
 
-        <main className="flex-1 w-full min-w-0 p-4 md:p-6 lg:p-8">
+        <main className="flex-1 w-full min-w-0  md:p-6 lg:p-8">
           {children}
         </main>
       </div>
