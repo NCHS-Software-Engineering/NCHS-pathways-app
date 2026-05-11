@@ -35,7 +35,7 @@ export default function SideBar({ open, setOpen }) {
       {/* Dark overlay (mobile only) */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          className="fixed inset-x-0 top-14 bottom-0 bg-black/40 z-40 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
@@ -43,8 +43,8 @@ export default function SideBar({ open, setOpen }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:sticky top-0 lg:top-4 left-0 z-50
-          h-screen lg:h-[calc(100vh-2rem)] lg:overflow-y-auto w-64
+          fixed top-14 lg:sticky lg:top-4 left-0 z-50
+          h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-2rem)] lg:overflow-y-auto w-64
           bg-(--bg-secondary) lg:bg-transparent
           border-r border-(--border-primary) lg:border-r-0
           p-4
