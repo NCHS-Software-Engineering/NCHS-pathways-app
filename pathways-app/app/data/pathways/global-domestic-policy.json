@@ -40,6 +40,11 @@
               "earlyCollegeCredit": true
             }
           ]
+        },
+        {
+          "name": "Blended Career Internship",
+          "credits": 0.5,
+          "earlyCollegeCredit": true
         }
       ],
       "electiveCreditsRequired": 0.5,
@@ -67,6 +72,6 @@
       "examples": []
     }
   },
-  "imageFile": "global-domestic-policy.png",
-  "imagePath": "/endorsements/images/global-domestic-policy.png"
+  "imageFile": "global-domestic-policy.jpg",
+  "imagePath": "/endorsements/images/global-domestic-policy.jpg"
 }

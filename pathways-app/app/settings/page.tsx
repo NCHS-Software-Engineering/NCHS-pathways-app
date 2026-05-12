@@ -126,17 +126,18 @@ export default function SettingsPage() {
           {/* Appearance */}
           <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <span className="font-medium">
+              <h3 className="text-lg font-semibold">
                 Dark Mode
-              </span>
+              </h3>
 
               <button
+                type="button"
                 onClick={toggleDark}
-                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-                  dark
-                    ? "bg-(--brand)"
-                    : "bg-(--border-primary)"
-                }`}
+                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${dark
+                  ? "bg-(--brand)"
+                  : "bg-(--border-primary)"
+                  }`}
+                  aria-label="Toggle dark mode"
               >
                 <div
                   className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
@@ -161,12 +162,18 @@ export default function SettingsPage() {
                 alt="Profile"
               />
 
-              <label className="cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm hover:opacity-90 transition">
+              <label className="
+                cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white text-sm 
+                hover:opacity-90 transition-all duration-200
+                focus-within:ring-2 
+                focus-within:ring-black
+              ">
                 Change Photo
                 <input
                   type="file"
                   accept="image/*"
-                  className="hidden"
+                  className="sr-only"
+                  aria-label="Change photo"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -186,8 +193,9 @@ export default function SettingsPage() {
               <label className="text-sm font-medium">
                 Display Name
               </label>
-              <input
-                type="text"
+              <input id="name-field" 
+                type="name"
+                name = "Enter name here:"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-(--border-primary) bg-(--bg-page) focus:outline-none focus:ring-2 focus:ring-(--brand)"
@@ -204,8 +212,10 @@ export default function SettingsPage() {
             ) : null}
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={isSaving}
+              aria-label="Save changes"
               className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSaving ? "Saving..." : "Save Changes"}

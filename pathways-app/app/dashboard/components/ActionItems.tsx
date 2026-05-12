@@ -81,7 +81,7 @@ export function ActionItems({
       <div className="bg-(--chip-bg) rounded-xl p-5 border border-(--border-primary) flex gap-3 text-(--chip-text)">
         <Info size={20} className="shrink-0 mt-0.5" />
         <div>
-          <h4 className="font-medium text-base mb-1">Did you know?</h4>
+          <h4 className="font-medium mb-1">Did you know?</h4>
           <p className="text-sm leading-relaxed opacity-90">
             Completing multiple endorsements can make you more competitive for
             college admissions. You can track up to 3 simultaneously!

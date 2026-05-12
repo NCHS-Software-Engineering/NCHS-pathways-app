@@ -61,6 +61,7 @@ export default function SideBar({ open, setOpen }) {
           <Link
             href="/dashboard"
             className={linkClasses("/dashboard")}
+            aria-label="Go to Dashboard"
             onClick={() => setOpen(false)}
           >
             <LayoutDashboard size={18} />
@@ -70,6 +71,7 @@ export default function SideBar({ open, setOpen }) {
           <Link
             href="/endorsements"
             className={linkClasses("/endorsements")}
+            aria-label="Go to Endorsements"
             onClick={() => setOpen(false)}
           >
             <Award size={18} />
@@ -79,6 +81,7 @@ export default function SideBar({ open, setOpen }) {
           <Link
             href="/about"
             className={linkClasses("/about")}
+            aria-label="Go to About"
             onClick={() => setOpen(false)}
           >
             <Info size={18} />
@@ -88,6 +91,7 @@ export default function SideBar({ open, setOpen }) {
           <Link
             href="/settings"
             className={linkClasses("/settings")}
+            aria-label="Go to Settings"
             onClick={() => setOpen(false)}
           >
             <Settings size={18} />

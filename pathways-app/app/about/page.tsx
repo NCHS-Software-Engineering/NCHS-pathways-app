@@ -79,9 +79,9 @@ export default function AboutPage() {
 
           {/* WHAT ARE PATHWAYS SECTION */}
           <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 lg:p-8 space-y-8">
-            <h3 className="text-3xl font-semibold  text-(--brand-text)">
+            <h2 className="text-3xl font-semibold  text-(--brand-text)">
               What are pathways?
-            </h3>
+            </h2>
 
             <p className="bg-(--bg-card) rounded-xl p-5 text-sm  ">
               Pathway endorsements are a set of academic requirements that give
@@ -91,7 +91,9 @@ export default function AboutPage() {
                 href="https://app.schoolinks.com/student-pathways"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline">
+                className="text-blue-600 underline"
+                aria-label="Go to Schoolink's website on pathway endorsements"
+              >
                 Schoolinks's website
               </Link>.
             </p>
@@ -106,37 +108,6 @@ export default function AboutPage() {
                 <li>Professional learning experience</li>
                 <li>Meeting required Math & English standards</li>
               </ul>
-            </div>
-          </section>
-
-          {/* ACADEMIC SUCCESS SECTION */}
-          <section className="bg-(--brand-soft) md:border md:border-(--border-primary) md:rounded-3xl p-6 md:p-8 space-y-8">
-            <h2 className="text-2xl font-semibold text-(--brand-text)">
-              Academic Success
-            </h2>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-3">
-                What does academic success mean?
-              </h3>
-
-              <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed space-y-3">
-                <p>
-                  Students must demonstrate academic success in both reading and math to
-                  show that they have the strong foundational skills needed to succeed
-                  in school and beyond.
-                </p>
-                <p>
-                  This means they are prepared for college-level reading and math
-                  coursework, and it also shows that they are becoming a well-rounded
-                  student who can keep growing in their pathway and future goals.
-                </p>
-                <p>
-                  Academic success is an important part of earning an endorsement because
-                  it helps confirm that a student is ready for more advanced learning and
-                  can handle the expectations that come with their chosen pathway.
-                </p>
-              </div>
             </div>
           </section>
 

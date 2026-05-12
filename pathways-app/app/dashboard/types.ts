@@ -5,15 +5,6 @@ export interface Course {
   completed?: boolean;
 }
 
-export interface CourseGroupRequirement {
-  group: string;
-  groupLabel: string;
-  minSelections: number;
-  options: Course[];
-}
-
-export type CourseRequirement = Course | CourseGroupRequirement;
-
 export interface Pathway {
   id: string;
   title: string;
@@ -23,7 +14,7 @@ export interface Pathway {
     pathwayType: string;
     courseCredits: {
       totalCreditsRequired: number;
-      requiredCourses: CourseRequirement[];
+      requiredCourses: Course[];
       electiveCreditsRequired: number;
       electiveCourseOptions: Course[];
     };
