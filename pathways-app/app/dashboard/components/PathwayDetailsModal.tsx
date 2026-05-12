@@ -467,6 +467,5 @@ export function PathwayDetailsModal({
           </button>
         </div>
       </div>
-    </div>
   );
 }
