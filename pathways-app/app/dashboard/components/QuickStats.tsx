@@ -38,7 +38,7 @@ export function QuickStats({
         </div>
         <div>
           <p className="text-base font-medium text-(--text-secondary)">
-            Pathway Credits Earned
+            Total Credits Earned
           </p>
           <p className="text-2xl font-bold text-(--text-primary)">
             {totalCreditsEarned}

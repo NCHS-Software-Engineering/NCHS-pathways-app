@@ -21,7 +21,7 @@ export function AcademicSuccessActionItem({
   const [showMathCourses, setShowMathCourses] = useState(false);
 
   return (
-    <div className="mt-0">
+    <div className="mt-6">
       <h4 className="font-semibold text-(--text-primary) text-lg mb-1">
         {requirements.title}
       </h4>
@@ -32,19 +32,50 @@ export function AcademicSuccessActionItem({
       <div className="space-y-4">
         {/* Reading Section */}
         <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
-          <div className="p-4 flex items-center gap-4">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
+              <div
+                className={`mt-0.5 ${
+                  academicStatus.reading ? "text-(--success)" : "text-gray-300"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  aria-label="Check/uncheck academic success in reading"
+                  checked={academicStatus.reading}
+                  onChange={(e) =>
+                    setAcademicStatus((prev) => ({
+                      ...prev,
+                      reading: e.target.checked,
+                    }))
+                  }
+                />
+                {academicStatus.reading ? (
+                  <CheckSquare size={24} />
+                ) : (
+                  <Square size={24} />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-medium text-(--text-primary)">
+                  Reading Competency
+                </p>
+                <p className="text-sm text-(--text-secondary) mt-0.5">
+                  {academicStatus.reading
+                    ? "Requirement verified"
+                    : "Pending completion"}
+                </p>
+              </div>
+            </label>
             <button
+              onClick={() => setShowReadingDetails(!showReadingDetails)}
+              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              aria-label="Show/close academic success in reading details"
               type="button"
-              onClick={() =>
-                setAcademicStatus((prev) => ({
-                  ...prev,
-                  reading: !prev.reading,
-                }))
-              }
-              aria-label="Toggle reading competency"
-              className={`mt-0.5 ${
-                academicStatus.reading ? "text-(--success)" : "text-gray-300"
-              }`}
+              style={{
+                transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
+              }}
             >
               {academicStatus.reading ? <CheckSquare size={24} /> : <Square size={24} />}
             </button>
@@ -71,14 +102,15 @@ export function AcademicSuccessActionItem({
           </div>
 
           {showReadingDetails && (
-            <div className="p-4 md:px-6 border-t border-(--border-primary) bg-(--competency-reading-soft) space-y-4">
-              <p className="text-base font-medium text-(--competency-reading-text)">
+            <div className="p-4 border-t border-(--border-primary) bg-(--competency-reading-soft) space-y-4">
+              <p className="text-sm text-(--competency-reading-text)">
                 Complete one of the following to fulfill this requirement:
               </p>
 
               {/* Courses Toggle */}
               <div className="bg-(--bg-card) rounded-lg border border-(--competency-reading-border) overflow-hidden shadow-sm">
                 <button
+                  type="button"
                   onClick={() => setShowReadingCourses(!showReadingCourses)}
                   className="w-full flex items-center justify-between gap-4 p-3 text-left text-base font-medium text-(--text-primary) hover:bg-(--competency-reading-soft) transition-colors"
                 >
@@ -94,6 +126,7 @@ export function AcademicSuccessActionItem({
                     className={`transition-transform ${
                       showReadingCourses ? "rotate-90" : ""
                     }`}
+                    aria-label="Show/close approved coursework for academic success in reading"
                   />
                 </button>
                 {showReadingCourses && (
@@ -138,47 +171,54 @@ export function AcademicSuccessActionItem({
 
         {/* Math Section */}
         <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl shadow-sm overflow-hidden transition-all">
-          <div className="p-4 flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() =>
-                setAcademicStatus((prev) => ({
-                  ...prev,
-                  math: !prev.math,
-                }))
-              }
-              aria-label="Toggle math competency"
-              className={`mt-0.5 ${
-                academicStatus.math ? "text-(--success)" : "text-gray-300"
-              }`}
-            >
-              {academicStatus.math ? <CheckSquare size={24} /> : <Square size={24} />}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowMathDetails(!showMathDetails)}
-              className="flex-1 flex items-center justify-between gap-4 text-left"
-            >
+          <div className="p-4 flex items-center justify-between gap-4">
+            <label className="flex items-center gap-4 cursor-pointer flex-1 group">
+              <div
+                className={`mt-0.5 ${
+                  academicStatus.math ? "text-(--success)" : "text-gray-300"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  aria-label="Check/uncheck academic success in math"
+                  checked={academicStatus.math}
+                  onChange={(e) =>
+                    setAcademicStatus((prev) => ({
+                      ...prev,
+                      math: e.target.checked,
+                    }))
+                  }
+                />
+                {academicStatus.math ? (
+                  <CheckSquare size={24} />
+                ) : (
+                  <Square size={24} />
+                )}
+              </div>
               <div className="flex-1">
                 <p className="text-base font-medium text-(--text-primary)">Math Competency</p>
                 <p className="text-sm text-(--text-secondary) mt-0.5">
                   {academicStatus.math ? "Requirement verified" : "Pending completion"}
                 </p>
               </div>
-              <span
-                className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
-                style={{
-                  transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
-                }}
-              >
-                <ChevronRight size={20} />
-              </span>
+            </label>
+            <button
+              onClick={() => setShowMathDetails(!showMathDetails)}
+              className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
+              aria-label="Show/close academic success in math details"
+              type="button"
+              style={{
+                transform: showMathDetails ? "rotate(90deg)" : "rotate(0deg)",
+              }}
+            >
+              <ChevronRight size={20} />
             </button>
           </div>
 
           {showMathDetails && (
-            <div className="p-4 md:px-6 border-t border-(--border-primary) bg-(--competency-math-soft) space-y-4">
-              <p className="text-base font-medium text-(--competency-math-text)">
+            <div className="p-4 border-t border-(--border-primary) bg-(--competency-math-soft) space-y-4">
+              <p className="text-sm text-(--competency-math-text)">
                 Complete one of the following to fulfill this requirement:
               </p>
 
@@ -186,7 +226,9 @@ export function AcademicSuccessActionItem({
               <div className="bg-(--bg-card) rounded-lg border border-(--competency-math-border) overflow-hidden shadow-sm">
                 <button
                   onClick={() => setShowMathCourses(!showMathCourses)}
-                  className="w-full flex items-center justify-between gap-4 p-3 text-left text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
+                  className="w-full flex items-center justify-between p-3 text-base font-medium text-(--text-primary) hover:bg-(--competency-math-soft) transition-colors"
+                  aria-label="Show/close approved courses for academic success in math"
+                  type="button"
                 >
                   <span className="flex min-w-0 items-start gap-2">
                     <BookOpen size={18} className="mt-0.5 shrink-0 text-(--competency-math-accent)" />

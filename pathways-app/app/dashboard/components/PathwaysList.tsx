@@ -8,7 +8,6 @@ import {
   Clock,
   AlertCircle,
   Award,
-  X,
 } from "lucide-react";
 import { Pathway } from "../types";
 import { getPathwayStats } from "../utils";
@@ -18,7 +17,6 @@ interface PathwaysListProps {
   pathways: Record<string, Pathway>;
   onPathwayClick: (pathwayKey: string) => void;
   globalReqsMet: boolean;
-  onUnstar: (pathwayKey: string) => void;
 }
 
 export function PathwaysList({
@@ -26,7 +24,6 @@ export function PathwaysList({
   pathways,
   onPathwayClick,
   globalReqsMet,
-  onUnstar,
 }: PathwaysListProps) {
   const [pendingRemoval, setPendingRemoval] = useState<{
     key: string;
@@ -99,6 +96,7 @@ export function PathwaysList({
             <a
               href="/endorsements"
               className="text-base font-medium text-(--link) hover:underline hidden sm:block"
+              aria-label="Browse more endorsements"
             >
               Browse More Endorsements &rarr;
             </a>
@@ -118,8 +116,8 @@ export function PathwaysList({
               pathways to start tracking.
             </p>
           </div>
-          <button className="mt-4 px-6 py-2.5 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm">
-            <a href="/endorsements" className="flex items-center gap-2">
+          <button aria-label="Explore endorsements" className="mt-4 px-6 py-2.5 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm">
+            <a aria-label="Explore endorsements" href="/endorsements" className="flex items-center gap-2">
               Explore Endorsements
             </a>
           </button>

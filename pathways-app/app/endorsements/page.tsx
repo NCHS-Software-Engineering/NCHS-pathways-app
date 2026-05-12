@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSession } from "next-auth/react";
-import { Star, ExternalLink } from "lucide-react";
+import { Star } from "lucide-react";
  
 interface EndorsementPathway {
   id: string;
@@ -16,17 +16,16 @@ interface EndorsementPathway {
 const FALLBACK_IMAGE = "/images/icon.png";
 
 function resolvePathwayImage(pathway: EndorsementPathway): string {
-  const params = new URLSearchParams({ pathwayId: pathway.id });
-
   if (typeof pathway.imageFile === "string" && pathway.imageFile.trim().length > 0) {
-    params.set("imageFile", pathway.imageFile.trim());
+    const fileName = pathway.imageFile.split("/").pop() ?? pathway.imageFile;
+    return `/endorsements/images/${fileName}`;
   }
 
   if (typeof pathway.imagePath === "string" && pathway.imagePath.trim().length > 0) {
-    params.set("imagePath", pathway.imagePath.trim());
+    return pathway.imagePath;
   }
 
-  return `/api/endorsements-image?${params.toString()}`;
+  return FALLBACK_IMAGE;
 }
 
 interface PathwayCardProps {
@@ -36,6 +35,7 @@ interface PathwayCardProps {
   tcd: boolean;
   imageUrl: string;
   link: string; //in jsons for each pathway, does not need to be hard-coded
+  ariaLabel: string;
   isStarred: boolean;
   onToggle: (pathwayId: string) => void;
 }
@@ -48,44 +48,53 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
   tcd,
   imageUrl,
   link,
+  ariaLabel,
   isStarred,
   onToggle
 }) => {
+  
   return (
     //<Link href={link} target="_blank" rel="noopener noreferrer" className="block">
-    <div className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-5 w-full min-h-96 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div 
+      tabIndex={0}
+      onClick={() => window.open(link)} 
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+
+          window.open(link)
+        }
+      }}
+      aria-label={ariaLabel}
+      className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <img
         src={imageUrl}
-        alt={`${title} pathway`}
-        onError={(event) => {
-          event.currentTarget.src = FALLBACK_IMAGE;
+        alt=""
+        aria-hidden="true"
+        onError={(e) => {
+          e.currentTarget.src = FALLBACK_IMAGE;
         }}
-        className="h-56 w-full rounded-lg object-cover mb-4 transition-transform duration-300 group-hover:scale-105"
+        className="h-35 w-full rounded-lg object-cover mb-3 transition-transform duration-300 group-hover:scale-105"
       />
 
-      <button
-        onClick={() => link && window.open(link, "_blank", "noopener,noreferrer")}
-        className="text-lg font-semibold text-(--text-primary) mb-2 flex items-center gap-2 hover:text-(--brand) transition-colors cursor-pointer group/link"
-      >
+      <h3 className="text-lg font-semibold text-(--text-primary) mb-2">
         {title}
-        <ExternalLink size={16} className="text-(--text-secondary) group-hover/link:text-(--brand) transition-colors" />
-      </button>
+      </h3>
 
       <div className="mt-1 flex items-start justify-between gap-3">
         <div className="flex flex-col items-start gap-1.5">
-          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text) text-left whitespace-normal">
+          <div className="px-3 py-1 text-sm rounded-full bg-(--chip-bg) text-(--chip-text)">
             {category}
           </div>
-          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text) text-left whitespace-normal">TCD</div> : null}
+          {tcd ? <div className="px-3 py-1 text-sm rounded-full bg-(--tcd-chip-bg) text-(--tcd-chip-text)">TCD</div> : null}
         </div>
 
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggle(pathwayId);
           }}
-          title="Select"
           className="shrink-0 self-start"
         >
           <Star
@@ -95,6 +104,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
               text-gray-400 hover:text-yellow-600
               ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}
             `}
+            aria-label="Select/unselect pathway endorsement"
           />
         </button>
       </div>
@@ -218,7 +228,7 @@ export default function EndorsementsPage() {
   return (
     <>
       <div className = "container ">
-        <main className="p-6 flex-1 bg-(--bg-page) text-(--text-primary) min-h-screen">
+        <div className="p-6 flex-1 bg-(--bg-page) text-(--text-primary) min-h-screen">
           <h2 className="text-3xl font-semibold mb-4">Endorsements</h2>
 
           <p className="text-(--text-primary)/80 max-w-4xl mb-8">
@@ -242,6 +252,7 @@ export default function EndorsementsPage() {
                 title={pathway.title}
                 category={pathway.category}
                 tcd={Boolean(pathway.tcd)}
+                ariaLabel={pathway.title}
                 imageUrl={resolvePathwayImage(pathway)}
                 link={typeof pathway.link === "string" ? pathway.link : ""}
                 isStarred={starredPathways.includes(pathway.id)}
@@ -249,8 +260,7 @@ export default function EndorsementsPage() {
               />
             ))}
           </div>
-
-        </main>
+        </div>
       </div>
     </>
   );

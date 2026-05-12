@@ -10,17 +10,14 @@ import { DashboardHeader } from "./components/DashboardHeader";
 import { QuickStats } from "./components/QuickStats";
 import { PathwaysList } from "./components/PathwaysList";
 import { ActionItems } from "./components/ActionItems";
-import { PathwayDetailsModal } from "@/app/dashboard/components/PathwayDetailsModal";
+import { PathwayDetailsModal } from "./components/PathwayDetailsModal";
 
 import { Pathway, AcademicStatus } from "./types";
 import {
   STARRED_PATHWAYS_STORAGE_KEY,
   PATHWAY_PROGRESS_STORAGE_KEY,
   ACADEMIC_STATUS_STORAGE_KEY,
-  applyCourseProgress,
-  collectCompletedCourseNames,
   getPathwayStats,
-  isCourseGroupRequirement,
 } from "./utils";
 
 
@@ -34,7 +31,6 @@ export default function Dashboard() {
     () => pathwaysData as unknown as Record<string, Pathway>,
     []
   );
-  const [apiPathways, setApiPathways] = useState<Record<string, Pathway>>({});
   const [pathways, setPathways] = useState<Record<string, Pathway>>(basePathways);
   const [academicStatus, setAcademicStatus] = useState<AcademicStatus>({
     reading: false,
@@ -57,8 +53,7 @@ export default function Dashboard() {
   const { data: session } = useSession();
 
   const pathwayKeyById = useMemo(() => {
-    const allPathways = { ...basePathways, ...apiPathways };
-    return Object.entries(allPathways).reduce<Record<string, string>>(
+    return Object.entries(basePathways).reduce<Record<string, string>>(
       (acc, [key, value]) => {
         acc[key] = key;
         if (value && typeof value === "object" && "id" in value) {
@@ -71,44 +66,12 @@ export default function Dashboard() {
       },
       {}
     );
-  }, [basePathways, apiPathways]);
+  }, [basePathways]);
 
   const normalizePathwayKey = useCallback(
     (keyOrId: string): string | null => pathwayKeyById[keyOrId] ?? null,
     [pathwayKeyById]
   );
-
-  // Load pathways from the API so that admin-added pathways are recognised
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchApiPathways() {
-      try {
-        const res = await fetch("/api/pathways", { cache: "no-store" });
-        if (!res.ok || !isMounted) return;
-
-        const data = await res.json();
-        if (data && typeof data === "object" && !Array.isArray(data)) {
-          setApiPathways(data as Record<string, Pathway>);
-          // Also seed pathway state with any new pathways not in the static bundle
-          setPathways((prev) => {
-            const merged = { ...prev };
-            for (const [key, value] of Object.entries(data as Record<string, Pathway>)) {
-              if (!(key in merged)) {
-                merged[key] = value;
-              }
-            }
-            return merged;
-          });
-        }
-      } catch {
-        // Keep working with static pathways if the API is unavailable
-      }
-    }
-
-    fetchApiPathways();
-    return () => { isMounted = false; };
-  }, []);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -151,17 +114,31 @@ export default function Dashboard() {
             if (user?.Pathway_Progress && Array.isArray(user.Pathway_Progress)) {
               const completedCourses = new Set<string>(user.Pathway_Progress);
 
-              setPathways((prevPathways) => {
-                const updatedPathways = Object.fromEntries(
-                  Object.entries(prevPathways).map(([key, pathway]) => [
-                    key,
-                    applyCourseProgress(pathway, completedCourses),
-                  ])
-                ) as Record<string, Pathway>;
+              const updatedPathways = Object.fromEntries(
+                Object.entries(basePathways).map(([key, pathway]) => [
+                  key,
+                  {
+                    ...pathway,
+                    requirements: {
+                      ...pathway.requirements,
+                      courseCredits: {
+                        ...pathway.requirements.courseCredits,
+                        requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
+                          ...c,
+                          completed: completedCourses.has(c.name ?? ""),
+                        })),
+                        electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
+                          ...c,
+                          completed: completedCourses.has(c.name ?? ""),
+                        })),
+                      },
+                    },
+                  },
+                ])
+              ) as Record<string, Pathway>;
 
-                localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
-                return updatedPathways;
-              });
+              setPathways(updatedPathways);
+              localStorage.setItem(PATHWAY_PROGRESS_STORAGE_KEY, JSON.stringify(updatedPathways));
             }
           }
 
@@ -214,19 +191,10 @@ export default function Dashboard() {
                 }
               );
             if (validProgressEntries.length > 0) {
-              setPathways((prevPathways) => {
-                const mergedPathways = {
-                  ...prevPathways,
-                  ...Object.fromEntries(validProgressEntries),
-                };
-
-                return Object.fromEntries(
-                  Object.entries(mergedPathways).map(([key, pathway]) => [
-                    key,
-                    applyCourseProgress(pathway, new Set(collectCompletedCourseNames(pathway))),
-                  ])
-                ) as Record<string, Pathway>;
-              });
+              setPathways((prevPathways) => ({
+                ...prevPathways,
+                ...Object.fromEntries(validProgressEntries),
+              }));
             }
           }
         }
@@ -274,7 +242,20 @@ export default function Dashboard() {
       }),
     }).catch(() => { });
   }, [academicStatus, isHydrated, session]);
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!session?.user?.email) return;
 
+    fetch("/api/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        User_Email: session.user.email,
+        Reading_Competency: academicStatus.reading ? 1 : 0,
+        Math_Competency: academicStatus.math ? 1 : 0,
+      }),
+    }).catch(() => { });
+  }, [academicStatus, isHydrated, session]);
   function openPathway(pathwayKey: string) {
     const normalizedPathwayKey = normalizePathwayKey(pathwayKey);
     if (!normalizedPathwayKey) return;
@@ -285,23 +266,6 @@ export default function Dashboard() {
       setActivePathway(JSON.parse(JSON.stringify(pathwayData)));
     }
     setShowModal(true);
-  }
-
-  function handleUnstarPathway(pathwayKey: string) {
-    const updated = starredPathways.filter((k) => k !== pathwayKey);
-    setStarredPathways(updated);
-    localStorage.setItem(STARRED_PATHWAYS_STORAGE_KEY, JSON.stringify(updated));
-
-    if (session?.user?.email) {
-      fetch("/api/users", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          User_Email: session.user.email,
-          Stored_Pathways: updated,
-        }),
-      }).catch(() => {});
-    }
   }
 
   function handleCourseToggle(
@@ -316,13 +280,7 @@ export default function Dashboard() {
       const creditsData = updated.requirements.courseCredits;
 
       if (courseType === "required") {
-        const requirement = creditsData.requiredCourses[index];
-
-        if (isCourseGroupRequirement(requirement)) {
-          return prev;
-        } else {
-          requirement.completed = checked;
-        }
+        creditsData.requiredCourses[index].completed = checked;
       } else {
         creditsData.electiveCourseOptions[index].completed = checked;
       }
@@ -330,31 +288,15 @@ export default function Dashboard() {
       return updated;
     });
   }
-
-  function handleGroupOptionToggle(groupIndex: number, optionIndex: number, checked: boolean) {
-    setActivePathway((prev) => {
-      if (!prev) return prev;
-
-      const updated = { ...prev };
-      const requirement = updated.requirements.courseCredits.requiredCourses[groupIndex];
-
-      if (!isCourseGroupRequirement(requirement)) return prev;
-
-      requirement.options = requirement.options.map((option, currentOptionIndex) => ({
-        ...option,
-        completed: checked && currentOptionIndex === optionIndex,
-      }));
-
-      return updated;
-    });
-  }
-
   function extractProgress(pathwaysState: typeof pathways) {
-    return Array.from(
-      new Set(
-        Object.values(pathwaysState).flatMap((pathway) => collectCompletedCourseNames(pathway))
-      )
-    ).join(";");
+    return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
+      ...pathway.requirements.courseCredits.requiredCourses
+        .filter((c: any) => c.completed)
+        .map((c: any) => c.name as string),
+      ...pathway.requirements.courseCredits.electiveCourseOptions
+        .filter((c: any) => c.completed)
+        .map((c: any) => c.name as string),
+    ]).join(";");
   }
 
   function handleCounselorPopupRequest(pathwayName: string) {
@@ -364,16 +306,50 @@ export default function Dashboard() {
 
   function handleSave() {
     if (activePathway && activePathwayKey) {
-      const completedNames = new Set(collectCompletedCourseNames(activePathway));
+      const completedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => c.completed).map(c => c.name),
+      ]);
 
-      const syncedActivePathway = applyCourseProgress(activePathway, completedNames);
-      const syncedPathways = {
-        ...pathways,
-        [activePathwayKey]: syncedActivePathway,
-      } as typeof pathways;
+      const uncompletedNames = new Set([
+        ...activePathway.requirements.courseCredits.requiredCourses
+          .filter(c => !c.completed).map(c => c.name),
+        ...activePathway.requirements.courseCredits.electiveCourseOptions
+          .filter(c => !c.completed).map(c => c.name),
+      ]);
+
+      const syncedPathways = Object.fromEntries(
+        Object.entries({ ...pathways, [activePathwayKey]: activePathway }).map(
+          ([key, pathway]) => [
+            key,
+            {
+              ...pathway,
+              requirements: {
+                ...pathway.requirements,
+                courseCredits: {
+                  ...pathway.requirements.courseCredits,
+                  requiredCourses: pathway.requirements.courseCredits.requiredCourses.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : (c as any).completed,
+                  })),
+                  electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
+                    ...c,
+                    completed: completedNames.has(c.name ?? "") ? true
+                      : uncompletedNames.has(c.name ?? "") ? false
+                        : (c as any).completed,
+                  })),
+                },
+              },
+            },
+          ]
+        )
+      ) as unknown as typeof pathways;
 
       setPathways(syncedPathways);
-      setActivePathway(syncedActivePathway);
 
       if (session?.user?.email) {
         fetch("/api/users", {
@@ -389,19 +365,7 @@ export default function Dashboard() {
         }).catch(() => { });
       }
 
-      // ── Check if this pathway just became 100% complete ──────────────────
-      const stats = getPathwayStats(activePathway);
-      const isNowComplete = stats.progress === 100;
-
       setShowModal(false);
-
-      if (isNowComplete) {
-        setCompletedPathwayName(
-          (activePathway as any).title ?? (activePathway as any).name ?? activePathwayKey ?? ""
-        );
-        setShowCounselorAlert(true);
-      }
-      // ─────────────────────────────────────────────────────────────────────
     }
   }
 
@@ -446,7 +410,6 @@ export default function Dashboard() {
             pathways={pathways}
             onPathwayClick={openPathway}
             globalReqsMet={globalReqsMet}
-            onUnstar={handleUnstarPathway}
           />
 
           <ActionItems
@@ -467,7 +430,6 @@ export default function Dashboard() {
         onSave={handleSave}
         onCounselorPopupRequest={handleCounselorPopupRequest}
         onCourseToggle={handleCourseToggle}
-        onGroupOptionToggle={handleGroupOptionToggle}
       />
 
       
