@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import FocusTrap from 'focus-trap-react';
-import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink } from "lucide-react";
+import React, { useEffect } from "react";
+import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink, User } from "lucide-react";
 import { Pathway, Course } from "../types";
 import { getPathwayStats } from "../utils";
 
@@ -13,6 +12,7 @@ interface PathwayDetailsModalProps {
   isTCD: boolean;
   onClose: () => void;
   onSave: () => void;
+  onCounselorPopupRequest: (pathwayName: string) => void;
   onCourseToggle: (
     courseType: "required" | "elective",
     index: number,
@@ -27,9 +27,9 @@ export function PathwayDetailsModal({
   isTCD,
   onClose,
   onSave,
+  onCounselorPopupRequest,
   onCourseToggle,
 }: PathwayDetailsModalProps) {
-  const [showCounselorPopup, setShowCounselorPopup] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -55,8 +55,8 @@ export function PathwayDetailsModal({
   const stats = getPathwayStats(pathway);
 
   const handleSaveClick = () => {
-    if (stats.progress === 100 && !globalReqsMet) {
-      setShowCounselorPopup(true);
+    if (stats.progress === 100 && globalReqsMet) {
+      onCounselorPopupRequest(pathway.title);
       return;
     }
 
@@ -64,7 +64,6 @@ export function PathwayDetailsModal({
   };
 
   return (
-    <FocusTrap>
       <div
         className="fixed inset-0 bg-(--overlay-backdrop) backdrop-blur-sm flex items-center justify-center z-50 p-4 font-sans"
         onClick={onClose}
@@ -326,23 +325,8 @@ export function PathwayDetailsModal({
               </div>
             </div>
           )}
-          {/* Warning if credits are met but academic success isn't */}
-          {stats.progress === 100 && !globalReqsMet && (
-            <div className="bg-(--status-warning-light) border border-(--status-warning)/30 text-(--status-warning-text) p-4 rounded-xl flex items-start gap-3 shadow-sm">
-              <AlertCircle size={20} className="mt-0.5 shrink-0" />
-              <div>
-                <h4 className="font-semibold text-base">
-                  Check in with your counselor
-                </h4>
-                <p className="text-sm mt-1 opacity-90">
-                  You have finished the pathway coursework, but this website does
-                  not automatically apply you for the endorsement. Check in with
-                  your counselor to confirm your progress on the pathway and make
-                  sure you are done.
-                </p>
-              </div>
-            </div>
-          )}
+
+          
 
           {/* Required Courses */}
           <div className="border border-(--border-primary) rounded-xl overflow-hidden bg-(--bg-card)">
@@ -483,51 +467,6 @@ export function PathwayDetailsModal({
           </button>
         </div>
       </div>
-
-      {showCounselorPopup && (
-        <div
-          className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowCounselorPopup(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl bg-(--bg-card) shadow-2xl border border-(--border-primary) p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start gap-3">
-              <AlertCircle size={22} className="mt-0.5 shrink-0 text-(--status-warning)" />
-              <div>
-                <h3 className="text-lg font-semibold text-(--text-primary)">
-                  Check in with your counselor
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
-                  Check in with your counselor to confirm your progress on the pathway. This website does not automatically apply you for the endorsement, so confirm with your counselor that you are done.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setShowCounselorPopup(false)}
-                className="px-4 py-2 rounded-lg text-(--text-secondary) font-medium hover:bg-(--bg-soft) transition-colors"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCounselorPopup(false);
-                  onSave();
-                }}
-                className="px-4 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm"
-              >
-                I understand
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    
-    </FocusTrap>
+    </div>
   );
 }
