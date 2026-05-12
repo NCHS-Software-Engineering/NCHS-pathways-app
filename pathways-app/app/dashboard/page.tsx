@@ -430,7 +430,6 @@ export default function Dashboard() {
         onSave={handleSave}
         onCounselorPopupRequest={handleCounselorPopupRequest}
         onCourseToggle={handleCourseToggle}
-        onGroupOptionToggle={handleGroupOptionToggle}
       />
 
       
