@@ -19,6 +19,24 @@ export const metadata: Metadata = {
     shortcut: "/images/icon.png",
     apple: "/images/icon.png",
   },
+
+  openGraph: {
+    title: "Pathways Portal",
+    description: "Pathways Portal App, an app that allows students to track their progress toward earning high school diploma endorsements.",
+    url: 'https://www.d203careerpathways.org',
+    siteName: "Pathways Portal",
+    type: 'website',
+    images: [
+      {/*
+        url: 'https://raw.githubusercontent.com/gitdagray/my-blogposts/main/images/og-card.png',
+        secureUrl: 'https://raw.githubusercontent.com/gitdagray/my-blogposts/main/images/og-card.png',
+        width: 1200,
+        height: 630, */
+        alt: 'Pathways Portal Preview Image',
+      }
+    ]
+  },
+
 };
 
 export default function RootLayout({
