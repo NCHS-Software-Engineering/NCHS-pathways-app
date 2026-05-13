@@ -77,27 +77,7 @@ export function AcademicSuccessActionItem({
                 transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
               }}
             >
-              {academicStatus.reading ? <CheckSquare size={24} /> : <Square size={24} />}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowReadingDetails(!showReadingDetails)}
-              className="flex-1 flex items-center justify-between gap-4 text-left"
-            >
-              <div className="flex-1">
-                <p className="text-base font-medium text-(--text-primary)">Reading Competency</p>
-                <p className="text-sm text-(--text-secondary) mt-0.5">
-                  {academicStatus.reading ? "Requirement verified" : "Pending completion"}
-                </p>
-              </div>
-              <span
-                className="p-1 text-(--text-secondary) hover:text-(--text-primary) transition-transform duration-200"
-                style={{
-                  transform: showReadingDetails ? "rotate(90deg)" : "rotate(0deg)",
-                }}
-              >
-                <ChevronRight size={20} />
-              </span>
+              <ChevronRight size={20} />
             </button>
           </div>
 

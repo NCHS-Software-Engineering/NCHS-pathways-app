@@ -8,6 +8,7 @@ import {
   Clock,
   AlertCircle,
   Award,
+  X,
 } from "lucide-react";
 import { Pathway } from "../types";
 import { getPathwayStats } from "../utils";
@@ -300,4 +301,10 @@ export function PathwaysList({
       )}
     </>
   );
+}
+
+function onUnstar(key: string) {
+  // This would typically be passed as a prop or handled via a state management system
+  // For now, this is a placeholder that should be replaced with actual removal logic
+  console.warn("onUnstar called for pathway:", key);
 }
