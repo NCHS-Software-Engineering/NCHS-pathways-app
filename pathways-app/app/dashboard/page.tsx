@@ -437,7 +437,7 @@ export default function Dashboard() {
       {/* Counselor Warning — shown when pathway is 100% complete but global reqs are not yet met */}
       {showCounselorWarning && (
         <div
-          className="fixed inset-0 z-9999 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-9999 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setShowCounselorWarning(false)}
         >
           <div

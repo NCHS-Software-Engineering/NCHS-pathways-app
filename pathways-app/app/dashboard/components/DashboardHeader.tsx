@@ -33,7 +33,7 @@ export function DashboardHeader({ userName = "Student", isLoggedIn = false }: Da
           </p>
           <button
             onClick={() => signIn("google")}
-            className="mt-2 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm font-medium"
+            className="cursor-pointer mt-2 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm font-medium"
             aria-label="Sign in button"
             type="button"
           >

@@ -56,7 +56,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {!session ? (
           <button
             onClick={() => signIn("google")}
-            className="flex items-center gap-2 h-11 px-3 text-sm lg:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
+            className="cursor-pointer flex items-center gap-2 h-11 px-3 text-sm lg:text-base bg-(--bg-card) text-(--text-primary) border border-(--border-primary) rounded-md hover:bg-(--text-primary) hover:text-(--bg-secondary) transition"
           >
             <img
               src="https://developers.google.com/identity/images/g-logo.png"

@@ -216,7 +216,7 @@ export default function SettingsPage() {
               onClick={handleSave}
               disabled={isSaving}
               aria-label="Save changes"
-              className="px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
+              className="cursor-pointer px-4 py-2 rounded-md bg-(--brand) text-white hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSaving ? "Saving..." : "Save Changes"}
             </button>
