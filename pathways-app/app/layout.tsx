@@ -22,19 +22,27 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Pathways Portal",
-    description: "Pathways Portal App, an app that allows students to track their progress toward earning high school diploma endorsements.",
+    description: "Track your progress toward earning high school diploma endorsements with the Pathways Portal.",
     url: 'https://www.d203careerpathways.org',
     siteName: "Pathways Portal",
+    locale: 'en_US',
     type: 'website',
     images: [
-      {/*
-        url: 'https://raw.githubusercontent.com/gitdagray/my-blogposts/main/images/og-card.png',
-        secureUrl: 'https://raw.githubusercontent.com/gitdagray/my-blogposts/main/images/og-card.png',
+      {
+        url: 'https://www.d203careerpathways.org/images/bigLogo.png',
         width: 1200,
-        height: 630, */
+        height: 630,
         alt: 'Pathways Portal Preview Image',
-      }
-    ]
+      },
+    ],
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: "Pathways Portal",
+    description: "Track your progress toward earning high school diploma endorsements with the Pathways Portal.",
+    site: '@NCHSOFFICIAL',
+    images: ['https://www.d203careerpathways.org/images/bigLogo.png'], 
   },
 
 };
