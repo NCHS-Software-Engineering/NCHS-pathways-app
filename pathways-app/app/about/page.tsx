@@ -72,7 +72,7 @@ export default function AboutPage() {
               <div className="bg-(--bg-card) rounded-xl p-5 text-sm leading-relaxed ">
                 We are a team of students — Cam Calderon, Connor Doyle, Dylan Santwani, and Taran Nathan —
                 working together to improve how students understand and navigate
-                graduation requirements.
+                graduation requirements. We worked on this project the second semester of the 2026 school year, and all graduate in 2027.
               </div>
             </div>
           </section>
