@@ -12,7 +12,23 @@ html, body {
   color: var(--text-primary);
 }
 
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a,
+[role="button"],
+[role="link"],
+.cursor-pointer {
+  cursor: pointer;
+}
 
+button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled {
+  cursor: not-allowed;
+}
 
 
 .container {

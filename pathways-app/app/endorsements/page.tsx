@@ -100,6 +100,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
           <Star
             size={35}
             className={`
+              cursor-pointer
               transition-colors duration-200
               text-gray-400 hover:text-yellow-600
               ${isStarred ? "fill-yellow-400 text-yellow-500" : "fill-transparent"}

@@ -19,6 +19,32 @@ export const metadata: Metadata = {
     shortcut: "/images/icon.png",
     apple: "/images/icon.png",
   },
+
+  openGraph: {
+    title: "Pathways Portal",
+    description: "Track your progress toward earning high school diploma endorsements with the Pathways Portal.",
+    url: 'https://www.d203careerpathways.org',
+    siteName: "Pathways Portal",
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.d203careerpathways.org/images/bigLogo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Pathways Portal Preview Image',
+      },
+    ],
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: "Pathways Portal",
+    description: "Track your progress toward earning high school diploma endorsements with the Pathways Portal.",
+    site: '@NCHSOFFICIAL',
+    images: ['https://www.d203careerpathways.org/images/bigLogo.png'], 
+  },
+
 };
 
 export default function RootLayout({

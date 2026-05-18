@@ -35,7 +35,7 @@ export default function SideBar({ open, setOpen }) {
       {/* Dark overlay (mobile only) */}
       {open && (
         <div
-          className="fixed inset-x-0 top-14 bottom-0 bg-black/40 z-40 lg:hidden"
+          className="fixed inset-x-0 top-14 bottom-0 bg-black/40 z-40 lg:hidden cursor-pointer"
           onClick={() => setOpen(false)}
         />
       )}
