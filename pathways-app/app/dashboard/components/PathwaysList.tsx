@@ -196,7 +196,7 @@ export function PathwaysList({
                       className="p-1.5 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded-full transition-colors"
                       aria-label={`Remove ${pathwayData.title} from selected pathways`}
                     >
-                      <X size={16} />
+                      {/*<X size={16} />*/}
                     </button>
                     <div className="bg-(--bg-soft) group-hover:bg-(--brand-soft) group-hover:text-(--brand) p-2 rounded-full transition-colors text-(--text-secondary)">
                       <ChevronRight size={20} />
