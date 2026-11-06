@@ -78,16 +78,16 @@ yarn install
 - Copy `.env.example` to `.env` and fill in your MySQL credentials:
 
   ```env
-    GOOGLE_CLIENT_ID="305829942841-uh3e6b389206uejmvtf10gaodeu9qh9m.apps.googleusercontent.com"
-    GOOGLE_CLIENT_SECRET=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
+    GOOGLE_CLIENT_ID=
+    GOOGLE_CLIENT_SECRET=
 
-    NEXTAUTH_SECRET=q8JvT3Yk9LpXc2NfW6rMzA1uHd7sQeR4bKz0tYxUiVw=
+    NEXTAUTH_SECRET=
     NEXTAUTH_URL=http://localhost:3000/
 
-    DB_HOST=ec2-54-210-202-204.compute-1.amazonaws.com
-    DB_USER=pathways
-    DB_PASSWORD=GyAkDphsSCtE!2
-    DB_NAME=pathways
+    DB_HOST=
+    DB_USER=
+    DB_PASSWORD=
+    DB_NAME=
   ```
 
 ---
