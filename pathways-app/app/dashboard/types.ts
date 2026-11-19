@@ -5,6 +5,11 @@ export interface Course {
   completed?: boolean;
 }
 
+export interface RequiredCourseOptionGroup {
+  requiredSelections: number;
+  options: Course[];
+}
+
 export interface Pathway {
   id: string;
   title: string;
@@ -15,6 +20,7 @@ export interface Pathway {
     courseCredits: {
       totalCreditsRequired: number;
       requiredCourses: Course[];
+      requiredCourseOptionGroups: RequiredCourseOptionGroup[];
       electiveCreditsRequired: number;
       electiveCourseOptions: Course[];
     };

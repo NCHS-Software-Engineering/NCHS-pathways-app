@@ -12,7 +12,7 @@ import { PathwaysList } from "./components/PathwaysList";
 import { ActionItems } from "./components/ActionItems";
 import { PathwayDetailsModal } from "./components/PathwayDetailsModal";
 
-import { Pathway, AcademicStatus } from "./types";
+import { Pathway, AcademicStatus, Course } from "./types";
 import {
   STARRED_PATHWAYS_STORAGE_KEY,
   PATHWAY_PROGRESS_STORAGE_KEY,
@@ -127,6 +127,13 @@ export default function Dashboard() {
                           ...c,
                           completed: completedCourses.has(c.name ?? ""),
                         })),
+                        requiredCourseOptionGroups: (pathway.requirements.courseCredits.requiredCourseOptionGroups ?? []).map(group => ({
+                          ...group,
+                          options: (group.options ?? []).map(c => ({
+                            ...c,
+                            completed: completedCourses.has(c.name ?? ""),
+                          })),
+                        })),
                         electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
                           ...c,
                           completed: completedCourses.has(c.name ?? ""),
@@ -186,6 +193,7 @@ export default function Dashboard() {
                     !!pathwayCandidate.requirements &&
                     !!pathwayCandidate.requirements.courseCredits &&
                     Array.isArray(pathwayCandidate.requirements.courseCredits.requiredCourses) &&
+                    Array.isArray(pathwayCandidate.requirements.courseCredits.requiredCourseOptionGroups ?? []) &&
                     Array.isArray(pathwayCandidate.requirements.courseCredits.electiveCourseOptions)
                   );
                 }
@@ -269,9 +277,10 @@ export default function Dashboard() {
   }
 
   function handleCourseToggle(
-    courseType: "required" | "elective",
+    courseType: "required" | "required-option" | "elective",
     index: number,
-    checked: boolean
+    checked: boolean,
+    optionIndex?: number
   ) {
     setActivePathway((prev) => {
       if (!prev) return prev;
@@ -281,6 +290,15 @@ export default function Dashboard() {
 
       if (courseType === "required") {
         creditsData.requiredCourses[index].completed = checked;
+      } else if (courseType === "required-option") {
+        if (optionIndex === undefined) return prev;
+
+        const group = creditsData.requiredCourseOptionGroups?.[index];
+        if (!group) return prev;
+
+        group.options = (group.options ?? []).map((option, idx) =>
+          idx === optionIndex ? { ...option, completed: checked } : option
+        );
       } else {
         creditsData.electiveCourseOptions[index].completed = checked;
       }
@@ -289,13 +307,17 @@ export default function Dashboard() {
     });
   }
   function extractProgress(pathwaysState: typeof pathways) {
-    return Object.entries(pathwaysState).flatMap(([_, pathway]) => [
+    return Object.values(pathwaysState).flatMap((pathway) => [
       ...pathway.requirements.courseCredits.requiredCourses
-        .filter((c: any) => c.completed)
-        .map((c: any) => c.name as string),
+        .filter((c: Course) => c.completed)
+        .map((c: Course) => c.name),
+      ...(pathway.requirements.courseCredits.requiredCourseOptionGroups ?? [])
+        .flatMap((group) => (group.options ?? []))
+        .filter((c: Course) => c.completed)
+        .map((c: Course) => c.name),
       ...pathway.requirements.courseCredits.electiveCourseOptions
-        .filter((c: any) => c.completed)
-        .map((c: any) => c.name as string),
+        .filter((c: Course) => c.completed)
+        .map((c: Course) => c.name),
     ]).join(";");
   }
 
@@ -309,6 +331,8 @@ export default function Dashboard() {
       const completedNames = new Set([
         ...activePathway.requirements.courseCredits.requiredCourses
           .filter(c => c.completed).map(c => c.name),
+        ...(activePathway.requirements.courseCredits.requiredCourseOptionGroups ?? [])
+          .flatMap(group => (group.options ?? []).filter(c => c.completed).map(c => c.name)),
         ...activePathway.requirements.courseCredits.electiveCourseOptions
           .filter(c => c.completed).map(c => c.name),
       ]);
@@ -316,6 +340,8 @@ export default function Dashboard() {
       const uncompletedNames = new Set([
         ...activePathway.requirements.courseCredits.requiredCourses
           .filter(c => !c.completed).map(c => c.name),
+        ...(activePathway.requirements.courseCredits.requiredCourseOptionGroups ?? [])
+          .flatMap(group => (group.options ?? []).filter(c => !c.completed).map(c => c.name)),
         ...activePathway.requirements.courseCredits.electiveCourseOptions
           .filter(c => !c.completed).map(c => c.name),
       ]);
@@ -334,13 +360,22 @@ export default function Dashboard() {
                     ...c,
                     completed: completedNames.has(c.name ?? "") ? true
                       : uncompletedNames.has(c.name ?? "") ? false
-                        : (c as any).completed,
+                        : c.completed,
+                  })),
+                  requiredCourseOptionGroups: (pathway.requirements.courseCredits.requiredCourseOptionGroups ?? []).map(group => ({
+                    ...group,
+                    options: (group.options ?? []).map(c => ({
+                      ...c,
+                      completed: completedNames.has(c.name ?? "") ? true
+                        : uncompletedNames.has(c.name ?? "") ? false
+                          : c.completed,
+                    })),
                   })),
                   electiveCourseOptions: pathway.requirements.courseCredits.electiveCourseOptions.map(c => ({
                     ...c,
                     completed: completedNames.has(c.name ?? "") ? true
                       : uncompletedNames.has(c.name ?? "") ? false
-                        : (c as any).completed,
+                        : c.completed,
                   })),
                 },
               },

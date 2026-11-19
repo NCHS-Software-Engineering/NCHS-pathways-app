@@ -8,6 +8,11 @@ export interface AdminCourse {
   earlyCollegeCredit: boolean;
 }
 
+export interface AdminRequiredCourseOptionGroup {
+  requiredSelections: number;
+  options: AdminCourse[];
+}
+
 export interface AdminPathway {
   id: string;
   title: string;
@@ -18,6 +23,7 @@ export interface AdminPathway {
     courseCredits: {
       totalCreditsRequired: number;
       requiredCourses: AdminCourse[];
+      requiredCourseOptionGroups: AdminRequiredCourseOptionGroup[];
       electiveCreditsRequired: number;
       electiveCourseOptions: AdminCourse[];
     };
@@ -119,12 +125,44 @@ function normalizePathwayForAdmin(pathway: PathwayRaw): AdminPathway {
   const fulfillmentMethod = inferFulfillmentMethod(pathway);
   const requirements = pathway.requirements ?? {};
   const professionalLearning = requirements.professionalLearning ?? {};
+  const courseCredits = requirements.courseCredits as
+    | {
+        requiredCourseOptionGroups?: unknown;
+        [key: string]: unknown;
+      }
+    | undefined;
+  const requiredCourseOptionGroupsRaw = courseCredits?.requiredCourseOptionGroups;
+
+  const requiredCourseOptionGroups = Array.isArray(requiredCourseOptionGroupsRaw)
+    ? requiredCourseOptionGroupsRaw
+        .map((group) => {
+          const requiredSelectionsRaw = (group as { requiredSelections?: unknown })?.requiredSelections;
+          const optionsRaw = (group as { options?: unknown })?.options;
+          const options = Array.isArray(optionsRaw)
+            ? optionsRaw.filter((option) => typeof option === "object" && option !== null)
+            : [];
+
+          const parsedRequiredSelections =
+            typeof requiredSelectionsRaw === "number" && Number.isFinite(requiredSelectionsRaw)
+              ? Math.max(1, Math.floor(requiredSelectionsRaw))
+              : 1;
+
+          const requiredSelections = Math.min(parsedRequiredSelections, Math.max(1, options.length));
+
+          return { requiredSelections, options };
+        })
+        .filter((group) => group.options.length > 0)
+    : [];
 
   return {
     ...pathway,
     tcd: Boolean(pathway.tcd ?? requirements.pathwayType === "TCD"),
     requirements: {
       ...requirements,
+      courseCredits: {
+        ...(requirements.courseCredits as Record<string, unknown>),
+        requiredCourseOptionGroups,
+      },
       professionalLearning: {
         ...professionalLearning,
         fulfillmentMethod,

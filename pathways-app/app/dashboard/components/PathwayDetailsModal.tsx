@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink, User } from "lucide-react";
-import { Pathway, Course } from "../types";
+import { BookOpen, GraduationCap, AlertCircle, Save, Info, ExternalLink } from "lucide-react";
+import { Pathway, Course, RequiredCourseOptionGroup } from "../types";
 import { getPathwayStats } from "../utils";
 
 interface PathwayDetailsModalProps {
@@ -14,9 +14,10 @@ interface PathwayDetailsModalProps {
   onSave: () => void;
   onCounselorPopupRequest: (pathwayName: string) => void;
   onCourseToggle: (
-    courseType: "required" | "elective",
+    courseType: "required" | "required-option" | "elective",
     index: number,
-    checked: boolean
+    checked: boolean,
+    optionIndex?: number
   ) => void;
 }
 
@@ -53,6 +54,23 @@ export function PathwayDetailsModal({
   if (!isOpen || !pathway) return null;
 
   const stats = getPathwayStats(pathway);
+  const requiredOptionGroups: RequiredCourseOptionGroup[] =
+    pathway.requirements.courseCredits.requiredCourseOptionGroups ?? [];
+  const earnedGroupRequiredCredits = requiredOptionGroups.reduce((sum: number, group) => {
+    const completedOptionCredits = (group.options ?? [])
+      .filter((option: Course) => option.completed)
+      .map((option: Course) => Number(option.credits ?? 0))
+      .sort((a, b) => b - a);
+    const requiredSelections = Math.max(
+      1,
+      Math.min(group.requiredSelections ?? 1, (group.options ?? []).length || 1)
+    );
+    const countedCredits = completedOptionCredits
+      .slice(0, requiredSelections)
+      .reduce((creditSum, credit) => creditSum + credit, 0);
+
+    return sum + countedCredits;
+  }, 0);
 
   const handleSaveClick = () => {
     if (stats.progress === 100 && globalReqsMet) {
@@ -167,13 +185,13 @@ export function PathwayDetailsModal({
                   {pathway.requirements.courseCredits.requiredCourses.reduce(
                     (sum: number, c: Course) => sum + (c.completed ? c.credits : 0),
                     0
-                  )}{" "}
+                  ) + earnedGroupRequiredCredits}{" "}
                   credits earned
                 </span>
               </div>
               <div className="p-2 space-y-1">
                 {pathway.requirements.courseCredits.requiredCourses.map(
-                  (course: any, idx: number) => (
+                  (course: Course, idx: number) => (
                     <label
                       key={`req-${idx}`}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
@@ -211,6 +229,87 @@ export function PathwayDetailsModal({
                     </label>
                   )
                 )}
+
+                {requiredOptionGroups.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-(--border-primary) space-y-3">
+                    <div className="px-2">
+                      <p className="text-xs uppercase tracking-[0.08em] font-semibold text-(--brand)">
+                        Either/Or Course Requirements
+                      </p>
+                      <p className="text-xs text-(--text-secondary) mt-1">
+                        Complete the required number of classes in each group.
+                      </p>
+                    </div>
+
+                    {requiredOptionGroups.map((group, groupIdx: number) => {
+                      const requiredSelections = Math.max(
+                        1,
+                        Math.min(group.requiredSelections ?? 1, (group.options ?? []).length || 1)
+                      );
+                      const selectedCount = (group.options ?? []).filter((option: Course) => option.completed).length;
+                      const countedCount = Math.min(selectedCount, requiredSelections);
+                      const groupCompleted = countedCount >= requiredSelections;
+
+                      return (
+                        <div
+                          key={`req-group-${groupIdx}`}
+                          className={`rounded-xl border p-3 ${
+                            groupCompleted
+                              ? "border-(--brand)/40 bg-(--brand-soft)"
+                              : "border-(--border-primary) bg-(--bg-soft)/45"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between px-1 pb-2">
+                            <span className="text-sm font-semibold text-(--text-primary)">
+                              Requirement Group {groupIdx + 1}
+                            </span>
+                            <span className="text-[11px] uppercase tracking-wide text-(--text-secondary)">
+                              {groupCompleted
+                                ? `Completed ${countedCount}/${requiredSelections}`
+                                : `Pick ${requiredSelections} (${countedCount}/${requiredSelections})`}
+                            </span>
+                          </div>
+
+                          <div className="space-y-2">
+                            {(group.options ?? []).map((option: Course, optionIdx: number) => (
+                              <label
+                                key={`req-group-${groupIdx}-option-${optionIdx}`}
+                                className={`flex items-center gap-3 rounded-lg p-3 border transition-colors cursor-pointer ${
+                                  option.completed
+                                    ? "border-(--brand)/40 bg-(--bg-card)"
+                                    : "border-(--border-primary) bg-(--bg-card) hover:bg-(--bg-soft)"
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={option.completed ?? false}
+                                  onChange={(e) =>
+                                    onCourseToggle("required-option", groupIdx, e.target.checked, optionIdx)
+                                  }
+                                  className="w-5 h-5 rounded border-(--border-primary) text-(--brand) focus:ring-(--brand) cursor-pointer"
+                                  aria-label="Check/uncheck either/or class requirement"
+                                />
+                                <div className="flex-1 flex justify-between items-center gap-3">
+                                  <span className="text-base text-(--text-primary) leading-tight">
+                                    <span className={option.completed ? "line-through text-(--text-secondary) decoration-1" : "text-(--text-primary)"}>
+                                      {option.name}
+                                    </span>
+                                    {option.earlyCollegeCredit && (
+                                      <span className="ml-2 text-xs bg-(--badge-college-bg) text-(--badge-college-text) px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-semibold">
+                                        College Credit
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span className="text-sm font-medium text-(--text-secondary)">{option.credits} cr</span>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -234,7 +333,7 @@ export function PathwayDetailsModal({
                     
                     {pathway.requirements.courseCredits.electiveCourseOptions.length > 0 ? (
                       <div className="p-2 space-y-1">
-                        {pathway.requirements.courseCredits.electiveCourseOptions.map((course: any, idx: number) => (
+                        {pathway.requirements.courseCredits.electiveCourseOptions.map((course: Course, idx: number) => (
                           <label
                             key={`elec-${idx}`}
                             className="flex items-center gap-3 p-3 rounded-lg hover:bg-(--bg-soft) cursor-pointer transition-colors"
@@ -275,7 +374,7 @@ export function PathwayDetailsModal({
               Cancel
             </button>
             <button
-              onClick={onSave}
+              onClick={handleSaveClick}
               className="px-5 py-2 rounded-lg bg-(--brand) text-(--text-on-brand) font-medium hover:opacity-90 transition-colors shadow-sm flex items-center gap-2"
               aria-label="Save changes button"
               type="button"

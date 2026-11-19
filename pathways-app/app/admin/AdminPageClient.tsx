@@ -6,60 +6,7 @@ import AdminHeader from "./components/AdminHeader";
 import DeletePathwayModal from "./components/DeletePathwayModal";
 import PathwayEditorView from "./components/PathwayEditorView";
 import PathwaysListView from "./components/PathwaysListView";
-import { AcademicRequirement, AdminView, Course, Pathway, AcademicSuccessData } from "./types";
-
-const BLENDED_CAREER_INTERNSHIP_NAME = "Blended Career Internship";
-const BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE =
-  "Class only available if you choose it for Professional Learning Fulfillment.";
-
-function normalizeCourseName(name: unknown): string {
-  if (typeof name !== "string") return "";
-  return name.trim().toLowerCase().replace(/\s+/g, " ");
-}
-
-function makeBlendedCareerInternshipCourse(): Course {
-  return {
-    name: BLENDED_CAREER_INTERNSHIP_NAME,
-    credits: 0.5,
-    earlyCollegeCredit: true,
-  };
-}
-
-function enforceProfessionalLearningCourseRule(pathway: Pathway): Pathway {
-  const method = pathway.requirements.professionalLearning.fulfillmentMethod;
-  const currentRequired = pathway.requirements.courseCredits.requiredCourses;
-  const internshipCourseKey = normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME);
-  const nonInternshipCourses = currentRequired.filter(
-    (course) => normalizeCourseName(course.name) !== internshipCourseKey
-  );
-
-  if (method === "internship") {
-    return {
-      ...pathway,
-      requirements: {
-        ...pathway.requirements,
-        courseCredits: {
-          ...pathway.requirements.courseCredits,
-          requiredCourses: [
-            ...nonInternshipCourses,
-            makeBlendedCareerInternshipCourse(),
-          ],
-        },
-      },
-    };
-  }
-
-  return {
-    ...pathway,
-    requirements: {
-      ...pathway.requirements,
-      courseCredits: {
-        ...pathway.requirements.courseCredits,
-        requiredCourses: nonInternshipCourses,
-      },
-    },
-  };
-}
+import { AcademicRequirement, AdminView, Course, Pathway, AcademicSuccessData, RequiredCourseOptionGroup } from "./types";
 
 const emptyPathway: Pathway = {
   id: "",
@@ -71,6 +18,7 @@ const emptyPathway: Pathway = {
     courseCredits: {
       totalCreditsRequired: 0,
       requiredCourses: [],
+      requiredCourseOptionGroups: [],
       electiveCreditsRequired: 0,
       electiveCourseOptions: []
     },
@@ -170,7 +118,7 @@ export default function AdminPageClient() {
 
   const handleEditPathway = (pathway: Pathway) => {
     const clonedPathway = JSON.parse(JSON.stringify(pathway)) as Pathway;
-    setEditingPathway(enforceProfessionalLearningCourseRule(clonedPathway));
+    setEditingPathway(ensureRequiredCourseOptionGroups(clonedPathway));
     setIsNewPathway(false);
     setView("edit-pathway");
   };
@@ -207,7 +155,7 @@ export default function AdminPageClient() {
     }
 
     try {
-      const pathwayToSave = applyAutoCredits(enforceProfessionalLearningCourseRule(editingPathway));
+      const pathwayToSave = applyAutoCredits(ensureRequiredCourseOptionGroups(editingPathway));
 
       await fetch("/api/admin/pathways", {
         method: "POST",
@@ -266,23 +214,6 @@ export default function AdminPageClient() {
     });
   };
 
-  const handleProfLearningMethodChange = (method: "embedded" | "internship") => {
-    setEditingPathway((prev) => {
-      const updatedPathway = {
-        ...prev,
-        requirements: {
-          ...prev.requirements,
-          professionalLearning: {
-            ...prev.requirements.professionalLearning,
-            fulfillmentMethod: method,
-          },
-        },
-      };
-
-      return enforceProfessionalLearningCourseRule(updatedPathway);
-    });
-  };
-
   const manageCourse = (
     action: "add" | "remove" | "update",
     type: "required" | "elective",
@@ -290,22 +221,6 @@ export default function AdminPageClient() {
     field?: keyof Course,
     value?: string | number | boolean
   ) => {
-    if (
-      type === "required" &&
-      action === "update" &&
-      field === "name" &&
-      typeof value === "string" &&
-      normalizeCourseName(value) === normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME) &&
-      editingPathway.requirements.professionalLearning.fulfillmentMethod !== "internship"
-    ) {
-      if (typeof window !== "undefined") {
-        window.alert(BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE);
-      }
-      setErrorMessage(BLENDED_CAREER_INTERNSHIP_BLOCK_MESSAGE);
-      setTimeout(() => setErrorMessage(""), 3000);
-      return;
-    }
-
     setEditingPathway((prev) => {
       const key = type === "required" ? "requiredCourses" : "electiveCourseOptions";
       const newArray = [...prev.requirements.courseCredits[key]];
@@ -314,12 +229,91 @@ export default function AdminPageClient() {
       if (action === 'remove' && index !== undefined) newArray.splice(index, 1);
       if (action === 'update' && index !== undefined && field) newArray[index] = { ...newArray[index], [field]: value };
 
-      const updatedPathway = {
+      return ensureRequiredCourseOptionGroups({
         ...prev,
         requirements: { ...prev.requirements, courseCredits: { ...prev.requirements.courseCredits, [key]: newArray } }
-      };
+      });
+    });
+  };
 
-      return enforceProfessionalLearningCourseRule(updatedPathway);
+  const manageRequiredCourseOptionGroup = (
+    action: "add-group" | "remove-group" | "add-option" | "remove-option" | "update-option" | "set-required-selections",
+    groupIndex?: number,
+    optionIndex?: number,
+    field?: keyof Course,
+    value?: string | number | boolean
+  ) => {
+    setEditingPathway((prev) => {
+      const currentGroups = prev.requirements.courseCredits.requiredCourseOptionGroups ?? [];
+      const newGroups = currentGroups.map((group) => ({
+        ...group,
+        requiredSelections: Math.max(1, Math.floor(group.requiredSelections ?? 1)),
+        options: [...(group.options ?? [])],
+      }));
+
+      if (action === "add-group") {
+        newGroups.push({ requiredSelections: 1, options: [{ name: "", credits: 0.5, earlyCollegeCredit: false }] });
+      }
+
+      if (action === "remove-group" && groupIndex !== undefined) {
+        newGroups.splice(groupIndex, 1);
+      }
+
+      if (action === "add-option" && groupIndex !== undefined) {
+        const targetGroup = newGroups[groupIndex];
+        if (targetGroup) {
+          targetGroup.options.push({ name: "", credits: 0.5, earlyCollegeCredit: false });
+        }
+      }
+
+      if (action === "remove-option" && groupIndex !== undefined && optionIndex !== undefined) {
+        const targetGroup = newGroups[groupIndex];
+        if (targetGroup) {
+          targetGroup.options.splice(optionIndex, 1);
+          if (targetGroup.options.length === 0) {
+            newGroups.splice(groupIndex, 1);
+          }
+        }
+      }
+
+      if (
+        action === "update-option" &&
+        groupIndex !== undefined &&
+        optionIndex !== undefined &&
+        field
+      ) {
+        const targetGroup = newGroups[groupIndex];
+        if (targetGroup && targetGroup.options[optionIndex]) {
+          targetGroup.options[optionIndex] = {
+            ...targetGroup.options[optionIndex],
+            [field]: value,
+          };
+        }
+      }
+
+      if (action === "set-required-selections" && groupIndex !== undefined && typeof value === "number") {
+        const targetGroup = newGroups[groupIndex];
+        if (targetGroup) {
+          const maxAllowed = Math.max(1, targetGroup.options.length);
+          targetGroup.requiredSelections = Math.min(maxAllowed, Math.max(1, Math.floor(value)));
+        }
+      }
+
+      for (const group of newGroups) {
+        const maxAllowed = Math.max(1, group.options.length);
+        group.requiredSelections = Math.min(maxAllowed, Math.max(1, Math.floor(group.requiredSelections ?? 1)));
+      }
+
+      return ensureRequiredCourseOptionGroups({
+        ...prev,
+        requirements: {
+          ...prev.requirements,
+          courseCredits: {
+            ...prev.requirements.courseCredits,
+            requiredCourseOptionGroups: newGroups,
+          },
+        },
+      });
     });
   };
 
@@ -477,8 +471,8 @@ export default function AdminPageClient() {
             onSave={savePathwayToDb}
             onPathwayBasicChange={handlePathwayBasicChange}
             onPathwayImageUpload={handlePathwayImageUpload}
-            onProfLearningMethodChange={handleProfLearningMethodChange}
             onManageCourse={manageCourse}
+            onManageRequiredCourseOptionGroup={manageRequiredCourseOptionGroup}
             onManageCoCurricular={manageCoCurricular}
             onElectiveCreditsChange={handleElectiveCreditsChange}
             onCoCurricularRequiredChange={handleCoCurricularRequiredChange}
@@ -506,8 +500,22 @@ function calculateTotalCreditsRequired(pathway: Pathway): number {
     (sum, course) => sum + (typeof course.credits === "number" ? course.credits : 0),
     0
   );
+  const requiredGroupCredits = (pathway.requirements.courseCredits.requiredCourseOptionGroups ?? []).reduce(
+    (sum, group) => {
+      const optionCredits = (group.options ?? [])
+        .map((option) => (typeof option.credits === "number" ? option.credits : 0))
+        .sort((a, b) => b - a);
+      const requiredSelections = Math.max(
+        1,
+        Math.min(group.requiredSelections ?? 1, optionCredits.length || 1)
+      );
+      const selectedCredits = optionCredits.slice(0, requiredSelections).reduce((creditSum, credit) => creditSum + credit, 0);
+      return sum + selectedCredits;
+    },
+    0
+  );
   const electiveCredits = Number(pathway.requirements.courseCredits.electiveCreditsRequired ?? 0);
-  return requiredCredits + electiveCredits;
+  return requiredCredits + requiredGroupCredits + electiveCredits;
 }
 
 function applyAutoCredits(pathway: Pathway): Pathway {
@@ -518,6 +526,36 @@ function applyAutoCredits(pathway: Pathway): Pathway {
       courseCredits: {
         ...pathway.requirements.courseCredits,
         totalCreditsRequired: calculateTotalCreditsRequired(pathway),
+      },
+    },
+  };
+}
+
+function ensureRequiredCourseOptionGroups(pathway: Pathway): Pathway {
+  const groups = (Array.isArray(pathway.requirements.courseCredits.requiredCourseOptionGroups)
+    ? pathway.requirements.courseCredits.requiredCourseOptionGroups
+    : [])
+    .map((group: RequiredCourseOptionGroup) => {
+      const options = Array.isArray(group.options) ? group.options : [];
+      const requiredSelections = Math.max(
+        1,
+        Math.min(group.requiredSelections ?? 1, options.length || 1)
+      );
+
+      return {
+        ...group,
+        requiredSelections,
+        options,
+      };
+    });
+
+  return {
+    ...pathway,
+    requirements: {
+      ...pathway.requirements,
+      courseCredits: {
+        ...pathway.requirements.courseCredits,
+        requiredCourseOptionGroups: groups,
       },
     },
   };

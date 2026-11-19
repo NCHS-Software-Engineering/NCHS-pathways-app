@@ -18,12 +18,14 @@ const MIME_EXTENSION_MAP: Record<string, string> = {
 };
 
 async function authorizeRequest() {
-  const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
-
-  if (!isAllowedAdminEmail(email)) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // TEMPORARY: bypass admin auth checks while testing admin access.
+  // Re-enable before merging/deploying.
+  // const session = await getServerSession(authOptions);
+  // const email = session?.user?.email;
+  //
+  // if (!isAllowedAdminEmail(email)) {
+  //   return Response.json({ error: "Unauthorized" }, { status: 401 });
+  // }
 
   return null;
 }

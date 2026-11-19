@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Plus, Save, Trash2, Upload } from "lucide-react";
-import { Course, Pathway } from "../types";
-
-const BLENDED_CAREER_INTERNSHIP_NAME = "Blended Career Internship";
-
-function normalizeCourseName(name: unknown): string {
-  if (typeof name !== "string") return "";
-  return name.trim().toLowerCase().replace(/\s+/g, " ");
-}
+import { ArrowLeft, BookOpen, GraduationCap, Plus, Save, Trash2, Upload } from "lucide-react";
+import { Course, Pathway, RequiredCourseOptionGroup } from "../types";
 
 interface PathwayEditorViewProps {
   editingPathway: Pathway;
@@ -20,11 +13,17 @@ interface PathwayEditorViewProps {
   onSave: () => void;
   onPathwayBasicChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   onPathwayImageUpload: (file: File) => void;
-  onProfLearningMethodChange: (method: "embedded" | "internship") => void;
   onManageCourse: (
     action: "add" | "remove" | "update",
     type: "required" | "elective",
     index?: number,
+    field?: keyof Course,
+    value?: string | number | boolean
+  ) => void;
+  onManageRequiredCourseOptionGroup: (
+    action: "add-group" | "remove-group" | "add-option" | "remove-option" | "update-option" | "set-required-selections",
+    groupIndex?: number,
+    optionIndex?: number,
     field?: keyof Course,
     value?: string | number | boolean
   ) => void;
@@ -44,8 +43,8 @@ export default function PathwayEditorView({
   onSave,
   onPathwayBasicChange,
   onPathwayImageUpload,
-  onProfLearningMethodChange,
   onManageCourse,
+  onManageRequiredCourseOptionGroup,
   onManageCoCurricular,
   onCoCurricularRequiredChange,
   onElectiveCreditsChange
@@ -80,6 +79,9 @@ export default function PathwayEditorView({
     if (previewUnavailable) return "";
     return imagePreviewCandidates[previewIndex] ?? "";
   }, [imagePreviewCandidates, previewIndex, previewUnavailable]);
+
+  const requiredCourseOptionGroups: RequiredCourseOptionGroup[] =
+    editingPathway.requirements.courseCredits.requiredCourseOptionGroups ?? [];
 
   const handlePreviewError = () => {
     if (previewIndex < imagePreviewCandidates.length - 1) {
@@ -274,29 +276,17 @@ export default function PathwayEditorView({
                 </button>
               </div>
 
-              {editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship" && (
-                <p className="text-xs text-(--text-secondary) mb-3">
-                  Blended Career Internship is auto-required when Professional Learning is set to Internship.
-                </p>
-              )}
-
               <div className="space-y-3">
                 {editingPathway.requirements.courseCredits.requiredCourses.length === 0 ? (
                   <p className="text-sm text-(--text-secondary) italic p-4 bg-(--admin-muted-bg) rounded-lg text-center border border-dashed border-(--border-primary)">No required courses added yet.</p>
                 ) : (
-                  editingPathway.requirements.courseCredits.requiredCourses.map((course, idx) => {
-                    const isLockedInternshipCourse =
-                      editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship" &&
-                      normalizeCourseName(course.name) === normalizeCourseName(BLENDED_CAREER_INTERNSHIP_NAME);
-
-                    return (
+                  editingPathway.requirements.courseCredits.requiredCourses.map((course, idx) => (
                     <div key={idx} className="flex flex-wrap md:flex-nowrap items-center gap-4 bg-(--admin-muted-bg) p-3 rounded-lg border border-(--border-primary)">
                       <input
                         type="text"
                         placeholder="Course Name"
                         value={course.name}
                         onChange={(e) => onManageCourse("update", "required", idx, "name", e.target.value)}
-                        disabled={isLockedInternshipCourse}
                         className="flex-1 min-w-50 px-3 py-2 rounded border border-(--border-primary) text-sm"
                       />
                       <div className="flex items-center gap-2">
@@ -307,7 +297,6 @@ export default function PathwayEditorView({
                           min="0"
                           value={course.credits}
                           onChange={(e) => onManageCourse("update", "required", idx, "credits", Number(e.target.value))}
-                          disabled={isLockedInternshipCourse}
                           className="w-16 px-2 py-2 rounded border border-(--border-primary) text-sm text-center"
                         />
                       </div>
@@ -316,26 +305,131 @@ export default function PathwayEditorView({
                           type="checkbox"
                           checked={course.earlyCollegeCredit}
                           onChange={(e) => onManageCourse("update", "required", idx, "earlyCollegeCredit", e.target.checked)}
-                          disabled={isLockedInternshipCourse}
                           className="rounded text-(--brand)"
                         />
                         <span className="text-xs font-medium whitespace-nowrap">College Credit?</span>
                       </label>
-                      {isLockedInternshipCourse && (
-                        <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded bg-(--brand-soft) text-(--brand-text) border border-(--brand)/20">
-                          Auto-required
-                        </span>
-                      )}
                       <button
                         type="button"
                         onClick={() => onManageCourse("remove", "required", idx)}
-                        disabled={isLockedInternshipCourse}
                         className="p-2 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded transition-colors"
                       >
                         <Trash2 size={18} />
                       </button>
                     </div>
-                  )})
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="border-t pt-8">
+              <div className="flex items-center justify-between mb-4 border-b pb-2">
+                <div>
+                  <h3 className="font-medium text-(--text-primary)">Either/Or Required Course Groups</h3>
+                  <p className="text-xs text-(--text-secondary) mt-1">
+                    Add as many class options as needed and choose how many students must complete from each group.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onManageRequiredCourseOptionGroup("add-group")}
+                  className="flex items-center gap-1 text-sm text-(--text-primary) font-medium hover:underline bg-(--brand-soft) px-2 py-1 rounded"
+                >
+                  <Plus size={16} /> Add Either/Or Group
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {requiredCourseOptionGroups.length === 0 ? (
+                  <p className="text-sm text-(--text-secondary) italic p-4 bg-(--admin-muted-bg) rounded-lg text-center border border-dashed border-(--border-primary)">
+                    No either/or groups added.
+                  </p>
+                ) : (
+                  requiredCourseOptionGroups.map((group, groupIdx) => (
+                    <div key={groupIdx} className="rounded-xl border border-(--border-primary) bg-(--admin-muted-bg) p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-semibold text-(--text-primary)">Requirement Group {groupIdx + 1}</h4>
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs font-semibold text-(--text-secondary)">Students Must Pick</label>
+                          <select
+                            value={Math.max(1, Math.min(group.requiredSelections ?? 1, (group.options ?? []).length || 1))}
+                            onChange={(e) =>
+                              onManageRequiredCourseOptionGroup(
+                                "set-required-selections",
+                                groupIdx,
+                                undefined,
+                                undefined,
+                                Number(e.target.value)
+                              )
+                            }
+                            className="px-2 py-1 rounded border border-(--border-primary) bg-(--bg-card) text-sm"
+                          >
+                            {Array.from({ length: Math.max(1, (group.options ?? []).length) }, (_, idx) => idx + 1).map((count) => (
+                              <option key={count} value={count}>
+                                Pick {count}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => onManageRequiredCourseOptionGroup("remove-group", groupIdx)}
+                            className="p-2 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {(group.options ?? []).map((course, optionIdx) => (
+                        <div key={optionIdx} className="flex flex-wrap md:flex-nowrap items-center gap-4 bg-(--bg-card) p-3 rounded-lg border border-(--border-primary)">
+                          <input
+                            type="text"
+                            placeholder="Option Course Name"
+                            value={course.name}
+                            onChange={(e) => onManageRequiredCourseOptionGroup("update-option", groupIdx, optionIdx, "name", e.target.value)}
+                            className="flex-1 min-w-50 px-3 py-2 rounded border border-(--border-primary) text-sm"
+                          />
+                          <div className="flex items-center gap-2">
+                            <label className="text-xs font-medium text-(--text-secondary)">Credits:</label>
+                            <input
+                              type="number"
+                              step="0.5"
+                              min="0"
+                              value={course.credits}
+                              onChange={(e) => onManageRequiredCourseOptionGroup("update-option", groupIdx, optionIdx, "credits", Number(e.target.value))}
+                              className="w-16 px-2 py-2 rounded border border-(--border-primary) text-sm text-center"
+                            />
+                          </div>
+                          <label className="flex items-center gap-2 cursor-pointer bg-(--bg-card) px-3 py-2 rounded border border-(--border-primary)">
+                            <input
+                              type="checkbox"
+                              checked={course.earlyCollegeCredit}
+                              onChange={(e) => onManageRequiredCourseOptionGroup("update-option", groupIdx, optionIdx, "earlyCollegeCredit", e.target.checked)}
+                              className="rounded text-(--brand)"
+                            />
+                            <span className="text-xs font-medium whitespace-nowrap">College Credit?</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => onManageRequiredCourseOptionGroup("remove-option", groupIdx, optionIdx)}
+                            className="p-2 text-(--text-secondary) hover:text-(--danger) hover:bg-(--danger-soft) rounded transition-colors"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      ))}
+
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => onManageRequiredCourseOptionGroup("add-option", groupIdx)}
+                          className="flex items-center gap-1 text-sm text-(--text-primary) font-medium hover:underline bg-(--brand-soft) px-2 py-1 rounded"
+                        >
+                          <Plus size={16} /> Add Option ({(group.options ?? []).length})
+                        </button>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
@@ -415,63 +509,6 @@ export default function PathwayEditorView({
           </div>
         </section>
 
-        <section className="bg-(--bg-card) rounded-xl border border-(--border-primary) shadow-sm overflow-hidden">
-          <div className="bg-(--bg-soft) px-6 py-4 border-b border-(--border-primary) flex items-center gap-2">
-            <Briefcase size={20} className="text-(--text-primary)" />
-            <h2 className="font-semibold text-xl">Professional Learning Fulfillment</h2>
-          </div>
-          <div className="p-6">
-            <p className="text-sm text-(--text-secondary) mb-5">
-              All pathways require 2 Career Exploration Activities, 2 Team Challenges, and 60 Work Experience Hours. How does this specific pathway fulfill them?
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  editingPathway.requirements.professionalLearning.fulfillmentMethod === "embedded"
-                    ? "border-(--brand) bg-(--brand-soft)"
-                    : "border-(--border-primary) hover:border-(--brand)"
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <input
-                    type="radio"
-                    name="profMethod"
-                    checked={editingPathway.requirements.professionalLearning.fulfillmentMethod === "embedded"}
-                    onChange={() => onProfLearningMethodChange("embedded")}
-                    className="w-4 h-4 text-(--brand)"
-                  />
-                  <span className="font-bold text-(--text-primary)">Embedded in Coursework</span>
-                </div>
-                <p className="text-xs text-(--text-secondary) pl-7">
-                  These hours are embedded within the required career-focused coursework automatically.
-                </p>
-              </label>
-
-              <label
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship"
-                    ? "border-(--brand) bg-(--brand-soft)"
-                    : "border-(--border-primary) hover:border-(--brand)"
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <input
-                    type="radio"
-                    name="profMethod"
-                    checked={editingPathway.requirements.professionalLearning.fulfillmentMethod === "internship"}
-                    onChange={() => onProfLearningMethodChange("internship")}
-                    className="w-4 h-4 text-(--brand)"
-                  />
-                  <span className="font-bold text-(--text-primary)">Blended Career Internship</span>
-                </div>
-                <p className="text-xs text-(--text-secondary) pl-7">
-                  Requires student to take the Blended Career Internship course to fulfill hours.
-                </p>
-              </label>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );

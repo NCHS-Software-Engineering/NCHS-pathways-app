@@ -65,7 +65,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
         }
       }}
       aria-label={ariaLabel}
-      className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+      className="relative group bg-(--bg-card) border border-(--border-primary) rounded-xl p-4 w-full min-w-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
 
       <img
         src={imageUrl}
@@ -245,7 +245,7 @@ export default function EndorsementsPage() {
             Star a pathway to save it for later! Click on a pathway title to open Schoolinks's page for it (you must be logged in).
           </h4>
 
-         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
             {pathways.map((pathway) => (
               <PathwayCard
                 key={pathway.id}
